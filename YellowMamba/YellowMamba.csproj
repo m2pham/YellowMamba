@@ -52,6 +52,12 @@
   <ItemGroup>
     <Folder Include="Content\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\YellowMambaContent\YellowMambaContent\YellowMambaContent.csproj">
+      <Project>{fdff69aa-2c6c-4847-bdd9-03c0247a469a}</Project>
+      <Name>YellowMambaContent</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
