@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using YellowMamba.Screens;
 #endregion
 
 namespace YellowMamba
@@ -16,14 +17,23 @@ namespace YellowMamba
     /// </summary>
     public class YellowMamba : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        const int SCREEN_WIDTH = 1280;
+        const int SCREEN_HEIGHT = 720;
+        const String ASSET_TYPE = "Test";
 
-        public YellowMamba()
-            : base()
+        private GraphicsDeviceManager graphics;
+        public SpriteBatch SpriteBatch { get; private set; }
+
+        // Screens
+        public MainScreen MainScreen { get; private set; }
+
+        public YellowMamba() : base()
         {
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
+            graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
+
+            Content.RootDirectory = "Content/" + ASSET_TYPE;
         }
 
         /// <summary>
@@ -34,7 +44,8 @@ namespace YellowMamba
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            MainScreen = new MainScreen(this);
+            Components.Add(MainScreen);
 
             base.Initialize();
         }
@@ -46,8 +57,7 @@ namespace YellowMamba
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
             // TODO: use this.Content to load your game content here
         }
 
@@ -67,8 +77,8 @@ namespace YellowMamba
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //    Exit();
 
             // TODO: Add your update logic here
 
@@ -81,11 +91,12 @@ namespace YellowMamba
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            //GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
+
     }
 }
