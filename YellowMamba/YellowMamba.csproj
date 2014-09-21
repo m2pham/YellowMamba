@@ -35,6 +35,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Screens\MainScreen.cs" />
     <Compile Include="YellowMamba.cs" />
     <Compile Include="Program.cs" />

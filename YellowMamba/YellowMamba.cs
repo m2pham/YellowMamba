@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using YellowMamba.Screens;
+using YellowMamba.Managers;
 #endregion
 
 namespace YellowMamba
@@ -17,9 +18,9 @@ namespace YellowMamba
     /// </summary>
     public class YellowMamba : Game
     {
-        const int SCREEN_WIDTH = 1280;
-        const int SCREEN_HEIGHT = 720;
-        const String ASSET_TYPE = "Test";
+        const int ScreenWidth = 1280;
+        const int ScreenHeight = 720;
+        const String AssetType = "Test";
 
         private GraphicsDeviceManager graphics;
         public SpriteBatch SpriteBatch { get; private set; }
@@ -27,13 +28,16 @@ namespace YellowMamba
         // Screens
         public MainScreen MainScreen { get; private set; }
 
+        // Managers
+        public InputManager InputManager { get; private set; }
+
         public YellowMamba() : base()
         {
             graphics = new GraphicsDeviceManager(this);
-            graphics.PreferredBackBufferWidth = SCREEN_WIDTH;
-            graphics.PreferredBackBufferHeight = SCREEN_HEIGHT;
+            graphics.PreferredBackBufferWidth = ScreenWidth;
+            graphics.PreferredBackBufferHeight = ScreenHeight;
 
-            Content.RootDirectory = "Content/" + ASSET_TYPE;
+            Content.RootDirectory = "Content/" + AssetType;
         }
 
         /// <summary>
@@ -46,6 +50,10 @@ namespace YellowMamba
         {
             MainScreen = new MainScreen(this);
             Components.Add(MainScreen);
+
+            InputManager = new InputManager();
+            InputManager.Initialize();
+            Services.AddService(typeof(InputManager), InputManager);
 
             base.Initialize();
         }
@@ -77,9 +85,6 @@ namespace YellowMamba
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            //    Exit();
-
             // TODO: Add your update logic here
 
             base.Update(gameTime);

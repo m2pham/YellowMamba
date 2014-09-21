@@ -11,7 +11,6 @@ namespace YellowMamba.Screens
     public class MainScreen : DrawableGameComponent
     {
         private ContentManager contentManager;
-
         private Texture2D background;
         private YellowMamba yellowMamba;
 
