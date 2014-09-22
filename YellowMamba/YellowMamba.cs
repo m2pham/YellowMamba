@@ -48,11 +48,14 @@ namespace YellowMamba
         /// </summary>
         protected override void Initialize()
         {
+            InputManager = new InputManager(this);
+            InputManager.UpdateOrder = 1;
+            Components.Add(InputManager);
+
             MainScreen = new MainScreen(this);
+            MainScreen.UpdateOrder = 2;
             Components.Add(MainScreen);
 
-            InputManager = new InputManager();
-            InputManager.Initialize();
             Services.AddService(typeof(InputManager), InputManager);
 
             base.Initialize();
