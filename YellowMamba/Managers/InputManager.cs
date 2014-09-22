@@ -75,11 +75,11 @@ namespace YellowMamba.Managers
                     Buttons button = playerCharacterButtonsMap[characterAction];
                     if (GamePad.GetState(playerIndex).IsConnected && GamePad.GetState(playerIndex).IsButtonDown(button))
                     {
-                        UpdatePlayerCharacterActionsMapOnPressed(playerIndex, characterAction);
+                        UpdatePlayerCharacterActionStatesMapOnPressed(playerIndex, characterAction);
                     }
                     else
                     {
-                        UpdatePlayerCharacterActionsMapOnReleased(playerIndex, characterAction);
+                        UpdatePlayerCharacterActionStatesMapOnReleased(playerIndex, characterAction);
                     }
                 }
             }
@@ -109,7 +109,7 @@ namespace YellowMamba.Managers
             return playerOneMenuActionStatesMap[menuAction];
         }
 
-        private void UpdatePlayerCharacterActionsMapOnPressed(PlayerIndex playerIndex, CharacterActions characterAction)
+        private void UpdatePlayerCharacterActionStatesMapOnPressed(PlayerIndex playerIndex, CharacterActions characterAction)
         {
             Dictionary<CharacterActions, ActionStates> playerCharacterActionMap = playersCharacterActionStatesMap[playerIndex];
             if (playerCharacterActionMap[characterAction] == ActionStates.Pressed)
@@ -123,7 +123,7 @@ namespace YellowMamba.Managers
             }
         }
 
-        private void UpdatePlayerCharacterActionsMapOnReleased(PlayerIndex playerIndex, CharacterActions characterAction)
+        private void UpdatePlayerCharacterActionStatesMapOnReleased(PlayerIndex playerIndex, CharacterActions characterAction)
         {
             Dictionary<CharacterActions, ActionStates> playerCharacterActionMap = playersCharacterActionStatesMap[playerIndex];
             if (playerCharacterActionMap[characterAction] == ActionStates.Pressed ||
