@@ -35,8 +35,15 @@ namespace YellowMamba.Managers
             Dictionary<CharacterActions, Buttons> defaultCharacterButtonsMap = new Dictionary<CharacterActions, Buttons>();
             defaultCharacterButtonsMap.Add(CharacterActions.Jump, Buttons.A);
             defaultCharacterButtonsMap.Add(CharacterActions.Attack, Buttons.X);
+            defaultCharacterButtonsMap.Add(CharacterActions.Pick, Buttons.Y);
+            defaultCharacterButtonsMap.Add(CharacterActions.PreviousPass, Buttons.LeftShoulder);
+            defaultCharacterButtonsMap.Add(CharacterActions.NextPass, Buttons.RightShoulder);
             defaultCharacterButtonsMap.Add(CharacterActions.Pass, Buttons.LeftTrigger);
             defaultCharacterButtonsMap.Add(CharacterActions.ShootMode, Buttons.RightTrigger);
+            defaultCharacterButtonsMap.Add(CharacterActions.MoveUp, Buttons.LeftThumbstickUp);
+            defaultCharacterButtonsMap.Add(CharacterActions.MoveDown, Buttons.LeftThumbstickDown);
+            defaultCharacterButtonsMap.Add(CharacterActions.MoveLeft, Buttons.LeftThumbstickLeft);
+            defaultCharacterButtonsMap.Add(CharacterActions.MoveRight, Buttons.LeftThumbstickRight);
 
             Dictionary<CharacterActions, ActionStates> defaultCharacterActionStatesMap = new Dictionary<CharacterActions, ActionStates>();
             foreach (CharacterActions characterAction in Enum.GetValues(typeof(CharacterActions)))
@@ -69,11 +76,19 @@ namespace YellowMamba.Managers
         {
             foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
             {
+                if (!GamePad.GetState(playerIndex).IsConnected)
+                {
+                    continue;
+                }
                 Dictionary<CharacterActions, Buttons> playerCharacterButtonsMap = playersCharacterButtonsMap[playerIndex];
                 foreach (CharacterActions characterAction in Enum.GetValues(typeof(CharacterActions)))
                 {
                     Buttons button = playerCharacterButtonsMap[characterAction];
-                    if (GamePad.GetState(playerIndex).IsConnected && GamePad.GetState(playerIndex).IsButtonDown(button))
+                    if (button == Buttons.LeftThumbstickUp)
+                    {
+
+                    }
+                    if (GamePad.GetState(playerIndex).IsButtonDown(button))
                     {
                         UpdatePlayerCharacterActionStatesMapOnPressed(playerIndex, characterAction);
                     }
@@ -96,6 +111,7 @@ namespace YellowMamba.Managers
                     playerOneMenuActionStatesMap[menuAction] = ActionStates.Released;
                 }
             }
+
             base.Update(gameTime);
         }
 
@@ -114,11 +130,13 @@ namespace YellowMamba.Managers
             Dictionary<CharacterActions, ActionStates> playerCharacterActionMap = playersCharacterActionStatesMap[playerIndex];
             if (playerCharacterActionMap[characterAction] == ActionStates.Pressed)
             {
+                Console.WriteLine(playerIndex.ToString() + " " + characterAction + " " + ActionStates.Held.ToString());
                 playerCharacterActionMap[characterAction] = ActionStates.Held;
             }
             else if (playerCharacterActionMap[characterAction] == ActionStates.Released ||
                 playerCharacterActionMap[characterAction] == ActionStates.JustReleased)
             {
+                Console.WriteLine(playerIndex.ToString() + " " + characterAction + " " + ActionStates.Pressed.ToString());
                 playerCharacterActionMap[characterAction] = ActionStates.Pressed;
             }
         }
@@ -129,10 +147,10 @@ namespace YellowMamba.Managers
             if (playerCharacterActionMap[characterAction] == ActionStates.Pressed ||
                 playerCharacterActionMap[characterAction] == ActionStates.Held)
             {
+                Console.WriteLine(playerIndex.ToString() + " " + characterAction + " " + ActionStates.JustReleased.ToString());
                 playerCharacterActionMap[characterAction] = ActionStates.JustReleased;
             }
-            else if (playerCharacterActionMap[characterAction] == ActionStates.Released ||
-                playerCharacterActionMap[characterAction] == ActionStates.JustReleased)
+            else if (playerCharacterActionMap[characterAction] == ActionStates.JustReleased)
             {
                 playerCharacterActionMap[characterAction] = ActionStates.Released;
             }
@@ -151,6 +169,6 @@ namespace YellowMamba.Managers
 
     public enum CharacterActions
     {
-        Jump, Attack, Pass, ShootMode
+        Jump, Attack, Pass, ShootMode, Pick, PreviousPass, NextPass, MoveUp, MoveDown, MoveLeft, MoveRight
     }
 }
