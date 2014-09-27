@@ -84,11 +84,17 @@ namespace YellowMamba.Managers
                 foreach (CharacterActions characterAction in Enum.GetValues(typeof(CharacterActions)))
                 {
                     Buttons button = playerCharacterButtonsMap[characterAction];
-                    if (button == Buttons.LeftThumbstickUp)
-                    {
 
+                    // Monogame has says up and down are both pressed if either one is pressed. Handle those cases manually
+                    if (button == Buttons.LeftThumbstickUp && GamePad.GetState(playerIndex).ThumbSticks.Left.Y > .24f)
+                    {
+                        UpdatePlayerCharacterActionStatesMapOnPressed(playerIndex, characterAction);
                     }
-                    if (GamePad.GetState(playerIndex).IsButtonDown(button))
+                    else if (button == Buttons.LeftThumbstickDown && GamePad.GetState(playerIndex).ThumbSticks.Left.Y < -.24f)
+                    {
+                        UpdatePlayerCharacterActionStatesMapOnPressed(playerIndex, characterAction);
+                    }
+                    else if (button != Buttons.LeftThumbstickUp && button != Buttons.LeftThumbstickDown && GamePad.GetState(playerIndex).IsButtonDown(button))
                     {
                         UpdatePlayerCharacterActionStatesMapOnPressed(playerIndex, characterAction);
                     }
@@ -98,11 +104,23 @@ namespace YellowMamba.Managers
                     }
                 }
             }
-
+            
             foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
             {
+                if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+                {
+                    break;
+                }
                 Buttons button = playerOneMenuButtonsMap[menuAction];
-                if (GamePad.GetState(PlayerIndex.One).IsConnected && GamePad.GetState(PlayerIndex.One).IsButtonDown(button))
+                if (button == Buttons.LeftThumbstickUp && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y > .24f)
+                {
+                    playerOneMenuActionStatesMap[menuAction] = ActionStates.Pressed;
+                }
+                else if (button == Buttons.LeftThumbstickDown && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y < -.24f)
+                {
+                    playerOneMenuActionStatesMap[menuAction] = ActionStates.Pressed;
+                }
+                else if (button != Buttons.LeftThumbstickUp && button != Buttons.LeftThumbstickDown && GamePad.GetState(PlayerIndex.One).IsButtonDown(button))
                 {
                     playerOneMenuActionStatesMap[menuAction] = ActionStates.Pressed;
                 }
@@ -159,7 +177,7 @@ namespace YellowMamba.Managers
 
     public enum MenuActions
     {
-        Select, Back
+        Select, Back, MoveUp, MoveDown, MoveLeft, MoveRight
     }
 
     public enum ActionStates
