@@ -7,14 +7,14 @@ using System.Text;
 
 namespace YellowMamba.Managers
 {
-    public class InputManager : GameComponent
+    public class InputManager
     {
         private Dictionary<MenuActions, Buttons> playerOneMenuButtonsMap;
         private Dictionary<MenuActions, ActionStates> playerOneMenuActionStatesMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>> playersCharacterButtonsMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>> playersCharacterActionStatesMap;
 
-        public InputManager(YellowMamba yellowMamba) : base(yellowMamba)
+        public InputManager()
         {
             playerOneMenuButtonsMap = new Dictionary<MenuActions, Buttons>();
             playerOneMenuActionStatesMap = new Dictionary<MenuActions, ActionStates>();
@@ -22,10 +22,14 @@ namespace YellowMamba.Managers
             playersCharacterActionStatesMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>>();
         }
 
-        public override void Initialize()
+        public void Initialize()
         {
             playerOneMenuButtonsMap.Add(MenuActions.Select, Buttons.A);
             playerOneMenuButtonsMap.Add(MenuActions.Back, Buttons.B);
+            playerOneMenuButtonsMap.Add(MenuActions.MoveUp, Buttons.LeftThumbstickUp);
+            playerOneMenuButtonsMap.Add(MenuActions.MoveDown, Buttons.LeftThumbstickDown);
+            playerOneMenuButtonsMap.Add(MenuActions.MoveLeft, Buttons.LeftThumbstickLeft);
+            playerOneMenuButtonsMap.Add(MenuActions.MoveRight, Buttons.LeftThumbstickRight);
 
             foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
             {
@@ -56,7 +60,6 @@ namespace YellowMamba.Managers
                 playersCharacterButtonsMap.Add(playerIndex, new Dictionary<CharacterActions, Buttons>(defaultCharacterButtonsMap));
                 playersCharacterActionStatesMap.Add(playerIndex, new Dictionary<CharacterActions, ActionStates>(defaultCharacterActionStatesMap));
             }
-            base.Initialize();
         }
 
         public void UpdateButtonMap(PlayerIndex playerIndex, Buttons button, CharacterActions characterAction)
@@ -72,7 +75,7 @@ namespace YellowMamba.Managers
             playerCharacterButtonsMap[characterAction] = button;
         }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
             {
@@ -129,8 +132,6 @@ namespace YellowMamba.Managers
                     playerOneMenuActionStatesMap[menuAction] = ActionStates.Released;
                 }
             }
-
-            base.Update(gameTime);
         }
 
         public ActionStates GetCharacterActionState(PlayerIndex playerIndex, CharacterActions characterAction)
@@ -148,13 +149,11 @@ namespace YellowMamba.Managers
             Dictionary<CharacterActions, ActionStates> playerCharacterActionMap = playersCharacterActionStatesMap[playerIndex];
             if (playerCharacterActionMap[characterAction] == ActionStates.Pressed)
             {
-                Console.WriteLine(playerIndex.ToString() + " " + characterAction + " " + ActionStates.Held.ToString());
                 playerCharacterActionMap[characterAction] = ActionStates.Held;
             }
             else if (playerCharacterActionMap[characterAction] == ActionStates.Released ||
                 playerCharacterActionMap[characterAction] == ActionStates.JustReleased)
             {
-                Console.WriteLine(playerIndex.ToString() + " " + characterAction + " " + ActionStates.Pressed.ToString());
                 playerCharacterActionMap[characterAction] = ActionStates.Pressed;
             }
         }
@@ -165,7 +164,6 @@ namespace YellowMamba.Managers
             if (playerCharacterActionMap[characterAction] == ActionStates.Pressed ||
                 playerCharacterActionMap[characterAction] == ActionStates.Held)
             {
-                Console.WriteLine(playerIndex.ToString() + " " + characterAction + " " + ActionStates.JustReleased.ToString());
                 playerCharacterActionMap[characterAction] = ActionStates.JustReleased;
             }
             else if (playerCharacterActionMap[characterAction] == ActionStates.JustReleased)

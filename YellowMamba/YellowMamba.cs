@@ -9,13 +9,12 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using YellowMamba.Screens;
 using YellowMamba.Managers;
+using YellowMamba.Characters;
+using YellowMamba.Players;
 #endregion
 
 namespace YellowMamba
 {
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     public class YellowMamba : Game
     {
         const int ScreenWidth = 1280;
@@ -23,13 +22,18 @@ namespace YellowMamba
         const String AssetType = "Test";
 
         private GraphicsDeviceManager graphics;
-        public SpriteBatch SpriteBatch { get; private set; }
-
-        // Screens
-        public MainScreen MainScreen { get; private set; }
+        private SpriteBatch spriteBatch;
 
         // Managers
-        public InputManager InputManager { get; private set; }
+        private InputManager inputManager;
+        private ScreenManager screenManager;
+        private PlayerManager playerManager;
+
+        // Players
+        public Player PlayerOne { get; private set; }
+        public Player PlayerTwo { get; private set; }
+        public Player PlayerThree { get; private set; }
+        public Player PlayerFour { get; private set; }
 
         public YellowMamba() : base()
         {
@@ -38,70 +42,42 @@ namespace YellowMamba
             graphics.PreferredBackBufferHeight = ScreenHeight;
 
             Content.RootDirectory = "Content/" + AssetType;
+
+            inputManager = new InputManager();
+            screenManager = new ScreenManager(inputManager);
+            playerManager = new PlayerManager();
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// related content.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
-            InputManager = new InputManager(this);
-            InputManager.UpdateOrder = 1;
-            Components.Add(InputManager);
+            inputManager.Initialize();
 
-            MainScreen = new MainScreen(this);
-            MainScreen.UpdateOrder = 2;
-            Components.Add(MainScreen);
-
-            Services.AddService(typeof(InputManager), InputManager);
+            screenManager.AddScreen(new MainScreen(Content.ServiceProvider, Content.RootDirectory, inputManager, screenManager, playerManager));
 
             base.Initialize();
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
-            // TODO: use this.Content to load your game content here
+            spriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            inputManager.Update(gameTime);
+            screenManager.Update(gameTime);
 
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
+            screenManager.Draw(gameTime, spriteBatch);
 
             base.Draw(gameTime);
         }
