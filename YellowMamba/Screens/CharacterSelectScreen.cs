@@ -6,12 +6,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using YellowMamba.Managers;
+using YellowMamba.Players;
+using YellowMamba.Characters;
 
 namespace YellowMamba.Screens
 {
     public class CharacterSelectScreen : Screen
     {
         private Texture2D background;
+        private SpriteFont spriteFont;
 
         private TimeSpan TransitionInTime = new TimeSpan(0, 0, 1);
         private TimeSpan TransitionOutTime = new TimeSpan(0, 0, 1);
@@ -25,7 +28,8 @@ namespace YellowMamba.Screens
 
         public override void LoadContent()
         {
-            background = contentManager.Load<Texture2D>("CharacterSelectScreenBackground");
+            background = ContentManager.Load<Texture2D>("CharacterSelectScreenBackground");
+            spriteFont = ContentManager.Load<SpriteFont>("TestFont");
         }
 
         public override void Update(GameTime gameTime)
@@ -49,18 +53,40 @@ namespace YellowMamba.Screens
                     }
                     else
                     {
-                        screenManager.RemoveScreen(this);
-                        screenManager.AddScreen(nextScreen);
+                        ScreenManager.RemoveScreen(this);
+                        ScreenManager.AddScreen(NextScreen);
                     }
                     break;
                 default:
-                    if (inputManager.GetMenuActionState(MenuActions.Select) == ActionStates.Pressed)
+                    if (InputManager.GetMenuActionState(PlayerIndex.One, MenuActions.Start) == ActionStates.Pressed)
                     {
-                        Console.WriteLine("CHARACTER TRANSITION NOW");
-                        nextScreen = new StageOnePartOneScreen(contentManager.ServiceProvider, contentManager.RootDirectory,
-                            inputManager, screenManager, playerManager);
-                        transitionStartTime = gameTime.TotalGameTime;
+                        NextScreen = new StageOnePartOneScreen(ContentManager.ServiceProvider, ContentManager.RootDirectory,
+                            InputManager, ScreenManager, PlayerManager);
+                        TransitionStartTime = gameTime.TotalGameTime;
                         ScreenState = ScreenStates.TransitionOut;
+                    }
+
+                    foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
+                    {
+                        if (InputManager.GetMenuActionState(playerIndex, MenuActions.Select) == ActionStates.Pressed)
+                        {
+                            Player player = PlayerManager.GetPlayer(playerIndex);
+                            if (player == null)
+                            {
+                                PlayerManager.AddPlayer(new Player(playerIndex));
+                            }
+                            else if (player.Character == null)
+                            {
+                                if (playerIndex == PlayerIndex.One)
+                                {
+                                    player.Character = new BlackMamba(PlayerIndex.One, InputManager, ContentManager.ServiceProvider, ContentManager.RootDirectory);
+                                }
+                                if (playerIndex == PlayerIndex.Two)
+                                {
+                                    player.Character = new Jimothy(PlayerIndex.Two, InputManager, ContentManager.ServiceProvider, ContentManager.RootDirectory);
+                                }
+                            }
+                        }
                     }
                     break;
             }
@@ -78,7 +104,25 @@ namespace YellowMamba.Screens
                     // transition out animation here
                     break;
                 case ScreenStates.Active:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, 1280, 720), Color.White);
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
+                    foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
+                    {
+                        Player player = PlayerManager.GetPlayer(playerIndex);
+                        String text = "";
+                        if (player == null)
+                        {
+                            text = "Press A to Join";
+                        }
+                        else if (player.Character == null)
+                        {
+                            text = "Choose Your Character:\nBlack Mamba\nJimothy";
+                        }
+                        else
+                        {
+
+                        }
+                        spriteBatch.DrawString(spriteFont, text, new Vector2((float)playerIndex / 4 * ScreenManager.ScreenWidth + ScreenManager.ScreenWidth / 15, ScreenManager.ScreenHeight / 2), Color.White);
+                    }
                     break;
             }
             spriteBatch.End();
@@ -86,7 +130,7 @@ namespace YellowMamba.Screens
 
         public override void UnloadContent()
         {
-            contentManager.Unload();
+            ContentManager.Unload();
         }
     }
 }

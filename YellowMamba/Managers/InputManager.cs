@@ -9,32 +9,28 @@ namespace YellowMamba.Managers
 {
     public class InputManager
     {
-        private Dictionary<MenuActions, Buttons> playerOneMenuButtonsMap;
-        private Dictionary<MenuActions, ActionStates> playerOneMenuActionStatesMap;
+        private Dictionary<MenuActions, Buttons> playerMenuButtonsMap;
+        private Dictionary<PlayerIndex, Dictionary<MenuActions, ActionStates>> playersMenuActionStatesMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>> playersCharacterButtonsMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>> playersCharacterActionStatesMap;
 
         public InputManager()
         {
-            playerOneMenuButtonsMap = new Dictionary<MenuActions, Buttons>();
-            playerOneMenuActionStatesMap = new Dictionary<MenuActions, ActionStates>();
+            playerMenuButtonsMap = new Dictionary<MenuActions, Buttons>();
+            playersMenuActionStatesMap = new Dictionary<PlayerIndex, Dictionary<MenuActions, ActionStates>>();
             playersCharacterButtonsMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>>();
             playersCharacterActionStatesMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>>();
         }
 
         public void Initialize()
         {
-            playerOneMenuButtonsMap.Add(MenuActions.Select, Buttons.A);
-            playerOneMenuButtonsMap.Add(MenuActions.Back, Buttons.B);
-            playerOneMenuButtonsMap.Add(MenuActions.MoveUp, Buttons.LeftThumbstickUp);
-            playerOneMenuButtonsMap.Add(MenuActions.MoveDown, Buttons.LeftThumbstickDown);
-            playerOneMenuButtonsMap.Add(MenuActions.MoveLeft, Buttons.LeftThumbstickLeft);
-            playerOneMenuButtonsMap.Add(MenuActions.MoveRight, Buttons.LeftThumbstickRight);
-
-            foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
-            {
-                playerOneMenuActionStatesMap.Add(menuAction, ActionStates.Released);
-            }
+            playerMenuButtonsMap.Add(MenuActions.Start, Buttons.Start);
+            playerMenuButtonsMap.Add(MenuActions.Select, Buttons.A);
+            playerMenuButtonsMap.Add(MenuActions.Back, Buttons.B);
+            playerMenuButtonsMap.Add(MenuActions.MoveUp, Buttons.LeftThumbstickUp);
+            playerMenuButtonsMap.Add(MenuActions.MoveDown, Buttons.LeftThumbstickDown);
+            playerMenuButtonsMap.Add(MenuActions.MoveLeft, Buttons.LeftThumbstickLeft);
+            playerMenuButtonsMap.Add(MenuActions.MoveRight, Buttons.LeftThumbstickRight);
 
             Dictionary<CharacterActions, Buttons> defaultCharacterButtonsMap = new Dictionary<CharacterActions, Buttons>();
             defaultCharacterButtonsMap.Add(CharacterActions.Jump, Buttons.A);
@@ -55,8 +51,15 @@ namespace YellowMamba.Managers
                 defaultCharacterActionStatesMap.Add(characterAction, ActionStates.Released);
             }
 
+            Dictionary<MenuActions, ActionStates> defaultMenuActionStatesMap = new Dictionary<MenuActions, ActionStates>();
+            foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
+            {
+                defaultMenuActionStatesMap.Add(menuAction, ActionStates.Released);
+            }
+
             foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
             {
+                playersMenuActionStatesMap.Add(playerIndex, new Dictionary<MenuActions, ActionStates>(defaultMenuActionStatesMap));
                 playersCharacterButtonsMap.Add(playerIndex, new Dictionary<CharacterActions, Buttons>(defaultCharacterButtonsMap));
                 playersCharacterActionStatesMap.Add(playerIndex, new Dictionary<CharacterActions, ActionStates>(defaultCharacterActionStatesMap));
             }
@@ -83,6 +86,7 @@ namespace YellowMamba.Managers
                 {
                     continue;
                 }
+
                 Dictionary<CharacterActions, Buttons> playerCharacterButtonsMap = playersCharacterButtonsMap[playerIndex];
                 foreach (CharacterActions characterAction in Enum.GetValues(typeof(CharacterActions)))
                 {
@@ -106,30 +110,26 @@ namespace YellowMamba.Managers
                         UpdatePlayerCharacterActionStatesMapOnReleased(playerIndex, characterAction);
                     }
                 }
-            }
-            
-            foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
-            {
-                if (!GamePad.GetState(PlayerIndex.One).IsConnected)
+
+                foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
                 {
-                    break;
-                }
-                Buttons button = playerOneMenuButtonsMap[menuAction];
-                if (button == Buttons.LeftThumbstickUp && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y > .24f)
-                {
-                    playerOneMenuActionStatesMap[menuAction] = ActionStates.Pressed;
-                }
-                else if (button == Buttons.LeftThumbstickDown && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y < -.24f)
-                {
-                    playerOneMenuActionStatesMap[menuAction] = ActionStates.Pressed;
-                }
-                else if (button != Buttons.LeftThumbstickUp && button != Buttons.LeftThumbstickDown && GamePad.GetState(PlayerIndex.One).IsButtonDown(button))
-                {
-                    playerOneMenuActionStatesMap[menuAction] = ActionStates.Pressed;
-                }
-                else
-                {
-                    playerOneMenuActionStatesMap[menuAction] = ActionStates.Released;
+                    Buttons button = playerMenuButtonsMap[menuAction];
+                    if (button == Buttons.LeftThumbstickUp && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y > .24f)
+                    {
+                        playersMenuActionStatesMap[playerIndex][menuAction] = ActionStates.Pressed;
+                    }
+                    else if (button == Buttons.LeftThumbstickDown && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y < -.24f)
+                    {
+                        playersMenuActionStatesMap[playerIndex][menuAction] = ActionStates.Pressed;
+                    }
+                    else if (button != Buttons.LeftThumbstickUp && button != Buttons.LeftThumbstickDown && GamePad.GetState(playerIndex).IsButtonDown(button))
+                    {
+                        playersMenuActionStatesMap[playerIndex][menuAction] = ActionStates.Pressed;
+                    }
+                    else
+                    {
+                        playersMenuActionStatesMap[playerIndex][menuAction] = ActionStates.Released;
+                    }
                 }
             }
         }
@@ -139,9 +139,9 @@ namespace YellowMamba.Managers
             return playersCharacterActionStatesMap[playerIndex][characterAction];
         }
 
-        public ActionStates GetMenuActionState(MenuActions menuAction)
+        public ActionStates GetMenuActionState(PlayerIndex playerIndex, MenuActions menuAction)
         {
-            return playerOneMenuActionStatesMap[menuAction];
+            return playersMenuActionStatesMap[playerIndex][menuAction];
         }
 
         private void UpdatePlayerCharacterActionStatesMapOnPressed(PlayerIndex playerIndex, CharacterActions characterAction)
@@ -175,7 +175,7 @@ namespace YellowMamba.Managers
 
     public enum MenuActions
     {
-        Select, Back, MoveUp, MoveDown, MoveLeft, MoveRight
+        Start, Select, Back, MoveUp, MoveDown, MoveLeft, MoveRight
     }
 
     public enum ActionStates

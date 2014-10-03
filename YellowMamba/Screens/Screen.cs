@@ -18,22 +18,22 @@ namespace YellowMamba.Screens
     {
         public ScreenStates ScreenState { get; set; }
 
-        protected ContentManager contentManager;
-        protected InputManager inputManager;
-        protected ScreenManager screenManager;
-        protected PlayerManager playerManager;
+        protected ContentManager ContentManager { get; private set; }
+        protected InputManager InputManager { get; private set; }
+        protected ScreenManager ScreenManager { get; private set; }
+        protected PlayerManager PlayerManager { get; private set; }
 
-        protected Screen nextScreen;
-        protected TimeSpan transitionStartTime;
+        protected Screen NextScreen { get; set; }
+        protected TimeSpan TransitionStartTime { get; set; }
 
         public Screen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
             ScreenManager screenManager, PlayerManager playerManager)
         {
             ScreenState = ScreenStates.Hidden;
-            contentManager = new ContentManager(serviceProvider, contentRootDirectory);
-            this.inputManager = inputManager;
-            this.screenManager = screenManager;
-            this.playerManager = playerManager;
+            ContentManager = new ContentManager(serviceProvider, contentRootDirectory);
+            InputManager = inputManager;
+            ScreenManager = screenManager;
+            PlayerManager = playerManager;
         }
 
         public abstract void LoadContent();
@@ -46,7 +46,7 @@ namespace YellowMamba.Screens
 
         protected bool IsTransitionDone(TimeSpan currentTime, TimeSpan transitionDuration)
         {
-            return currentTime.Subtract(transitionStartTime) >= transitionDuration;
+            return currentTime.Subtract(TransitionStartTime) >= transitionDuration;
         }
     }
 }

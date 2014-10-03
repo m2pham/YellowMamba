@@ -9,9 +9,9 @@ using Microsoft.Xna.Framework.Content;
 
 namespace YellowMamba.Characters
 {
-    public class BlackMamba : Character
+    public class Jimothy : Character
     {
-        public BlackMamba(PlayerIndex playerIndex, InputManager inputManager, IServiceProvider serviceProvider, String contentRootDirectory)
+        public Jimothy(PlayerIndex playerIndex, InputManager inputManager, IServiceProvider serviceProvider, String contentRootDirectory)
             : base(playerIndex, inputManager, serviceProvider, contentRootDirectory)
         {
 
@@ -19,7 +19,7 @@ namespace YellowMamba.Characters
 
         public override void LoadContent()
         {
-            Sprite = ContentManager.Load<Texture2D>("BlackMamba");
+            Sprite = ContentManager.Load<Texture2D>("Jimothy");
         }
 
         public override void Update(GameTime gameTime)

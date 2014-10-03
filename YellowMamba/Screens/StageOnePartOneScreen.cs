@@ -26,7 +26,8 @@ namespace YellowMamba.Screens
 
         public override void LoadContent()
         {
-            background = contentManager.Load<Texture2D>("StageOnePartOneScreenBackground");
+            background = ContentManager.Load<Texture2D>("StageOnePartOneScreenBackground");
+            PlayerManager.LoadContent();
         }
 
         public override void Update(GameTime gameTime)
@@ -50,19 +51,12 @@ namespace YellowMamba.Screens
                     }
                     else
                     {
-                        screenManager.RemoveScreen(this);
-                        screenManager.AddScreen(nextScreen);
+                        ScreenManager.RemoveScreen(this);
+                        ScreenManager.AddScreen(NextScreen);
                     }
                     break;
                 default:
-                    if (inputManager.GetMenuActionState(MenuActions.Select) == ActionStates.Pressed)
-                    {
-                        Console.WriteLine("CHARACTER TRANSITION NOW");
-                        nextScreen = new StageOnePartOneScreen(contentManager.ServiceProvider, contentManager.RootDirectory,
-                            inputManager, screenManager, playerManager);
-                        transitionStartTime = gameTime.TotalGameTime;
-                        ScreenState = ScreenStates.TransitionOut;
-                    }
+                    PlayerManager.Update(gameTime);
                     break;
             }
         }
@@ -79,7 +73,8 @@ namespace YellowMamba.Screens
                     // transition out animation here
                     break;
                 case ScreenStates.Active:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, 1280, 720), Color.White);
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
+                    PlayerManager.Draw(gameTime, spriteBatch);
                     break;
             }
             spriteBatch.End();
@@ -87,7 +82,7 @@ namespace YellowMamba.Screens
 
         public override void UnloadContent()
         {
-            contentManager.Unload();
+            ContentManager.Unload();
         }
     }
 }

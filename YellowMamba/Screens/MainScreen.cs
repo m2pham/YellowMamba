@@ -27,8 +27,8 @@ namespace YellowMamba.Screens
 
         public override void LoadContent()
         {
-            background = contentManager.Load<Texture2D>("MainScreenBackground");
-            black = contentManager.Load<Texture2D>("Black");
+            background = ContentManager.Load<Texture2D>("MainScreenBackground");
+            black = ContentManager.Load<Texture2D>("Black");
         }
 
         public override void Update(GameTime gameTime)
@@ -48,22 +48,20 @@ namespace YellowMamba.Screens
                 case ScreenStates.TransitionOut:
                     if (!IsTransitionDone(gameTime.TotalGameTime, TransitionOutTime))
                     {
-                        Console.WriteLine(alpha);
                         alpha += 127 / (float) (TransitionOutTime.TotalMilliseconds / gameTime.ElapsedGameTime.TotalMilliseconds);
-                        Console.WriteLine(alpha);
                     }
                     else
                     {
-                        screenManager.RemoveScreen(this);
-                        screenManager.AddScreen(nextScreen);
+                        ScreenManager.RemoveScreen(this);
+                        ScreenManager.AddScreen(NextScreen);
                     }
                     break;
                 default:
-                    if (inputManager.GetMenuActionState(MenuActions.Select) == ActionStates.Pressed)
+                    if (InputManager.GetMenuActionState(PlayerIndex.One, MenuActions.Start) == ActionStates.Pressed)
                     {
-                        nextScreen = new CharacterSelectScreen(contentManager.ServiceProvider, contentManager.RootDirectory,
-                            inputManager, screenManager, playerManager);
-                        transitionStartTime = gameTime.TotalGameTime;
+                        NextScreen = new CharacterSelectScreen(ContentManager.ServiceProvider, ContentManager.RootDirectory,
+                            InputManager, ScreenManager, PlayerManager);
+                        TransitionStartTime = gameTime.TotalGameTime;
                         ScreenState = ScreenStates.TransitionOut;
                     }
                     break;
@@ -79,10 +77,10 @@ namespace YellowMamba.Screens
                     // transition in animation here
                     break;
                 case ScreenStates.TransitionOut:
-                    spriteBatch.Draw(black, new Rectangle(0, 0, 1280, 720), new Color(255, 255, 255, (byte) alpha));
+                    spriteBatch.Draw(black, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), new Color(255, 255, 255, (byte)alpha));
                     break;
                 case ScreenStates.Active:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, 1280, 720), Color.White);
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
                     break;
             }
             spriteBatch.End();
@@ -90,7 +88,7 @@ namespace YellowMamba.Screens
 
         public override void UnloadContent()
         {
-            contentManager.Unload();
+            ContentManager.Unload();
         }
     }
 }
