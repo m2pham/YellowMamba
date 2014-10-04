@@ -13,8 +13,8 @@ namespace YellowMamba.Managers
         public int ScreenWidth { get { return 1280; } }
         public int ScreenHeight { get { return 720; } }
 
-        LinkedList<Screen> screens;
-        InputManager inputManager;
+        private LinkedList<Screen> screens;
+        private InputManager inputManager;
 
         public ScreenManager(InputManager inputManager)
         {

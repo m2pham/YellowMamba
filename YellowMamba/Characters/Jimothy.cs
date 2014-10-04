@@ -11,8 +11,8 @@ namespace YellowMamba.Characters
 {
     public class Jimothy : Character
     {
-        public Jimothy(PlayerIndex playerIndex, InputManager inputManager, IServiceProvider serviceProvider, String contentRootDirectory)
-            : base(playerIndex, inputManager, serviceProvider, contentRootDirectory)
+        public Jimothy(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager, IServiceProvider serviceProvider, String contentRootDirectory)
+            : base(playerIndex, inputManager, playerManager, serviceProvider, contentRootDirectory)
         {
 
         }

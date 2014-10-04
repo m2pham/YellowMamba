@@ -10,18 +10,17 @@ namespace YellowMamba.Managers
 {
     public class PlayerManager
     {
-        private List<Player> players;
-        public int NumPlayers { get { return players.Count; } }
+        public List<Player> Players { get; private set; }
 
         public PlayerManager()
         {
-            players = new List<Player>();
-            players.Add(new Player(PlayerIndex.One));
+            Players = new List<Player>();
+            Players.Add(new Player(PlayerIndex.One));
         }
 
         public void LoadContent()
         {
-            foreach (Player player in players)
+            foreach (Player player in Players)
             {
                 player.LoadContent();
             }
@@ -29,7 +28,7 @@ namespace YellowMamba.Managers
 
         public void Update(GameTime gameTime)
         {
-            foreach (Player player in players)
+            foreach (Player player in Players)
             {
                 player.Update(gameTime);
             }
@@ -37,7 +36,7 @@ namespace YellowMamba.Managers
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            foreach (Player player in players)
+            foreach (Player player in Players)
             {
                 player.Draw(gameTime, spriteBatch);
             }
@@ -45,17 +44,7 @@ namespace YellowMamba.Managers
 
         public Player GetPlayer(PlayerIndex playerIndex)
         {
-            return players.Find(x => x.PlayerIndex == playerIndex);
-        }
-
-        public void AddPlayer(Player player)
-        {
-            players.Add(player);
-        }
-
-        public void RemovePlayer(Player player)
-        {
-            players.Remove(player);
+            return Players.Find(x => x.PlayerIndex == playerIndex);
         }
     }
 }

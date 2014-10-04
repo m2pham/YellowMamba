@@ -38,6 +38,9 @@
     <Compile Include="Characters\BlackMamba.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Jimothy.cs" />
+    <Compile Include="Entities\Ball.cs" />
+    <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Managers\EntityManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\PlayerManager.cs" />
     <Compile Include="Managers\ScreenManager.cs" />

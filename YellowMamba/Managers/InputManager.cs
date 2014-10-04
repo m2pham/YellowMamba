@@ -13,6 +13,7 @@ namespace YellowMamba.Managers
         private Dictionary<PlayerIndex, Dictionary<MenuActions, ActionStates>> playersMenuActionStatesMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>> playersCharacterButtonsMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>> playersCharacterActionStatesMap;
+        public LinkedList<CharacterActions> PassButtons { get; private set; }
 
         public InputManager()
         {
@@ -20,10 +21,15 @@ namespace YellowMamba.Managers
             playersMenuActionStatesMap = new Dictionary<PlayerIndex, Dictionary<MenuActions, ActionStates>>();
             playersCharacterButtonsMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>>();
             playersCharacterActionStatesMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>>();
+            PassButtons = new LinkedList<CharacterActions>();
         }
 
         public void Initialize()
         {
+            PassButtons.AddLast(CharacterActions.Jump);
+            PassButtons.AddLast(CharacterActions.Attack);
+            PassButtons.AddLast(CharacterActions.Pick);
+
             playerMenuButtonsMap.Add(MenuActions.Start, Buttons.Start);
             playerMenuButtonsMap.Add(MenuActions.Select, Buttons.A);
             playerMenuButtonsMap.Add(MenuActions.Back, Buttons.B);

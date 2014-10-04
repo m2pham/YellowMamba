@@ -6,15 +6,17 @@ using Microsoft.Xna.Framework;
 using YellowMamba.Managers;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using YellowMamba.Players;
 
 namespace YellowMamba.Characters
 {
     public class BlackMamba : Character
     {
-        public BlackMamba(PlayerIndex playerIndex, InputManager inputManager, IServiceProvider serviceProvider, String contentRootDirectory)
-            : base(playerIndex, inputManager, serviceProvider, contentRootDirectory)
-        {
 
+        public BlackMamba(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager, IServiceProvider serviceProvider, String contentRootDirectory)
+            : base(playerIndex, inputManager, playerManager, serviceProvider, contentRootDirectory)
+        {
+            Speed = 5;
         }
 
         public override void LoadContent()
@@ -24,25 +26,47 @@ namespace YellowMamba.Characters
 
         public override void Update(GameTime gameTime)
         {
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
+            switch (CharacterState)
             {
-                Position.Y -= 5;
-            }
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Held)
-            {
-                Position.Y += 5;
-            }
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Held)
-            {
-                Position.X -= 5;
-            }
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
-            {
-                Position.X += 5;
+                case CharacterStates.ShootState:
+
+                    break;
+                case CharacterStates.PickState:
+
+                    break;
+                case CharacterStates.PassState:
+                    ProcessMovement(Speed);
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) != ActionStates.Held)
+                    {
+                        CharacterState = CharacterStates.DefaultState;
+                        break;
+                    }
+
+                    LinkedListNode<CharacterActions> passButtonNode = InputManager.PassButtons.First;
+                    foreach (Player player in PlayerManager.Players)
+                    {
+                        if (player.PlayerIndex == PlayerIndex)
+                        {
+                            continue;
+                        }
+                        if (InputManager.GetCharacterActionState(PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
+                        {
+                            // passing code goes here
+                            Vector2 receivingCharacterPosition = PlayerManager.GetPlayer(player.PlayerIndex).Character.Position;
+                            Vector2 receivingCharacterVelocity = PlayerManager.GetPlayer(player.PlayerIndex).Character.Velocity;
+                            float characterDistance = Vector2.Distance(receivingCharacterPosition, Position);
+
+                        }
+                    }
+                    break;
+                case CharacterStates.DefaultState:
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
+                        && PlayerManager.Players.Count > 1 && HasBall)
+                    {
+                        CharacterState = CharacterStates.PassState;
+                    }
+                    ProcessMovement(Speed);
+                    break;
             }
         }
 
