@@ -11,6 +11,7 @@ using YellowMamba.Screens;
 using YellowMamba.Managers;
 using YellowMamba.Characters;
 using YellowMamba.Players;
+using YellowMamba.Entities;
 #endregion
 
 namespace YellowMamba
@@ -29,12 +30,6 @@ namespace YellowMamba
         private ScreenManager screenManager;
         private PlayerManager playerManager;
 
-        // Players
-        public Player PlayerOne { get; private set; }
-        public Player PlayerTwo { get; private set; }
-        public Player PlayerThree { get; private set; }
-        public Player PlayerFour { get; private set; }
-
         public YellowMamba() : base()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -45,6 +40,8 @@ namespace YellowMamba
 
             inputManager = new InputManager();
             screenManager = new ScreenManager(inputManager);
+            screenManager.ScreenWidth = ScreenWidth;
+            screenManager.ScreenHeight = ScreenHeight;
             playerManager = new PlayerManager();
         }
 

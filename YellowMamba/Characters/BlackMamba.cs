@@ -7,25 +7,31 @@ using YellowMamba.Managers;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using YellowMamba.Players;
+using YellowMamba.Entities;
 
 namespace YellowMamba.Characters
 {
     public class BlackMamba : Character
     {
-
-        public BlackMamba(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager, IServiceProvider serviceProvider, String contentRootDirectory)
-            : base(playerIndex, inputManager, playerManager, serviceProvider, contentRootDirectory)
+        public BlackMamba(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager)
+            : base(playerIndex, inputManager, playerManager)
         {
             Speed = 5;
+            HasBall = true;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = ContentManager.Load<Texture2D>("BlackMamba");
+            Sprite = contentManager.Load<Texture2D>("BlackMamba");
+            Hitbox.Width = Sprite.Width;
+            Hitbox.Height = Sprite.Height;
         }
 
         public override void Update(GameTime gameTime)
         {
+            Hitbox.X = (int) Position.X;
+            Hitbox.Y = (int) Position.Y;
+            CheckCollision();
             switch (CharacterState)
             {
                 case CharacterStates.ShootState:
@@ -54,19 +60,39 @@ namespace YellowMamba.Characters
                             // passing code goes here
                             Vector2 receivingCharacterPosition = PlayerManager.GetPlayer(player.PlayerIndex).Character.Position;
                             Vector2 receivingCharacterVelocity = PlayerManager.GetPlayer(player.PlayerIndex).Character.Velocity;
-                            float characterDistance = Vector2.Distance(receivingCharacterPosition, Position);
-
+                            Ball ball = new Ball();
+                            ball.Position = Position;
+                            ball.Velocity.X = receivingCharacterVelocity.X + (receivingCharacterPosition.X - Position.X) / 30;
+                            ball.Velocity.Y = receivingCharacterVelocity.Y + (receivingCharacterPosition.Y - Position.Y) / 30;
+                            PlayerManager.EntityManager.Entities.Add(ball);
+                            HasBall = false;
+                            CharacterState = CharacterStates.DefaultState;
                         }
                     }
                     break;
                 case CharacterStates.DefaultState:
+                    ProcessMovement(Speed);
                     if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
                         && PlayerManager.Players.Count > 1 && HasBall)
                     {
                         CharacterState = CharacterStates.PassState;
                     }
-                    ProcessMovement(Speed);
                     break;
+            }
+        }
+
+        private void CheckCollision()
+        {
+            foreach (Entity entity in PlayerManager.EntityManager.Entities.ToList())
+            {
+                if (Hitbox.Intersects(entity.Hitbox))
+                {
+                    if (entity.GetType() == typeof(Ball))
+                    {
+                        HasBall = true;
+                        PlayerManager.EntityManager.Entities.Remove(entity);
+                    }
+                }
             }
         }
 

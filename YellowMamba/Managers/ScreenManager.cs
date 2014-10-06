@@ -10,8 +10,8 @@ namespace YellowMamba.Managers
 {
     public class ScreenManager
     {
-        public int ScreenWidth { get { return 1280; } }
-        public int ScreenHeight { get { return 720; } }
+        public int ScreenWidth { get; set; }
+        public int ScreenHeight { get; set; }
 
         private LinkedList<Screen> screens;
         private InputManager inputManager;
@@ -41,6 +41,7 @@ namespace YellowMamba.Managers
         public void AddScreen(Screen screen)
         {
             screen.ScreenState = ScreenStates.TransitionIn;
+            screen.Initialize();
             screen.LoadContent();
             screens.AddFirst(screen);
         }

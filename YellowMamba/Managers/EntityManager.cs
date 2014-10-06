@@ -18,14 +18,6 @@ namespace YellowMamba.Managers
             Entities = new List<Entity>();
         }
 
-        public void LoadContent()
-        {
-            foreach (Entity entity in Entities)
-            {
-                entity.LoadContent();
-            }
-        }
-
         public void Update(GameTime gameTime)
         {
             foreach (Entity entity in Entities)
@@ -40,11 +32,6 @@ namespace YellowMamba.Managers
             {
                 entity.Draw(gameTime, spriteBatch);
             }
-        }
-
-        public Player GetPlayer(PlayerIndex playerIndex)
-        {
-            return Entities.Find(x => x.PlayerIndex == playerIndex);
         }
     }
 }

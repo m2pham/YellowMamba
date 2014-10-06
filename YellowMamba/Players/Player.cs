@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -18,9 +19,9 @@ namespace YellowMamba.Players
             PlayerIndex = playerIndex;
         }
 
-        public void LoadContent()
+        public void LoadContent(ContentManager contentManager)
         {
-            Character.LoadContent();
+            Character.LoadContent(contentManager);
         }
 
         public void Update(GameTime gameTime)

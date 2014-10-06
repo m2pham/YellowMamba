@@ -113,7 +113,7 @@ namespace YellowMamba.Managers
                     }
                     else
                     {
-                        UpdatePlayerCharacterActionStatesMapOnReleased(playerIndex, characterAction);
+                        playersCharacterActionStatesMap[playerIndex][characterAction] = ActionStates.Released;
                     }
                 }
 
@@ -157,24 +157,9 @@ namespace YellowMamba.Managers
             {
                 playerCharacterActionMap[characterAction] = ActionStates.Held;
             }
-            else if (playerCharacterActionMap[characterAction] == ActionStates.Released ||
-                playerCharacterActionMap[characterAction] == ActionStates.JustReleased)
+            else if (playerCharacterActionMap[characterAction] == ActionStates.Released)
             {
                 playerCharacterActionMap[characterAction] = ActionStates.Pressed;
-            }
-        }
-
-        private void UpdatePlayerCharacterActionStatesMapOnReleased(PlayerIndex playerIndex, CharacterActions characterAction)
-        {
-            Dictionary<CharacterActions, ActionStates> playerCharacterActionMap = playersCharacterActionStatesMap[playerIndex];
-            if (playerCharacterActionMap[characterAction] == ActionStates.Pressed ||
-                playerCharacterActionMap[characterAction] == ActionStates.Held)
-            {
-                playerCharacterActionMap[characterAction] = ActionStates.JustReleased;
-            }
-            else if (playerCharacterActionMap[characterAction] == ActionStates.JustReleased)
-            {
-                playerCharacterActionMap[characterAction] = ActionStates.Released;
             }
         }
     }
@@ -186,7 +171,7 @@ namespace YellowMamba.Managers
 
     public enum ActionStates
     {
-        Pressed, Held, JustReleased, Released
+        Pressed, Held, Released
     }
 
     public enum CharacterActions

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using YellowMamba.Characters;
+using YellowMamba.Entities;
 using YellowMamba.Managers;
 
 namespace YellowMamba.Screens
@@ -13,6 +14,7 @@ namespace YellowMamba.Screens
     public class StageOnePartOneScreen : Screen
     {
         private Texture2D background;
+        private EntityManager entityManager;
 
         private TimeSpan TransitionInTime = new TimeSpan(0, 0, 1);
         private TimeSpan TransitionOutTime = new TimeSpan(0, 0, 1);
@@ -21,13 +23,24 @@ namespace YellowMamba.Screens
             ScreenManager screenManager, PlayerManager playerManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
         {
+            entityManager = new EntityManager();
+            playerManager.EntityManager = entityManager;
+        }
 
+        public override void Initialize()
+        {
+            entityManager.Entities.Add(new Ball());
         }
 
         public override void LoadContent()
         {
             background = ContentManager.Load<Texture2D>("StageOnePartOneScreenBackground");
-            PlayerManager.LoadContent();
+            PlayerManager.LoadContent(ContentManager);
+            foreach (Entity entity in entityManager.Entities)
+            {
+                entity.LoadContent(ContentManager);
+            }
+            entityManager.Entities.Clear();
         }
 
         public override void Update(GameTime gameTime)
@@ -55,8 +68,9 @@ namespace YellowMamba.Screens
                         ScreenManager.AddScreen(NextScreen);
                     }
                     break;
-                default:
+                case ScreenStates.Active:
                     PlayerManager.Update(gameTime);
+                    entityManager.Update(gameTime);
                     break;
             }
         }
@@ -75,6 +89,7 @@ namespace YellowMamba.Screens
                 case ScreenStates.Active:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
                     PlayerManager.Draw(gameTime, spriteBatch);
+                    entityManager.Draw(gameTime, spriteBatch);
                     break;
             }
             spriteBatch.End();

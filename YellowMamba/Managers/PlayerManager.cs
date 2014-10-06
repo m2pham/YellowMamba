@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace YellowMamba.Managers
     public class PlayerManager
     {
         public List<Player> Players { get; private set; }
+        public EntityManager EntityManager { get; set; }
 
         public PlayerManager()
         {
@@ -18,11 +20,11 @@ namespace YellowMamba.Managers
             Players.Add(new Player(PlayerIndex.One));
         }
 
-        public void LoadContent()
+        public void LoadContent(ContentManager contentManager)
         {
             foreach (Player player in Players)
             {
-                player.LoadContent();
+                player.LoadContent(contentManager);
             }
         }
 

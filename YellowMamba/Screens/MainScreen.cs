@@ -25,6 +25,11 @@ namespace YellowMamba.Screens
 
         }
 
+        public override void Initialize()
+        {
+
+        }
+
         public override void LoadContent()
         {
             background = ContentManager.Load<Texture2D>("MainScreenBackground");

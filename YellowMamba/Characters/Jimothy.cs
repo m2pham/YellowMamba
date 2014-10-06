@@ -6,43 +6,93 @@ using Microsoft.Xna.Framework;
 using YellowMamba.Managers;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using YellowMamba.Players;
+using YellowMamba.Entities;
 
 namespace YellowMamba.Characters
 {
     public class Jimothy : Character
     {
-        public Jimothy(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager, IServiceProvider serviceProvider, String contentRootDirectory)
-            : base(playerIndex, inputManager, playerManager, serviceProvider, contentRootDirectory)
+        public Jimothy(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager)
+            : base(playerIndex, inputManager, playerManager)
         {
-
+            Speed = 5;
+            HasBall = false;
         }
 
-        public override void LoadContent()
+        public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = ContentManager.Load<Texture2D>("Jimothy");
+            Sprite = contentManager.Load<Texture2D>("Jimothy");
+            Hitbox.Width = Sprite.Width;
+            Hitbox.Height = Sprite.Height;
         }
 
         public override void Update(GameTime gameTime)
         {
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
+            Hitbox.X = (int)Position.X;
+            Hitbox.Y = (int)Position.Y;
+            CheckCollision();
+            switch (CharacterState)
             {
-                Position.Y -= 5;
+                case CharacterStates.ShootState:
+
+                    break;
+                case CharacterStates.PickState:
+
+                    break;
+                case CharacterStates.PassState:
+                    ProcessMovement(Speed);
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) != ActionStates.Held)
+                    {
+                        CharacterState = CharacterStates.DefaultState;
+                        break;
+                    }
+
+                    LinkedListNode<CharacterActions> passButtonNode = InputManager.PassButtons.First;
+                    foreach (Player player in PlayerManager.Players)
+                    {
+                        if (player.PlayerIndex == PlayerIndex)
+                        {
+                            continue;
+                        }
+                        if (InputManager.GetCharacterActionState(PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
+                        {
+                            // passing code goes here
+                            Vector2 receivingCharacterPosition = PlayerManager.GetPlayer(player.PlayerIndex).Character.Position;
+                            Vector2 receivingCharacterVelocity = PlayerManager.GetPlayer(player.PlayerIndex).Character.Velocity;
+                            Ball ball = new Ball();
+                            ball.Position = Position;
+                            ball.Velocity.X = receivingCharacterVelocity.X + (receivingCharacterPosition.X - Position.X) / 30;
+                            ball.Velocity.Y = receivingCharacterVelocity.Y + (receivingCharacterPosition.Y - Position.Y) / 30;
+                            PlayerManager.EntityManager.Entities.Add(ball);
+                            HasBall = false;
+                            CharacterState = CharacterStates.DefaultState;
+                        }
+                    }
+                    break;
+                case CharacterStates.DefaultState:
+                    ProcessMovement(Speed);
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
+                        && PlayerManager.Players.Count > 1 && HasBall)
+                    {
+                        CharacterState = CharacterStates.PassState;
+                    }
+                    break;
             }
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Held)
+        }
+
+        private void CheckCollision()
+        {
+            foreach (Entity entity in PlayerManager.EntityManager.Entities.ToList())
             {
-                Position.Y += 5;
-            }
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Held)
-            {
-                Position.X -= 5;
-            }
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
-            {
-                Position.X += 5;
+                if (Hitbox.Intersects(entity.Hitbox))
+                {
+                    if (entity.GetType() == typeof(Ball))
+                    {
+                        HasBall = true;
+                        PlayerManager.EntityManager.Entities.Remove(entity);
+                    }
+                }
             }
         }
 
