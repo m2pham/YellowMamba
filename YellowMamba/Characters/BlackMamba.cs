@@ -64,8 +64,10 @@ namespace YellowMamba.Characters
                             ball.Position = Position;
                             ball.Velocity.X = receivingCharacterVelocity.X + (receivingCharacterPosition.X - Position.X) / 30;
                             ball.Velocity.Y = receivingCharacterVelocity.Y + (receivingCharacterPosition.Y - Position.Y) / 30;
+                            ball.InFlight = true;
+                            ball.SourcePlayer = PlayerIndex;
                             PlayerManager.EntityManager.Entities.Add(ball);
-                            HasBall = false;
+                            //HasBall = false;
                             CharacterState = CharacterStates.DefaultState;
                         }
                     }
@@ -89,8 +91,13 @@ namespace YellowMamba.Characters
                 {
                     if (entity.GetType() == typeof(Ball))
                     {
-                        HasBall = true;
-                        PlayerManager.EntityManager.Entities.Remove(entity);
+                        Ball ball = (Ball)entity;
+                        if (!ball.InFlight || ball.SourcePlayer != PlayerIndex)
+                        {
+                            Console.WriteLine("BALL RECEIVED BY: " + PlayerIndex);
+                            HasBall = true;
+                            PlayerManager.EntityManager.Entities.Remove(entity);
+                        }
                     }
                 }
             }
