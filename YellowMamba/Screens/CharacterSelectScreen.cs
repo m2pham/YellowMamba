@@ -78,17 +78,17 @@ namespace YellowMamba.Screens
                             Player player = PlayerManager.GetPlayer(playerIndex);
                             if (player == null)
                             {
-                                PlayerManager.Players.Add(new Player(playerIndex));
+                                PlayerManager.Players.Add(new Player(playerIndex, InputManager, PlayerManager));
                             }
                             else if (player.Character == null)
                             {
                                 if (playerIndex == PlayerIndex.One)
                                 {
-                                    player.Character = new BlackMamba(PlayerIndex.One, InputManager, PlayerManager);
+                                    player.CreateCharacter(typeof(BlackMamba));
                                 }
                                 if (playerIndex == PlayerIndex.Two)
                                 {
-                                    player.Character = new Jimothy(PlayerIndex.Two, InputManager, PlayerManager);
+                                    player.CreateCharacter(typeof(Jimothy));
                                 }
                             }
                         }

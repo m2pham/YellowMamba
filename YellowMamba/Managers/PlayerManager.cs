@@ -14,10 +14,10 @@ namespace YellowMamba.Managers
         public List<Player> Players { get; private set; }
         public EntityManager EntityManager { get; set; }
 
-        public PlayerManager()
+        public PlayerManager(InputManager inputManager)
         {
             Players = new List<Player>();
-            Players.Add(new Player(PlayerIndex.One));
+            Players.Add(new Player(PlayerIndex.One, inputManager, this));
         }
 
         public void LoadContent(ContentManager contentManager)

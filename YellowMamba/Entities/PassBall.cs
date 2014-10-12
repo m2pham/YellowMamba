@@ -8,20 +8,20 @@ using System.Text;
 
 namespace YellowMamba.Entities
 {
-    public class Ball : Entity
+    public class PassBall : Entity
     {
         public static Texture2D Sprite { get; set; }
         public bool InFlight { get; set; }
         public PlayerIndex SourcePlayer { get; set; }
 
-        public Ball() : base()
+        public PassBall() : base()
         {
 
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("Ball");
+            Sprite = contentManager.Load<Texture2D>("PassBall");
         }
 
         public override void Update(GameTime gameTime)
@@ -35,7 +35,7 @@ namespace YellowMamba.Entities
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Rectangle((int)Hitbox.X, (int)Hitbox.Y, Hitbox.Width, Hitbox.Height), Color.White);
+            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
         }
     }
 }

@@ -20,9 +20,16 @@ namespace YellowMamba.Managers
 
         public void Update(GameTime gameTime)
         {
-            foreach (Entity entity in Entities)
+            foreach (Entity entity in Entities.ToList())
             {
-                entity.Update(gameTime);
+                if (entity.MarkForDelete)
+                {
+                    Entities.Remove(entity);
+                }
+                else
+                {
+                    entity.Update(gameTime);
+                }
             }
         }
 

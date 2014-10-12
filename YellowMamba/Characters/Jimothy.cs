@@ -60,7 +60,7 @@ namespace YellowMamba.Characters
                             // passing code goes here
                             Vector2 receivingCharacterPosition = PlayerManager.GetPlayer(player.PlayerIndex).Character.Position;
                             Vector2 receivingCharacterVelocity = PlayerManager.GetPlayer(player.PlayerIndex).Character.Velocity;
-                            Ball ball = new Ball();
+                            PassBall ball = new PassBall();
                             ball.Position = Position;
                             ball.Velocity.X = receivingCharacterVelocity.X + (receivingCharacterPosition.X - Position.X) / 30;
                             ball.Velocity.Y = receivingCharacterVelocity.Y + (receivingCharacterPosition.Y - Position.Y) / 30;
@@ -89,14 +89,14 @@ namespace YellowMamba.Characters
             {
                 if (Hitbox.Intersects(entity.Hitbox))
                 {
-                    if (entity.GetType() == typeof(Ball))
+                    if (entity.GetType() == typeof(PassBall))
                     {
-                        Ball ball = (Ball)entity;
+                        PassBall ball = (PassBall)entity;
                         if (!ball.InFlight || ball.SourcePlayer != PlayerIndex)
                         {
                             Console.WriteLine("BALL RECEIVED BY: " + PlayerIndex);
                             HasBall = true;
-                            PlayerManager.EntityManager.Entities.Remove(entity);
+                            entity.MarkForDelete = true;
                         }
                     }
                 }

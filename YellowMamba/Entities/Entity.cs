@@ -16,12 +16,14 @@ namespace YellowMamba.Entities
         public Vector2 Position;
         public Vector2 Velocity;
         protected int Speed { get; set; }
+        public bool MarkForDelete { get; set; }
         public Rectangle Hitbox;
 
         public Entity()
         {
             Position = new Vector2();
             Velocity = new Vector2();
+            Speed = 10;
         }
 
         public abstract void LoadContent(ContentManager contentManager);

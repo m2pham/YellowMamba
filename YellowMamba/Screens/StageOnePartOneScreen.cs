@@ -29,7 +29,9 @@ namespace YellowMamba.Screens
 
         public override void Initialize()
         {
-            entityManager.Entities.Add(new Ball());
+            entityManager.Entities.Add(new PassBall());
+            entityManager.Entities.Add(new ShootBall());
+            entityManager.Entities.Add(new ShootTarget(InputManager, PlayerIndex.One));
         }
 
         public override void LoadContent()

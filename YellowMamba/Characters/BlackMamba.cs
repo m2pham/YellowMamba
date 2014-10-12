@@ -35,7 +35,23 @@ namespace YellowMamba.Characters
             switch (CharacterState)
             {
                 case CharacterStates.ShootState:
-
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.ShootMode) != ActionStates.Held)
+                    {
+                        CharacterState = CharacterStates.DefaultState;
+                        PlayerManager.GetPlayer(PlayerIndex).Target.Visible = false;
+                        break;
+                    }
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
+                    {
+                        ShootBall shootBall = new ShootBall();
+                        shootBall.SourcePosition = Position;
+                        shootBall.Velocity.X = (PlayerManager.GetPlayer(PlayerIndex).Target.Position.X - Position.X) / 60;
+                        shootBall.Velocity.Y = - (PlayerManager.GetPlayer(PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
+                        shootBall.ReleaseTime = gameTime.TotalGameTime;
+                        PlayerManager.EntityManager.Entities.Add(shootBall);
+                        PlayerManager.GetPlayer(PlayerIndex).Target.Visible = false;
+                        CharacterState = CharacterStates.DefaultState;
+                    }
                     break;
                 case CharacterStates.PickState:
 
@@ -60,7 +76,7 @@ namespace YellowMamba.Characters
                             // passing code goes here
                             Vector2 receivingCharacterPosition = PlayerManager.GetPlayer(player.PlayerIndex).Character.Position;
                             Vector2 receivingCharacterVelocity = PlayerManager.GetPlayer(player.PlayerIndex).Character.Velocity;
-                            Ball ball = new Ball();
+                            PassBall ball = new PassBall();
                             ball.Position = Position;
                             ball.Velocity.X = receivingCharacterVelocity.X + (receivingCharacterPosition.X - Position.X) / 30;
                             ball.Velocity.Y = receivingCharacterVelocity.Y + (receivingCharacterPosition.Y - Position.Y) / 30;
@@ -79,6 +95,12 @@ namespace YellowMamba.Characters
                     {
                         CharacterState = CharacterStates.PassState;
                     }
+                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
+                    {
+                        CharacterState = CharacterStates.ShootState;
+                        PlayerManager.GetPlayer(PlayerIndex).Target.Position = Position;
+                        PlayerManager.GetPlayer(PlayerIndex).Target.Visible = true;
+                    }
                     break;
             }
         }
@@ -89,14 +111,13 @@ namespace YellowMamba.Characters
             {
                 if (Hitbox.Intersects(entity.Hitbox))
                 {
-                    if (entity.GetType() == typeof(Ball))
+                    if (entity.GetType() == typeof(PassBall))
                     {
-                        Ball ball = (Ball)entity;
+                        PassBall ball = (PassBall)entity;
                         if (!ball.InFlight || ball.SourcePlayer != PlayerIndex)
                         {
-                            Console.WriteLine("BALL RECEIVED BY: " + PlayerIndex);
                             HasBall = true;
-                            PlayerManager.EntityManager.Entities.Remove(entity);
+                            entity.MarkForDelete = true;
                         }
                     }
                 }

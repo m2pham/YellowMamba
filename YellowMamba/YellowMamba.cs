@@ -42,7 +42,7 @@ namespace YellowMamba
             screenManager = new ScreenManager(inputManager);
             screenManager.ScreenWidth = ScreenWidth;
             screenManager.ScreenHeight = ScreenHeight;
-            playerManager = new PlayerManager();
+            playerManager = new PlayerManager(inputManager);
         }
 
         protected override void Initialize()
