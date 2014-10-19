@@ -41,6 +41,7 @@ namespace YellowMamba.Characters
             CurrentPass = Pass.StraightPass;
             HasBall = false;
             CharacterState = CharacterStates.DefaultState;
+            Position.Y = 180 * ((int)playerIndex + 1);
         }
 
         protected void ProcessMovement(int speed)
@@ -53,13 +54,28 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
             {
-                Velocity.Y = -speed;
+                if (Position.Y >= 720/4)
+                {
+                    Velocity.Y = -speed;
+                }
+                else
+                {
+                    Velocity.Y = 0;
+                }
             }
             else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Held)
             {
-                Velocity.Y = speed;
+                if (Position.Y + Sprite.Height <= 720)
+                {
+                    Velocity.Y = speed;
+                }
+                else
+                {
+                    Velocity.Y = 0;
+                }
             }
+
             if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Released
                 && InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Released)
             {
@@ -68,13 +84,28 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Pressed
                  || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Held)
             {
-                Velocity.X = -speed;
+                if (Position.X >= 0)
+                {
+                    Velocity.X = -speed;
+                }
+                else
+                {
+                    Velocity.X = 0;
+                }
             }
             else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
             {
-                Velocity.X = speed;
+                if (Position.X + Sprite.Width <= 1280)
+                {
+                    Velocity.X = speed;
+                }
+                else
+                {
+                    Velocity.X = 0;
+                }
             }
+
             Position += Velocity;
         }
     }
