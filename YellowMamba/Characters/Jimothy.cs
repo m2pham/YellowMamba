@@ -13,11 +13,11 @@ namespace YellowMamba.Characters
 {
     public class Jimothy : Character
     {
-        public Jimothy(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager)
-            : base(playerIndex, inputManager, playerManager)
+        public Jimothy(Player player, InputManager inputManager, PlayerManager playerManager)
+            : base(player, inputManager, playerManager)
         {
             Speed = 5;
-            HasBall = false;
+            HasBall = true;
         }
 
         public override void LoadContent(ContentManager contentManager)
@@ -35,49 +35,67 @@ namespace YellowMamba.Characters
             switch (CharacterState)
             {
                 case CharacterStates.ShootState:
-
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) != ActionStates.Held)
+                    {
+                        CharacterState = CharacterStates.DefaultState;
+                        PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
+                        break;
+                    }
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
+                    {
+                        ShootBall shootBall = new ShootBall();
+                        shootBall.SourcePosition = Position;
+                        shootBall.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.X - Position.X) / 60;
+                        shootBall.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
+                        shootBall.ReleaseTime = gameTime.TotalGameTime;
+                        PlayerManager.EntityManager.Entities.Add(shootBall);
+                        PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
+                        CharacterState = CharacterStates.DefaultState;
+                    }
                     break;
                 case CharacterStates.PickState:
 
                     break;
                 case CharacterStates.PassState:
                     ProcessMovement(Speed);
-                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) != ActionStates.Held)
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) != ActionStates.Held)
                     {
                         CharacterState = CharacterStates.DefaultState;
                         break;
                     }
 
                     LinkedListNode<CharacterActions> passButtonNode = InputManager.PassButtons.First;
-                    foreach (Player player in PlayerManager.Players)
+                    foreach (Player targetPlayer in PlayerManager.Players)
                     {
-                        if (player.PlayerIndex == PlayerIndex)
+                        if (targetPlayer.PlayerIndex == Player.PlayerIndex)
                         {
                             continue;
                         }
-                        if (InputManager.GetCharacterActionState(PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
+                        if (InputManager.GetCharacterActionState(Player.PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
                         {
-                            // passing code goes here
-                            Vector2 receivingCharacterPosition = PlayerManager.GetPlayer(player.PlayerIndex).Character.Position;
-                            Vector2 receivingCharacterVelocity = PlayerManager.GetPlayer(player.PlayerIndex).Character.Velocity;
                             PassBall ball = new PassBall();
                             ball.Position = Position;
-                            ball.Velocity.X = receivingCharacterVelocity.X + (receivingCharacterPosition.X - Position.X) / 30;
-                            ball.Velocity.Y = receivingCharacterVelocity.Y + (receivingCharacterPosition.Y - Position.Y) / 30;
-                            ball.InFlight = true;
-                            ball.SourcePlayer = PlayerIndex;
+                            ball.SourcePlayer = Player;
+                            ball.TargetPlayer = targetPlayer;
+                            ball.ReleaseTime = gameTime.TotalGameTime;
                             PlayerManager.EntityManager.Entities.Add(ball);
-                            //HasBall = false;
+                            HasBall = false;
                             CharacterState = CharacterStates.DefaultState;
                         }
                     }
                     break;
                 case CharacterStates.DefaultState:
                     ProcessMovement(Speed);
-                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
                         && PlayerManager.Players.Count > 1 && HasBall)
                     {
                         CharacterState = CharacterStates.PassState;
+                    }
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
+                    {
+                        CharacterState = CharacterStates.ShootState;
+                        PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position = Position;
+                        PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = true;
                     }
                     break;
             }
@@ -92,9 +110,8 @@ namespace YellowMamba.Characters
                     if (entity.GetType() == typeof(PassBall))
                     {
                         PassBall ball = (PassBall)entity;
-                        if (!ball.InFlight || ball.SourcePlayer != PlayerIndex)
+                        if (!ball.InFlight || ball.SourcePlayer.PlayerIndex != Player.PlayerIndex)
                         {
-                            Console.WriteLine("BALL RECEIVED BY: " + PlayerIndex);
                             HasBall = true;
                             entity.MarkForDelete = true;
                         }

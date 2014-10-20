@@ -54,11 +54,11 @@ namespace YellowMamba.Players
         {
             if (type.IsAssignableFrom(typeof(BlackMamba)))
             {
-                Character = new BlackMamba(PlayerIndex, inputManager, playerManager);
+                Character = new BlackMamba(this, inputManager, playerManager);
             }
             else if (type.IsAssignableFrom(typeof(Jimothy)))
             {
-                Character = new Jimothy(PlayerIndex, inputManager, playerManager);
+                Character = new Jimothy(this, inputManager, playerManager);
             }
             else
             {

@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
+using YellowMamba.Players;
 
 namespace YellowMamba.Characters
 {
@@ -23,7 +24,7 @@ namespace YellowMamba.Characters
     public abstract class Character : Entity
     {
         public Texture2D Sprite { get; set; }
-        protected PlayerIndex PlayerIndex { get; private set; }
+        protected Player Player { get; private set; }
         protected InputManager InputManager { get; private set; }
         protected PlayerManager PlayerManager { get; private set; }
         protected bool HasBall { get; set; }
@@ -31,28 +32,28 @@ namespace YellowMamba.Characters
         protected Pass CurrentPass { get; set; }
         public CharacterStates CharacterState { get; protected set; }
 
-        public Character(PlayerIndex playerIndex, InputManager inputManager, PlayerManager playerManager)
+        public Character(Player player, InputManager inputManager, PlayerManager playerManager)
             : base()
         {
-            PlayerIndex = playerIndex;
+            Player = player;
             InputManager = inputManager;
             PlayerManager = playerManager;
             IsInvincible = false;
             CurrentPass = Pass.StraightPass;
             HasBall = false;
             CharacterState = CharacterStates.DefaultState;
-            Position.Y = 180 * ((int)playerIndex + 1);
+            Position.Y = 180 * ((int)Player.PlayerIndex + 1);
         }
 
         protected void ProcessMovement(int speed)
         {
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Released
-                && InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Released)
+            if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Released
+                && InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveDown) == ActionStates.Released)
             {
                 Velocity.Y = 0;
             }
-            else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
+            else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
+                || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
             {
                 if (Position.Y >= 720/4)
                 {
@@ -63,8 +64,8 @@ namespace YellowMamba.Characters
                     Velocity.Y = 0;
                 }
             }
-            else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveDown) == ActionStates.Held)
+            else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveDown) == ActionStates.Pressed
+                || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveDown) == ActionStates.Held)
             {
                 if (Position.Y + Sprite.Height <= 720)
                 {
@@ -76,13 +77,13 @@ namespace YellowMamba.Characters
                 }
             }
 
-            if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Released
-                && InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Released)
+            if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Released
+                && InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Released)
             {
                 Velocity.X = 0;
             }
-            else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Pressed
-                 || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Held)
+            else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Pressed
+                 || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Held)
             {
                 if (Position.X >= 0)
                 {
@@ -93,8 +94,8 @@ namespace YellowMamba.Characters
                     Velocity.X = 0;
                 }
             }
-            else if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
-                || InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
+            else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
+                || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
             {
                 if (Position.X + Sprite.Width <= 1280)
                 {
