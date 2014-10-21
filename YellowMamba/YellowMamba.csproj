@@ -35,13 +35,17 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnimatedSprites\AnimatedSprite.cs" />
     <Compile Include="Characters\BlackMamba.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Jimothy.cs" />
+    <Compile Include="Enemies\BasicEnemy.cs" />
+    <Compile Include="Enemies\Enemy.cs" />
     <Compile Include="Entities\PassBall.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\ShootBall.cs" />
     <Compile Include="Entities\ShootTarget.cs" />
+    <Compile Include="Managers\EnemyManager.cs" />
     <Compile Include="Managers\EntityManager.cs" />
     <Compile Include="Managers\InputManager.cs" />
     <Compile Include="Managers\PlayerManager.cs" />

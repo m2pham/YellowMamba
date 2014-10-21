@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using YellowMamba.Characters;
+using YellowMamba.Enemies;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
 
@@ -20,11 +21,12 @@ namespace YellowMamba.Screens
         private TimeSpan TransitionOutTime = new TimeSpan(0, 0, 1);
 
         public StageOnePartOneScreen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
-            ScreenManager screenManager, PlayerManager playerManager)
+            ScreenManager screenManager, PlayerManager playerManager, EnemyManager enemyManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
         {
             entityManager = new EntityManager();
             playerManager.EntityManager = entityManager;
+            
         }
 
         public override void Initialize()
@@ -39,9 +41,10 @@ namespace YellowMamba.Screens
             background = ContentManager.Load<Texture2D>("StageOnePartOneScreenBackground");
             PlayerManager.LoadContent(ContentManager);
             foreach (Entity entity in entityManager.Entities)
-            {
                 entity.LoadContent(ContentManager);
-            }
+
+            foreach (Enemy enemy in enemyManager.Enemies)
+            
             entityManager.Entities.Clear();
         }
 
