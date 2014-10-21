@@ -48,14 +48,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\StageOnePartOneScreenBackground.png">
-      <Name>StageOnePartOneScreenBackground</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\MainScreenBackground.png">
       <Name>MainScreenBackground</Name>
       <Importer>TextureImporter</Importer>
@@ -64,12 +56,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\BlackMamba.jpg">
-      <Name>BlackMamba</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Test\Jimothy.jpg">
       <Name>Jimothy</Name>
       <Importer>TextureImporter</Importer>
@@ -130,6 +116,27 @@
   <ItemGroup>
     <Compile Include="Test\testSpriteSheet.png">
       <Name>testSpriteSheet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\BlackMamba\BlackMamba.jpg">
+      <Name>BlackMamba</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\BlackMamba\Attack.jpg">
+      <Name>Attack</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\StageOnePartOneScreenBackground.png">
+      <Name>StageOnePartOneScreenBackground</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
