@@ -16,17 +16,18 @@ namespace YellowMamba.Screens
     {
         private Texture2D background;
         private EntityManager entityManager;
+        private EnemyManager enemyManager;
 
         private TimeSpan TransitionInTime = new TimeSpan(0, 0, 1);
         private TimeSpan TransitionOutTime = new TimeSpan(0, 0, 1);
 
         public StageOnePartOneScreen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
-            ScreenManager screenManager, PlayerManager playerManager, EnemyManager enemyManager)
+            ScreenManager screenManager, PlayerManager playerManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
         {
             entityManager = new EntityManager();
             playerManager.EntityManager = entityManager;
-            
+            enemyManager = new EnemyManager(playerManager, entityManager);
         }
 
         public override void Initialize()
@@ -43,7 +44,7 @@ namespace YellowMamba.Screens
             foreach (Entity entity in entityManager.Entities)
                 entity.LoadContent(ContentManager);
 
-            foreach (Enemy enemy in enemyManager.Enemies)
+            // foreach (Enemy enemy in enemyManager.Enemies)
             
             entityManager.Entities.Clear();
         }
