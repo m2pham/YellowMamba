@@ -28,8 +28,8 @@ namespace YellowMamba.Enemies
         {
             Sprite = contentManager.Load<Texture2D>("testSpriteSheet");
             animatedSprite = new AnimatedSprite(Sprite, 3, 3);
-            Hitbox.Width = Sprite.Width;
-            Hitbox.Height = Sprite.Height;
+           // Hitbox.Width = Sprite.Width;
+            //Hitbox.Height = Sprite.Height;
         }
 
 
@@ -42,7 +42,7 @@ namespace YellowMamba.Enemies
                 case EnemyStates.Idle:
                     foreach (Player player in PlayerManager.Players)
                     {
-                        //play idle animation if time
+                        //play idle animation if 
                         if (Math.Abs((int)player.Character.Position.X - (int)Position.X) <= 300 || Math.Abs(player.Character.Position.Y - Position.Y) <= 300)
                         {
                             focusedPlayer = player;
@@ -118,6 +118,37 @@ namespace YellowMamba.Enemies
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
+            switch (EnemyState)
+            {
+                case EnemyStates.Idle:
+                    
+                break;
+
+                case EnemyStates.SeePlayer:
+
+                break;
+
+                case EnemyStates.Chase:
+
+                break;
+
+                case EnemyStates.Attack:
+
+                break; 
+
+                case EnemyStates.SpecialAttack:
+
+                break;
+
+                case EnemyStates.Retreat:
+
+                break;
+
+                case EnemyStates.Dead:
+
+                break;
+            }
+
         }        
     }
 

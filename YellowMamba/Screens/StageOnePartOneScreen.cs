@@ -35,6 +35,8 @@ namespace YellowMamba.Screens
             entityManager.Entities.Add(new PassBall());
             entityManager.Entities.Add(new ShootBall());
             entityManager.Entities.Add(new ShootTarget(InputManager, PlayerIndex.One));
+            for (int i = 0; i < 10; i++ )
+                enemyManager.Enemies.Add(new BasicEnemy(enemyManager.PlayerManager));
         }
 
         public override void LoadContent()
@@ -44,7 +46,8 @@ namespace YellowMamba.Screens
             foreach (Entity entity in entityManager.Entities)
                 entity.LoadContent(ContentManager);
 
-            // foreach (Enemy enemy in enemyManager.Enemies)
+            foreach (Enemy enemy in enemyManager.Enemies)
+                enemy.LoadContent(ContentManager);
             
             entityManager.Entities.Clear();
         }
@@ -96,6 +99,7 @@ namespace YellowMamba.Screens
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
                     PlayerManager.Draw(gameTime, spriteBatch);
                     entityManager.Draw(gameTime, spriteBatch);
+                    enemyManager.Draw(gameTime, spriteBatch);
                     break;
             }
             spriteBatch.End();
