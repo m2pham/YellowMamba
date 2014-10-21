@@ -22,7 +22,7 @@ namespace YellowMamba.Characters
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("BlackMamba");
+            Sprite = contentManager.Load<Texture2D>("BlackMamba/BlackMamba");
             Hitbox.Width = Sprite.Width;
             Hitbox.Height = Sprite.Height;
         }
@@ -84,6 +84,9 @@ namespace YellowMamba.Characters
                         }
                     }
                     break;
+                case CharacterStates.AttackState:
+                    
+                    break;
                 case CharacterStates.DefaultState:
                     ProcessMovement(Speed);
                     if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
@@ -91,11 +94,15 @@ namespace YellowMamba.Characters
                     {
                         CharacterState = CharacterStates.PassState;
                     }
-                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
+                    else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
                     {
                         CharacterState = CharacterStates.ShootState;
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position = Position;
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = true;
+                    }
+                    else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
+                    {
+                        CharacterState = CharacterStates.AttackState;
                     }
                     break;
             }

@@ -49,7 +49,7 @@ namespace YellowMamba.Entities
             else if (inputManager.GetCharacterActionState(SourcePlayer, CharacterActions.MoveUp) == ActionStates.Pressed
                 || inputManager.GetCharacterActionState(SourcePlayer, CharacterActions.MoveUp) == ActionStates.Held)
             {
-                if (Position.Y >= 720 / 4)
+                if (Position.Y >= 720 / 2 - 50)
                 {
                     Velocity.Y = -speed;
                 }

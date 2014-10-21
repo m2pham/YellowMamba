@@ -13,7 +13,7 @@ namespace YellowMamba.Characters
 {
     public enum CharacterStates
     {
-        PassState, ShootState, PickState, DefaultState
+        PassState, ShootState, PickState, AttackState, DefaultState
     }
 
     public enum Pass
@@ -43,7 +43,7 @@ namespace YellowMamba.Characters
             CurrentPass = Pass.StraightPass;
             HasBall = false;
             CharacterState = CharacterStates.DefaultState;
-            Position.Y = 180 * ((int)Player.PlayerIndex + 1);
+            Position.Y = 310 + 100 * (int)Player.PlayerIndex;
         }
 
         protected void ProcessMovement(int speed)
@@ -56,7 +56,7 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
             {
-                if (Position.Y >= 720/4)
+                if (Position.Y >= 720/2 - 50)
                 {
                     Velocity.Y = -speed;
                 }

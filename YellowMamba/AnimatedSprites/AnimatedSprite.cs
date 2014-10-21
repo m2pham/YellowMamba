@@ -13,7 +13,7 @@ using YellowMamba.Players;
 
 namespace YellowMamba.AnimatedSprites
 {
-    public class AnimatedSprite 
+    public class AnimatedSprite
     {
         private int totalFrames;
         public Texture2D Texture { get; set; }
@@ -37,7 +37,7 @@ namespace YellowMamba.AnimatedSprites
                 currentFrame = 0;
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch, Vector2 location)
         {
             int width = Texture.Width / Columns;
             int height = Texture.Height / Rows;
@@ -45,9 +45,10 @@ namespace YellowMamba.AnimatedSprites
             int column = currentFrame % Columns;
 
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
-            Rectangle destinationRectangle = new Rectangle((int)position.X, (int)position.Y, width, height);
+            Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
 
             spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);
+
         }
     }
 }
