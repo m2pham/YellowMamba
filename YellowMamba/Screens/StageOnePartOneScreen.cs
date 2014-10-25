@@ -35,8 +35,14 @@ namespace YellowMamba.Screens
             entityManager.Entities.Add(new PassBall());
             entityManager.Entities.Add(new ShootBall());
             entityManager.Entities.Add(new ShootTarget(InputManager, PlayerIndex.One));
-            for (int i = 0; i < 10; i++ )
-                enemyManager.Enemies.Add(new BasicEnemy(enemyManager.PlayerManager));
+            for (int i = 0; i < 10; i++)
+            {
+                BasicEnemy basicEnemy = new BasicEnemy(enemyManager.PlayerManager);
+                basicEnemy.Position.X = (i * 20) + 600;
+                basicEnemy.Position.Y = (i * 30) + 200; 
+                enemyManager.Enemies.Add(basicEnemy);
+
+            }
         }
 
         public override void LoadContent()

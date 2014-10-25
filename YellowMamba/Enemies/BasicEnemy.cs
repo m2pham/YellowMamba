@@ -15,6 +15,7 @@ namespace YellowMamba.Enemies
 {
     public class BasicEnemy : Enemy
     {
+        public float timeToChange = 0;
          public BasicEnemy(PlayerManager playermanager) : base(playermanager)
          {
              Speed = 3;
@@ -27,7 +28,7 @@ namespace YellowMamba.Enemies
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("testSpriteSheet");
-            animatedSprite = new AnimatedSprite(Sprite, 3, 3);
+            animatedSprite = new AnimatedSprite(Sprite, 1, 3, 3, 30, 2);
            // Hitbox.Width = Sprite.Width;
             //Hitbox.Height = Sprite.Height;
         }
@@ -52,14 +53,11 @@ namespace YellowMamba.Enemies
  
                     break;
                 case EnemyStates.SeePlayer:
-                     //face towards player
-                     if((int)focusedPlayer.Character.Position.X > (int)Position.X)
-                     {
-                       
-                     }
-                     //play seen animation
-                     //at end of animation, change state to chase
-                    EnemyState = EnemyStates.Chase;
+
+                     //input delay from SeePlayer state to Chase state
+                    timeToChange += (float) gameTime.ElapsedGameTime.TotalSeconds;
+                     if (timeToChange == 2)
+                        EnemyState = EnemyStates.Chase;
 
                     break;
 
@@ -117,18 +115,34 @@ namespace YellowMamba.Enemies
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
+            //spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
             switch (EnemyState)
             {
                 case EnemyStates.Idle:
-                    
+
+                    animatedSprite.Draw(spriteBatch, Position);
                 break;
 
                 case EnemyStates.SeePlayer:
-
+                    animatedSprite.currentFrame = 4;
+                    animatedSprite.endingFrame = 4;
+                    //if character is to the left, orient enemy towards player
+                     if((int)focusedPlayer.Character.Position.X > (int)Position.X)
+                     {
+                         animatedSprite.currentFrame = 8;
+                         animatedSprite.endingFrame = 8;
+                     }
+                     animatedSprite.Draw(spriteBatch, Position);
                 break;
 
                 case EnemyStates.Chase:
+                    animatedSprite.currentFrame = 2;
+                    animatedSprite.endingFrame = 2;
+                    if ((int)focusedPlayer.Character.Position.X > (int)Position.X)
+                    {
+                        animatedSprite.currentFrame = 1;
+                        animatedSprite.endingFrame = 1;
+                    }
 
                 break;
 

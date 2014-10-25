@@ -15,33 +15,44 @@ namespace YellowMamba.AnimatedSprites
 {
     public class AnimatedSprite
     {
-        private int totalFrames;
+        public int endingFrame;
         public Texture2D Texture { get; set; }
         public int Rows { get; set; }
         public int Columns { get; set; }
-        private int currentFrame;
-        
-        public AnimatedSprite(Texture2D texture, int rows, int columns)
+        public int currentFrame;
+        public int currentFrequency = 0;
+        public int spriteFrequency;
+        public int startingFrame;
+
+        public AnimatedSprite(Texture2D texture, int inputFrame, int rows, int columns, int frequency, int numFrames)
         {
             Texture = texture;
             Rows = rows;
             Columns = columns;
-            currentFrame = 0;
-            totalFrames = rows * columns;
+            currentFrame = inputFrame;
+            startingFrame = inputFrame;
+            endingFrame = numFrames;
+            spriteFrequency = frequency;
         }
 
         public void Update()
         {
-            currentFrame++;
-            if (currentFrame == totalFrames)
-                currentFrame = 0;
+            if (currentFrequency  == spriteFrequency)
+              currentFrame++;
+            if (currentFrame == endingFrame)
+                currentFrame = startingFrame;
+           currentFrequency++;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 location)
         {
+            //need to arrange each animation of a sprite in one row
+            //still need to change code in accordance to this
             int width = Texture.Width / Columns;
             int height = Texture.Height / Rows;
-            int row = (int)((float)currentFrame / (float)Columns);
+            int row = (int)((float)currentFrame / (float)Rows);
+            //testing value of row
+            Console.WriteLine("row = " + row);
             int column = currentFrame % Columns;
 
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
