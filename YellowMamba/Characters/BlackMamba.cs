@@ -54,7 +54,11 @@ namespace YellowMamba.Characters
                     }
                     break;
                 case CharacterStates.PickState:
-
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) != ActionStates.Held)
+                    {
+                        CharacterState = CharacterStates.DefaultState;
+                        break;
+                    }
                     break;
                 case CharacterStates.PassState:
                     ProcessMovement(Speed);
@@ -102,7 +106,11 @@ namespace YellowMamba.Characters
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
                     {
-                        CharacterState = CharacterStates.AttackState;
+                        //CharacterState = CharacterStates.AttackState;
+                    }
+                    else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
+                    {
+                        CharacterState = CharacterStates.PickState;
                     }
                     break;
             }

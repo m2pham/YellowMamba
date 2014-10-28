@@ -41,7 +41,6 @@ namespace YellowMamba.Screens
                 basicEnemy.Position.X = (i * 20) + 600;
                 basicEnemy.Position.Y = (i * 30) + 200; 
                 enemyManager.Enemies.Add(basicEnemy);
-
             }
         }
 
@@ -86,6 +85,7 @@ namespace YellowMamba.Screens
                 case ScreenStates.Active:
                     PlayerManager.Update(gameTime);
                     entityManager.Update(gameTime);
+                    enemyManager.Update(gameTime);
                     break;
             }
         }

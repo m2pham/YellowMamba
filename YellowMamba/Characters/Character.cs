@@ -30,7 +30,9 @@ namespace YellowMamba.Characters
         protected bool HasBall { get; set; }
         protected bool IsInvincible { get; set; }
         protected Pass CurrentPass { get; set; }
-        protected int Health { get; set; } // added health
+        public int Health { get; set; }
+        public int Attack { get; set; }
+        public int Defense { get; set; }
         public CharacterStates CharacterState { get; protected set; }
 
         public Character(Player player, InputManager inputManager, PlayerManager playerManager)

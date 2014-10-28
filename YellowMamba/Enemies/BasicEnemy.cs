@@ -38,6 +38,7 @@ namespace YellowMamba.Enemies
         {
             Hitbox.X = (int)Position.X;
             Hitbox.Y = (int)Position.Y;
+            animatedSprite.Update();
              switch (EnemyState)
             {
                 case EnemyStates.Idle:

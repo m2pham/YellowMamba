@@ -20,7 +20,7 @@ namespace YellowMamba.AnimatedSprites
         public int Rows { get; set; }
         public int Columns { get; set; }
         public int currentFrame;
-        public int currentFrequency = 0;
+        public int currentFrequency;
         public int spriteFrequency;
         public int startingFrame;
 
@@ -33,15 +33,19 @@ namespace YellowMamba.AnimatedSprites
             startingFrame = inputFrame;
             endingFrame = numFrames;
             spriteFrequency = frequency;
+            currentFrequency = 0;
         }
 
         public void Update()
         {
-            if (currentFrequency  == spriteFrequency)
+            if (currentFrequency == spriteFrequency)
               currentFrame++;
             if (currentFrame == endingFrame)
+            {
                 currentFrame = startingFrame;
-           currentFrequency++;
+                currentFrequency = 0;
+            }
+            currentFrequency++;
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 location)
@@ -51,8 +55,6 @@ namespace YellowMamba.AnimatedSprites
             int width = Texture.Width / Columns;
             int height = Texture.Height / Rows;
             int row = (int)((float)currentFrame / (float)Rows);
-            //testing value of row
-            Console.WriteLine("row = " + row);
             int column = currentFrame % Columns;
 
             Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
