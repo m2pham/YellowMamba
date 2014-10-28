@@ -154,9 +154,6 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Test\player1fist.jpeg">
-      <Name>player1fist</Name>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Test\BlackMambaSpriteSheet.png">

@@ -23,6 +23,7 @@ namespace YellowMamba.Enemies
         protected bool IsInvincible { get; set; }
         protected int Health { get; set; } // added health
         protected int Damage { get; set; }
+        protected int AttackRange { get; set; }
         public EnemyStates EnemyState { get; protected set; }
         protected PlayerManager PlayerManager { get; set; }
         protected Player focusedPlayer { get; set; }

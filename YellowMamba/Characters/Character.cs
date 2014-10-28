@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using YellowMamba.AnimatedSprites;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
 using YellowMamba.Players;
@@ -24,6 +25,7 @@ namespace YellowMamba.Characters
     public abstract class Character : Entity
     {
         public Texture2D Sprite { get; set; }
+        protected AnimatedSprite animatedSprite;
         protected Player Player { get; private set; }
         protected InputManager InputManager { get; private set; }
         protected PlayerManager PlayerManager { get; private set; }

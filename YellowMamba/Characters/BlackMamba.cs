@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using YellowMamba.Players;
 using YellowMamba.Entities;
+using YellowMamba.AnimatedSprites;
 
 namespace YellowMamba.Characters
 {
@@ -23,6 +24,7 @@ namespace YellowMamba.Characters
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("BlackMamba/BlackMamba");
+            animatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 5, 1, 6, 20, 2);
             Hitbox.Width = Sprite.Width;
             Hitbox.Height = Sprite.Height;
         }
@@ -32,6 +34,7 @@ namespace YellowMamba.Characters
             Hitbox.X = (int) Position.X;
             Hitbox.Y = (int) Position.Y;
             CheckCollision();
+            animatedSprite.Update();
             switch (CharacterState)
             {
                 case CharacterStates.ShootState:
@@ -137,7 +140,7 @@ namespace YellowMamba.Characters
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
+            animatedSprite.Draw(spriteBatch, Position);
         }
     }
 }

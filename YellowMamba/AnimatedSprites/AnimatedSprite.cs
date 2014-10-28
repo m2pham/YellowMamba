@@ -31,21 +31,35 @@ namespace YellowMamba.AnimatedSprites
             Columns = columns;
             currentFrame = inputFrame;
             startingFrame = inputFrame;
-            endingFrame = numFrames;
+            endingFrame = startingFrame + numFrames - 1;
             spriteFrequency = frequency;
             currentFrequency = 0;
         }
 
-        public void Update()
+        public void SelectAnimation(int startFrame, int numFrames)
         {
-            if (currentFrequency == spriteFrequency)
-              currentFrame++;
-            if (currentFrame == endingFrame)
+            startingFrame = startFrame;
+            endingFrame = startingFrame + numFrames - 1;
+            if (currentFrame < startingFrame || currentFrame > endingFrame)
             {
+                Console.WriteLine(currentFrame + " " + startingFrame + " " + endingFrame);
                 currentFrame = startingFrame;
                 currentFrequency = 0;
             }
+        }
+
+        public void Update()
+        {
             currentFrequency++;
+            if (currentFrequency == spriteFrequency)
+            {
+                currentFrame++;
+                currentFrequency = 0;
+            }
+            if (currentFrame == endingFrame + 1)
+            {
+                currentFrame = startingFrame;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 location)
@@ -54,10 +68,14 @@ namespace YellowMamba.AnimatedSprites
             //still need to change code in accordance to this
             int width = Texture.Width / Columns;
             int height = Texture.Height / Rows;
-            int row = (int)((float)currentFrame / (float)Rows);
+            int row = (int)Math.Ceiling((float)currentFrame / (float)Columns);
             int column = currentFrame % Columns;
+            if (column == 0)
+            {
+                column = Columns;
+            }
 
-            Rectangle sourceRectangle = new Rectangle(width * column, height * row, width, height);
+            Rectangle sourceRectangle = new Rectangle(width * (column - 1), height * (row - 1), width, height);
             Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, width, height);
 
             spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White);

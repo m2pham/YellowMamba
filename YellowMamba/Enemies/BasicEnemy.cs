@@ -15,21 +15,24 @@ namespace YellowMamba.Enemies
 {
     public class BasicEnemy : Enemy
     {
-        public float timeToChange = 0;
-         public BasicEnemy(PlayerManager playermanager) : base(playermanager)
-         {
-             Speed = 3;
-             Health = 100;
-         }
+        public float timeToChange;
+        public BasicEnemy(PlayerManager playermanager)
+            : base(playermanager)
+        {
+            Speed = 3;
+            Health = 100;
+            timeToChange = 0F;
+            AttackRange = 50;
+        }
 
-         
 
-    
+
+
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("testSpriteSheet");
-            animatedSprite = new AnimatedSprite(Sprite, 1, 3, 3, 30, 2);
-           // Hitbox.Width = Sprite.Width;
+            Sprite = contentManager.Load<Texture2D>("EnemySpriteSheet");
+            animatedSprite = new AnimatedSprite(Sprite, 7, 1, 12, 30, 2);
+            // Hitbox.Width = Sprite.Width;
             //Hitbox.Height = Sprite.Height;
         }
 
@@ -38,51 +41,86 @@ namespace YellowMamba.Enemies
         {
             Hitbox.X = (int)Position.X;
             Hitbox.Y = (int)Position.Y;
+            Position.X += Velocity.X;
+            Position.Y += Velocity.Y;
             animatedSprite.Update();
-             switch (EnemyState)
+            switch (EnemyState)
             {
                 case EnemyStates.Idle:
                     foreach (Player player in PlayerManager.Players)
                     {
-                        //play idle animation if 
-                        if (Math.Abs((int)player.Character.Position.X - (int)Position.X) <= 300 || Math.Abs(player.Character.Position.Y - Position.Y) <= 300)
+                        if (Math.Abs((player.Character.Position.X + player.Character.Sprite.Width) / 2 - (Position.X + 130) / 2) <= 200
+                            && Math.Abs((player.Character.Position.Y + player.Character.Sprite.Height) / 2 - (Position.Y + 130) / 2) <= 200)
                         {
                             focusedPlayer = player;
                             EnemyState = EnemyStates.SeePlayer;
                         }
                     }
- 
+
                     break;
                 case EnemyStates.SeePlayer:
 
-                     //input delay from SeePlayer state to Chase state
-                    timeToChange += (float) gameTime.ElapsedGameTime.TotalSeconds;
-                     if (timeToChange == 2)
+                    //input delay from SeePlayer state to Chase state
+                    timeToChange += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (timeToChange >= 2F)
                         EnemyState = EnemyStates.Chase;
 
                     break;
 
                 case EnemyStates.Chase:
-                    if (Math.Abs((int)focusedPlayer.Character.Position.X - (int)Position.X) <= 300 || Math.Abs(focusedPlayer.Character.Position.Y - Position.Y) <= 300)
+                    if (Position.X > focusedPlayer.Character.Position.X + focusedPlayer.Character.Sprite.Width + AttackRange)
                     {
-                        Velocity.X = (focusedPlayer.Character.Position.X - Position.X) / 30;
-                        Velocity.Y = (focusedPlayer.Character.Position.Y - Position.Y) / 30;
+                        Velocity.X = -2;
+                    }
+                    else if (Position.X + 130 + AttackRange < focusedPlayer.Character.Position.X)
+                    {
+                        Velocity.X = 2;
+                    }
+                    else if ((Position.X < focusedPlayer.Character.Position.X + focusedPlayer.Character.Sprite.Width && Position.X > focusedPlayer.Character.Position.X)
+                        || (Position.X + 130 > focusedPlayer.Character.Position.X && Position.X + 130 < focusedPlayer.Character.Position.X + focusedPlayer.Character.Sprite.Width))
+                    {
+                        if ((Position.X + 130) / 2 < (focusedPlayer.Character.Position.X + focusedPlayer.Character.Sprite.Width) / 2)
+                        {
+                            Velocity.X = -2;
+                        }
+                        else
+                        {
+                            Velocity.X = 2;
+                        }
+                    }
+                    else
+                    {
+                        Velocity.X = 0;
                     }
 
-                    else if ( (Math.Abs((int)focusedPlayer.Character.Position.X - (int)Position.X) <= 10) && (Math.Abs((int)focusedPlayer.Character.Position.Y - (int)Position.Y) <= 5) )
+                    if (Position.Y > focusedPlayer.Character.Position.Y + 50)
+                    {
+                        Velocity.Y = -2;
+                    }
+                    else if (Position.Y < focusedPlayer.Character.Position.Y)
+                    {
+                        Velocity.Y = 2;
+                    }
+                    else
+                    {
+                        Velocity.Y = 0;
+                    }
+
+                    if (Velocity.Y == 0 && Velocity.X == 0)
                     {
                         EnemyState = EnemyStates.Attack;
                     }
                     break;
-                
+
                 case EnemyStates.Attack:
-                    if(  ( (Math.Abs((int)focusedPlayer.Character.Position.X - (int)Position.X) >= 10) && (Math.Abs((int)focusedPlayer.Character.Position.Y - (int)Position.Y) > 5) ))
+                    if (!((Position.X <= focusedPlayer.Character.Position.X + focusedPlayer.Character.Sprite.Width + AttackRange && Position.X >= focusedPlayer.Character.Position.X)
+                        || (Position.X + 130 + AttackRange >= focusedPlayer.Character.Position.X && Position.X + 130 <= focusedPlayer.Character.Position.X + focusedPlayer.Character.Sprite.Width)))
                     {
                         EnemyState = EnemyStates.Chase;
                     }
-                    else if ((Math.Abs((int)focusedPlayer.Character.Position.X - (int)Position.X) <= 10) && (Math.Abs((int)focusedPlayer.Character.Position.Y - (int)Position.Y) <= 5))
+                    else
                     {
-                        //get this nigga to strike
+                        // attack here
                     }
 
                     break;
@@ -91,26 +129,27 @@ namespace YellowMamba.Enemies
                     break;
 
                 case EnemyStates.Retreat:
-                   /* if( Health <  30)
-                    {
-                        velocity of enemy is opposite direction of focusedPlayer
-                    }*/                    break;
+                    /* if( Health <  30)
+                     {
+                         velocity of enemy is opposite direction of focusedPlayer
+                     }*/
+                    break;
 
                 case EnemyStates.Dead:
                     //if health == 0
-                     //play death animation
-                     //get rid of character
+                    //play death animation
+                    //get rid of character
                     break;
-               
-               /* case CharacterStates.DefaultState:
-                   ProcessMovement(Speed);
-                    if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
-                        && PlayerManager.Players.Count > 1 && HasBall)
-                    {
-                        CharacterState = CharacterStates.PassState;
-                    }
-                    break; 
-                    */
+
+                /* case CharacterStates.DefaultState:
+                    ProcessMovement(Speed);
+                     if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
+                         && PlayerManager.Players.Count > 1 && HasBall)
+                     {
+                         CharacterState = CharacterStates.PassState;
+                     }
+                     break; 
+                     */
             }
 
         }
@@ -120,51 +159,61 @@ namespace YellowMamba.Enemies
             switch (EnemyState)
             {
                 case EnemyStates.Idle:
-
                     animatedSprite.Draw(spriteBatch, Position);
-                break;
+                    break;
 
                 case EnemyStates.SeePlayer:
-                    animatedSprite.currentFrame = 4;
-                    animatedSprite.endingFrame = 4;
-                    //if character is to the left, orient enemy towards player
-                     if((int)focusedPlayer.Character.Position.X > (int)Position.X)
-                     {
-                         animatedSprite.currentFrame = 8;
-                         animatedSprite.endingFrame = 8;
-                     }
-                     animatedSprite.Draw(spriteBatch, Position);
-                break;
-
-                case EnemyStates.Chase:
-                    animatedSprite.currentFrame = 2;
-                    animatedSprite.endingFrame = 2;
+                    //if character is to the right, orient enemy towards player
                     if ((int)focusedPlayer.Character.Position.X > (int)Position.X)
                     {
-                        animatedSprite.currentFrame = 1;
-                        animatedSprite.endingFrame = 1;
+                        animatedSprite.SelectAnimation(12, 1);
                     }
+                    else
+                    {
+                        animatedSprite.SelectAnimation(11, 1);
+                    }
+                    animatedSprite.Draw(spriteBatch, Position);
+                    break;
 
-                break;
+                case EnemyStates.Chase:
+                    if ((int)focusedPlayer.Character.Position.X > (int)Position.X)
+                    {
+                        animatedSprite.SelectAnimation(6, 1);
+                    }
+                    else
+                    {
+                        animatedSprite.SelectAnimation(5, 1);
+                    }
+                    animatedSprite.Draw(spriteBatch, Position);
+                    break;
 
                 case EnemyStates.Attack:
+                    if ((int)focusedPlayer.Character.Position.X > (int)Position.X)
+                    {
+                        animatedSprite.SelectAnimation(3, 2);
+                    }
+                    else
+                    {
+                        animatedSprite.SelectAnimation(1, 2);
+                    }
+                    animatedSprite.Draw(spriteBatch, Position);
 
-                break; 
+                    break;
 
                 case EnemyStates.SpecialAttack:
 
-                break;
+                    break;
 
                 case EnemyStates.Retreat:
 
-                break;
+                    break;
 
                 case EnemyStates.Dead:
 
-                break;
+                    break;
             }
 
-        }        
+        }
     }
 
 }
