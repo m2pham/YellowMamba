@@ -114,13 +114,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\testSpriteSheet.png">
-      <Name>testSpriteSheet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\BlackMamba\BlackMamba.jpg">
       <Name>BlackMamba</Name>
       <Importer>TextureImporter</Importer>
@@ -137,6 +130,13 @@
   <ItemGroup>
     <Compile Include="Test\StageOnePartOneScreenBackground.png">
       <Name>StageOnePartOneScreenBackground</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\testSpriteSheet.png">
+      <Name>testSpriteSheet</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
