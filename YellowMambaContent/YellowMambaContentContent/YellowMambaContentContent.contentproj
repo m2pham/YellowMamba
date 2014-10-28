@@ -158,6 +158,20 @@
       <Name>player1fist</Name>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\BlackMambaSpriteSheet.png">
+      <Name>BlackMambaSpriteSheet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\JimothySpriteSheet.png">
+      <Name>JimothySpriteSheet</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
   <!--
       To modify your build process, add your task inside one of the targets below and uncomment it. 
