@@ -14,7 +14,7 @@ namespace YellowMamba.Characters
 {
     public enum CharacterStates
     {
-        PassState, ShootState, PickState, AttackState, DefaultState
+        PassState, ShootState, ShootingState, PickState, AttackState, DefaultState
     }
 
     public enum Pass
@@ -36,6 +36,9 @@ namespace YellowMamba.Characters
         public int Attack { get; set; }
         public int Defense { get; set; }
         public CharacterStates CharacterState { get; protected set; }
+        protected bool FacingLeft { get; set; }
+        protected int ShootingTime { get; set; }
+        protected int AttackingTime { get; set; }
 
         public Character(Player player, InputManager inputManager, PlayerManager playerManager)
             : base()
@@ -48,6 +51,8 @@ namespace YellowMamba.Characters
             HasBall = false;
             CharacterState = CharacterStates.DefaultState;
             Position.Y = 310 + 100 * (int)Player.PlayerIndex;
+            ShootingTime = 0;
+            AttackingTime = 0;
         }
 
         protected void ProcessMovement(int speed)

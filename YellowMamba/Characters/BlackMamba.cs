@@ -19,19 +19,22 @@ namespace YellowMamba.Characters
         {
             Speed = 5;
             HasBall = true;
+            FacingLeft = false;
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("BlackMamba/BlackMamba");
-            animatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 5, 1, 6, 20, 2);
-            Hitbox.Width = Sprite.Width;
-            Hitbox.Height = Sprite.Height;
+            animatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 8, 10, 7, 5, 4);
+            // Hitbox.Width = Sprite.Width;
+            // Hitbox.Height = Sprite.Height;
+            Hitbox.Width = 30;
+            Hitbox.Height = 70;
         }
 
         public override void Update(GameTime gameTime)
         {
-            Hitbox.X = (int) Position.X;
+            Hitbox.X = (int) Position.X + 17;
             Hitbox.Y = (int) Position.Y;
             CheckCollision();
             animatedSprite.Update();
@@ -53,6 +56,15 @@ namespace YellowMamba.Characters
                         shootBall.ReleaseTime = gameTime.TotalGameTime;
                         PlayerManager.EntityManager.Entities.Add(shootBall);
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
+                        animatedSprite.SelectAnimation(1, 4);
+                        CharacterState = CharacterStates.ShootingState;
+                    }
+                    break;
+                case CharacterStates.ShootingState:
+                    ShootingTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    if (ShootingTime > 20)
+                    {
+                        ShootingTime = 0;
                         CharacterState = CharacterStates.DefaultState;
                     }
                     break;
@@ -92,10 +104,31 @@ namespace YellowMamba.Characters
                     }
                     break;
                 case CharacterStates.AttackState:
-                    
+                    AttackingTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    if (AttackingTime > 15)
+                    {
+                        AttackingTime = 0;
+                        CharacterState = CharacterStates.DefaultState;
+                    }
                     break;
                 case CharacterStates.DefaultState:
                     ProcessMovement(Speed);
+                    if (Velocity.X < 0)
+                    {
+                        FacingLeft = true;
+                    }
+                    else if (Velocity.X > 0)
+                    {
+                        FacingLeft = false;                    
+                    }
+                    if (Velocity.X != 0 || Velocity.Y != 0)
+                    {
+                        animatedSprite.SelectAnimation(22, 5);
+                    }
+                    else
+                    {
+                        animatedSprite.SelectAnimation(8, 4);
+                    }
                     if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
                         && PlayerManager.Players.Count > 1 && HasBall)
                     {
@@ -104,12 +137,14 @@ namespace YellowMamba.Characters
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
                     {
                         CharacterState = CharacterStates.ShootState;
+                        animatedSprite.SelectAnimation(64, 1);
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position = Position;
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = true;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
                     {
-                        //CharacterState = CharacterStates.AttackState;
+                        animatedSprite.SelectAnimation(15, 3);
+                        CharacterState = CharacterStates.AttackState;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
                     {
@@ -140,7 +175,7 @@ namespace YellowMamba.Characters
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            animatedSprite.Draw(spriteBatch, Position);
+            animatedSprite.Draw(spriteBatch, Position, FacingLeft);
         }
     }
 }

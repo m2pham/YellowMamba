@@ -23,11 +23,13 @@ namespace YellowMamba.Enemies
         protected bool IsInvincible { get; set; }
         protected int Health { get; set; } // added health
         protected int Damage { get; set; }
-        protected int AttackRange { get; set; }
         public EnemyStates EnemyState { get; protected set; }
         protected PlayerManager PlayerManager { get; set; }
         protected Player focusedPlayer { get; set; }
         protected AnimatedSprite animatedSprite;
+        protected Rectangle AttackHitbox;
+        protected bool FacingLeft { get; set; }
+        protected Vector2 AttackRange { get; set; }
 
         public Enemy(PlayerManager playerManager) 
              : base()
