@@ -74,6 +74,11 @@ namespace YellowMamba.Characters
                         CharacterState = CharacterStates.DefaultState;
                         break;
                     }
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
+                    {
+
+                        //draw pick animation 
+                    }
                     break;
                 case CharacterStates.PassState:
                     ProcessMovement(Speed);

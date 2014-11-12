@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using YellowMamba.Players;
 using YellowMamba.Entities;
+using YellowMamba.Enemies;
 
 namespace YellowMamba.Characters
 {
@@ -54,6 +55,15 @@ namespace YellowMamba.Characters
                     }
                     break;
                 case CharacterStates.PickState:
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) != ActionStates.Held)
+                    {
+                        CharacterState = CharacterStates.DefaultState;
+                        break;
+                    }
+                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
+                    {
+                        //draw pick animation 
+                    }
 
                     break;
                 case CharacterStates.PassState:
@@ -116,6 +126,11 @@ namespace YellowMamba.Characters
                             entity.MarkForDelete = true;
                         }
                     }
+
+                    /*if (entity.GetType() == typeof(Enemy))
+                    {
+                        check for collision here
+                    } */
                 }
             }
         }

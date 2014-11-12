@@ -35,6 +35,7 @@ namespace YellowMamba.Characters
         public int Health { get; set; }
         public int Attack { get; set; }
         public int Defense { get; set; }
+        public int PickHealth { get; set; }
         public CharacterStates CharacterState { get; protected set; }
         protected bool FacingLeft { get; set; }
         protected int ShootingTime { get; set; }
