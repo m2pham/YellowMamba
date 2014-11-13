@@ -14,7 +14,7 @@ namespace YellowMamba.Characters
 {
     public enum CharacterStates
     {
-        PassState, ShootState, ShootingState, PickState, AttackState, DefaultState
+        PassState, ShootState, ShootingState, PickState, AttackState, DamagedState, DefaultState
     }
 
     public enum Pass
@@ -37,9 +37,12 @@ namespace YellowMamba.Characters
         public int Defense { get; set; }
         public int PickHealth { get; set; }
         public CharacterStates CharacterState { get; protected set; }
-        protected bool FacingLeft { get; set; }
+        public bool FacingLeft { get; set; }
         protected int ShootingTime { get; set; }
         protected int AttackingTime { get; set; }
+        protected int DamagedTime { get; set; }
+        public Rectangle AttackHitbox;
+        protected Vector2 AttackRange { get; set; }
 
         public Character(Player player, InputManager inputManager, PlayerManager playerManager)
             : base()
@@ -54,6 +57,7 @@ namespace YellowMamba.Characters
             Position.Y = 310 + 100 * (int)Player.PlayerIndex;
             ShootingTime = 0;
             AttackingTime = 0;
+            DamagedTime = 0;
         }
 
         protected void ProcessMovement(int speed)

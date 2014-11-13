@@ -14,7 +14,7 @@ namespace YellowMamba.Enemies
 {
     public enum EnemyStates
     {
-        Idle, SeePlayer, Attack, SpecialAttack, Chase, Retreat, Dead
+        Idle, SeePlayer, Attack, SpecialAttack, Chase, Retreat, Damaged, Dead
     }
     public abstract class Enemy : Entity
     {
@@ -23,17 +23,20 @@ namespace YellowMamba.Enemies
         protected bool IsInvincible { get; set; }
         protected int Health { get; set; } // added health
         protected int Damage { get; set; }
-        public EnemyStates EnemyState { get; protected set; }
+        public EnemyStates EnemyState { get; set; }
         protected PlayerManager PlayerManager { get; set; }
         protected Player focusedPlayer { get; set; }
         protected AnimatedSprite animatedSprite;
-        protected Rectangle AttackHitbox;
+        public Rectangle AttackHitbox;
         protected bool FacingLeft { get; set; }
         protected Vector2 AttackRange { get; set; }
+        protected int DamagedTime { get; set; }
+        public bool Ranged { get; set; }
 
         public Enemy(PlayerManager playerManager) 
              : base()
         {
+            Ranged = false;
             PlayerManager = playerManager;
         }
     }

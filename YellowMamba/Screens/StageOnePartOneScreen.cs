@@ -9,6 +9,7 @@ using YellowMamba.Characters;
 using YellowMamba.Enemies;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
+using YellowMamba.Players;
 
 namespace YellowMamba.Screens
 {
@@ -28,13 +29,14 @@ namespace YellowMamba.Screens
             entityManager = new EntityManager();
             playerManager.EntityManager = entityManager;
             enemyManager = new EnemyManager(playerManager, entityManager);
+            playerManager.EnemyManager = enemyManager;
         }
 
         public override void Initialize()
         {
             entityManager.Entities.Add(new PassBall());
             entityManager.Entities.Add(new ShootBall());
-            entityManager.Entities.Add(new ShootTarget(InputManager, PlayerIndex.One));
+            entityManager.Entities.Add(new ShootTarget(InputManager, new Player(PlayerIndex.One, InputManager, PlayerManager)));
             for (int i = 0; i < 10; i++)
             {
                 BasicEnemy basicEnemy = new BasicEnemy(enemyManager.PlayerManager);
@@ -104,8 +106,8 @@ namespace YellowMamba.Screens
                 case ScreenStates.Active:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
                     PlayerManager.Draw(gameTime, spriteBatch);
-                    entityManager.Draw(gameTime, spriteBatch);
                     enemyManager.Draw(gameTime, spriteBatch);
+                    entityManager.Draw(gameTime, spriteBatch);
                     break;
             }
             spriteBatch.End();

@@ -15,6 +15,7 @@ namespace YellowMamba.Entities
         public TimeSpan ReleaseTime { get; set;}
         public PlayerIndex SourcePlayer { get; set; }
         public Vector2 SourcePosition { get; set; }
+        public Vector2 DestinationPosition { get; set; }
 
         public ShootBall()
             : base()

@@ -9,25 +9,28 @@ using Microsoft.Xna.Framework.Content;
 using YellowMamba.Players;
 using YellowMamba.Entities;
 using YellowMamba.AnimatedSprites;
+using YellowMamba.Enemies;
 
 namespace YellowMamba.Characters
 {
     public class BlackMamba : Character
     {
+        private const int HitboxDisplacement = 16;
+
         public BlackMamba(Player player, InputManager inputManager, PlayerManager playerManager)
             : base(player, inputManager, playerManager)
         {
             Speed = 5;
             HasBall = true;
             FacingLeft = false;
+            AttackRange = new Vector2(30, 30);
+            AttackHitbox = new Rectangle((int)(Position.X + HitboxDisplacement + 36), (int)Position.Y - 14, (int)AttackRange.X, (int)AttackRange.Y);
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("BlackMamba/BlackMamba");
-            animatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 8, 10, 7, 5, 4);
-            // Hitbox.Width = Sprite.Width;
-            // Hitbox.Height = Sprite.Height;
+            animatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 8, 11, 7, 5, 4);
             Hitbox.Width = 30;
             Hitbox.Height = 70;
         }
@@ -35,8 +38,22 @@ namespace YellowMamba.Characters
         public override void Update(GameTime gameTime)
         {
             Hitbox.X = (int) Position.X + 17;
-            Hitbox.Y = (int) Position.Y;
+            Hitbox.Y = (int) Position.Y - 14;
             CheckCollision();
+            if (CharacterState != CharacterStates.DamagedState)
+            {
+                ProcessIncomingDamage();
+            }
+            if (FacingLeft)
+            {
+                AttackHitbox.X = (int)(Hitbox.X - AttackRange.X);
+            }
+            else
+            {
+                // 36 is the width that the image actually takes up in the frame
+                AttackHitbox.X = (int)Position.X + HitboxDisplacement + 36;
+            }
+            AttackHitbox.Y = Hitbox.Y;
             animatedSprite.Update();
             switch (CharacterState)
             {
@@ -51,6 +68,7 @@ namespace YellowMamba.Characters
                     {
                         ShootBall shootBall = new ShootBall();
                         shootBall.SourcePosition = Position;
+                        shootBall.DestinationPosition = PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position;
                         shootBall.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.X - Position.X) / 60;
                         shootBall.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
                         shootBall.ReleaseTime = gameTime.TotalGameTime;
@@ -116,6 +134,14 @@ namespace YellowMamba.Characters
                         CharacterState = CharacterStates.DefaultState;
                     }
                     break;
+                case CharacterStates.DamagedState:
+                    DamagedTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    if (DamagedTime > 20)
+                    {
+                        DamagedTime = 0;
+                        CharacterState = CharacterStates.DefaultState;
+                    }
+                    break;
                 case CharacterStates.DefaultState:
                     ProcessMovement(Speed);
                     if (Velocity.X < 0)
@@ -153,6 +179,7 @@ namespace YellowMamba.Characters
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
                     {
+                        animatedSprite.SelectAnimation(71, 1);
                         CharacterState = CharacterStates.PickState;
                     }
                     break;
@@ -173,6 +200,31 @@ namespace YellowMamba.Characters
                             HasBall = true;
                             entity.MarkForDelete = true;
                         }
+                    }
+                }
+            }
+        }
+
+        private void ProcessIncomingDamage()
+        {
+            foreach (Enemy enemy in PlayerManager.EnemyManager.Enemies.ToList())
+            {
+                if (enemy.Ranged == true)
+                {
+                    continue;
+                }
+                if (Hitbox.Intersects(enemy.AttackHitbox) && enemy.EnemyState == EnemyStates.Attack)
+                {
+                    if (CharacterState == CharacterStates.PickState)
+                    {
+                        // take some reduced damage
+                        // flash pretty sparkles
+                    }
+                    else
+                    {
+                        // take regular damage
+                        // animatedSprite.SelectAnimation(78, 4);
+                        // CharacterState = CharacterStates.DamagedState;
                     }
                 }
             }

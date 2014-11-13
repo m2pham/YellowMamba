@@ -22,20 +22,27 @@ namespace YellowMamba.Managers
             EntityManager = entityManager;
          
         }
-
-        public void Update(GameTime gameTime)
-        {
-            foreach (Enemy enemy in Enemies)
-            {
-                enemy.Update(gameTime);
-            }
-        }
         
         public void LoadContent(ContentManager contentManager)
         {
             foreach (Enemy enemy in Enemies)
             {
                 enemy.LoadContent(contentManager);
+            }
+        }
+
+        public void Update(GameTime gameTime)
+        {
+            foreach (Enemy enemy in Enemies.ToList())
+            {
+                if (enemy.MarkForDelete)
+                {
+                    Enemies.Remove(enemy);
+                }
+                else
+                {
+                    enemy.Update(gameTime);
+                }
             }
         }
 

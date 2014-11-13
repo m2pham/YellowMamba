@@ -13,6 +13,7 @@ namespace YellowMamba.Managers
     {
         public List<Player> Players { get; private set; }
         public EntityManager EntityManager { get; set; }
+        public EnemyManager EnemyManager { get; set; }
 
         public PlayerManager(InputManager inputManager)
         {

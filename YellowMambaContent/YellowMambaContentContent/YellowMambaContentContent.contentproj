@@ -184,13 +184,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\BlackMamba\BlackMambaRight1.png">
-      <Name>BlackMambaRight1</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\enemyHurt.png">
       <Name>enemyHurt</Name>
       <Importer>TextureImporter</Importer>

@@ -24,7 +24,7 @@ namespace YellowMamba.Players
             PlayerIndex = playerIndex;
             this.inputManager = inputManager;
             this.playerManager = playerManager;
-            Target = new ShootTarget(inputManager, playerIndex);
+            Target = new ShootTarget(inputManager, this);
         }
 
         public void LoadContent(ContentManager contentManager)
