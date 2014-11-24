@@ -69,8 +69,8 @@ namespace YellowMamba.Characters
                         ShootBall shootBall = new ShootBall();
                         shootBall.SourcePosition = Position;
                         shootBall.DestinationPosition = PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position;
-                        shootBall.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.X - Position.X) / 60;
-                        shootBall.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
+                        shootBall.Velocity.X = (shootBall.DestinationPosition.X - Position.X) / 60;
+                        shootBall.Velocity.Y = -(shootBall.DestinationPosition.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
                         shootBall.ReleaseTime = gameTime.TotalGameTime;
                         PlayerManager.EntityManager.Entities.Add(shootBall);
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
@@ -217,7 +217,7 @@ namespace YellowMamba.Characters
                 {
                     if (CharacterState == CharacterStates.PickState)
                     {
-                        // take some reduced damage
+                        //PickHealth -= (damage of enemy)
                         // flash pretty sparkles
                     }
                     else
