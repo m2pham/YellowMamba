@@ -12,13 +12,17 @@ using YellowMamba.Managers;
 using YellowMamba.Players;
 
 
+//animations have not been changed.
+//attack hitbox values and regular hotbox values not changed.
+//need to make "swat" enemystate for swatter
 namespace YellowMamba.Enemies
 {
-    public class BasicEnemy : Enemy
+    public class Swatter : Enemy
     {
         public float timeToChange;
         private const int HitboxDisplacement = 50;
-        public BasicEnemy(PlayerManager playermanager)
+        public Rectangle DisruptPassHitbox;
+        public Swatter(PlayerManager playermanager)
             : base(playermanager)
         {
             Speed = 3;
@@ -26,17 +30,21 @@ namespace YellowMamba.Enemies
             timeToChange = 0F;
             DamagedTime = 0;
             FacingLeft = true;
-            AttackWaitTime = 0;
             AttackRange = new Vector2(50, 50);
             AttackHitbox = new Rectangle((int)(Position.X - AttackRange.X), (int)Position.Y - 22, (int)AttackRange.X, (int)AttackRange.Y);
+            //Hitbox that will swat passes away
+            Vector2 DisruptPassRange = new Vector2(20, 100);
+            DisruptPassHitbox = new Rectangle((int)(Position.X + DisruptPassRange.X), (int)(Position.Y + DisruptPassRange.Y), (int)DisruptPassRange.X, (int)DisruptPassRange.Y);
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("BasicEnemy");
-            animatedSprite = new AnimatedSprite(Sprite, 5, 1, 7, 5, 2);
+            Sprite = contentManager.Load<Texture2D>("Swatter");
+            animatedSprite = new AnimatedSprite(Sprite, 5, 1, 7, 30, 2);
             //Hitbox.Width = animatedSprite.FrameWidth;
             //Hitbox.Height = animatedSprite.FrameHeight;
+            
+            //have to change according to sprite
             Hitbox.Width = 72;
             Hitbox.Height = 72;
         }
@@ -84,6 +92,7 @@ namespace YellowMamba.Enemies
                             && Math.Abs(player.Character.Hitbox.Center.Y - player.Character.Hitbox.Center.Y) <= 200)
                         {
                             focusedPlayer = player;
+                            //animation will be changed
                             animatedSprite.SelectAnimation(4, 1);
                             EnemyState = EnemyStates.SeePlayer;
                         }
@@ -114,7 +123,7 @@ namespace YellowMamba.Enemies
                     {
                         Velocity.X = 0;
                         Velocity.Y = 0;
-                        animatedSprite.SelectAnimation(5, 2);
+                        animatedSprite.SelectAnimation(1, 2);
                         EnemyState = EnemyStates.Attack;
                         break;
                     }
@@ -126,15 +135,25 @@ namespace YellowMamba.Enemies
                     else if (!FacingLeft && AttackHitbox.Right <= focusedPlayer.Character.Hitbox.Left)
                     {
                         Velocity.X = 2;
+                        
                     }
 
                     if (AttackHitbox.Top >= focusedPlayer.Character.Hitbox.Bottom)
                     {
                         Velocity.Y = -2;
+                        if(Position.Y == focusedPlayer.Character.Position.Y)
+                        {
+                            Velocity.Y = 0;
+                        }
+
                     }
                     else if (AttackHitbox.Bottom <= focusedPlayer.Character.Hitbox.Top)
                     {
                         Velocity.Y = 2;
+                        if (Position.Y == focusedPlayer.Character.Position.Y)
+                        {
+                            Velocity.Y = 0;
+                        }
                     }
                     break;
 
@@ -146,26 +165,18 @@ namespace YellowMamba.Enemies
                     }
                     else
                     {
-                        AttackWaitTime -= (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
-                        if (AttackWaitTime <= 0)
-                        {
-                            Random rnd = new Random();
-                            AttackWaitTime = rnd.Next(30, 90);
-                            animatedSprite.SelectAnimation(1, 2);
-                            EnemyState = EnemyStates.Attacking;
-                        }
+                        // attack here
                     }
+
                     break;
-                case EnemyStates.Attacking:
-                    AttackingTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
-                    if (AttackingTime > 10)
+                case EnemyStates.Swat:
+                    if ( )
                     {
-                        AttackingTime = 0;
-                        animatedSprite.SelectAnimation(5, 2);
-                        EnemyState = EnemyStates.Attack;
+                        ball.SourcePosition = Position;
+                            ball.DestinationPosition = PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position;
+                            ball.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex.get()).Target.Position.X - Position.X) / 60;
+                            ball.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
                     }
-                    break;
-                case EnemyStates.SpecialAttack:
 
                     break;
 
@@ -223,7 +234,7 @@ namespace YellowMamba.Enemies
             {
                 if (player.Character.AttackHitbox.Intersects(Hitbox) && player.Character.CharacterState == CharacterStates.AttackState)
                 {
-                    Health -= player.Character.Attack;
+                    Health -= 10;
                     if (Health <= 0)
                     {
                         EnemyState = EnemyStates.Dead;
@@ -239,6 +250,7 @@ namespace YellowMamba.Enemies
             {
                 if (Hitbox.Intersects(entity.Hitbox))
                 {
+
                     if (entity.GetType() == typeof(ShootBall))
                     {
                         ShootBall ball = (ShootBall)entity;
@@ -246,7 +258,7 @@ namespace YellowMamba.Enemies
                         if (Hitbox.Contains(ball.DestinationPosition.X + targetCenter.X, ball.DestinationPosition.Y + targetCenter.Y))
                         {
                             // select damaged animation
-                            Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;
+                            Health -= 10;
                             if (Health <= 0)
                             {
                                 EnemyState = EnemyStates.Dead;
@@ -275,6 +287,26 @@ namespace YellowMamba.Enemies
 
                         }
 
+                    }
+                }
+
+                if(DisruptPassHitbox.Intersects(entity.Hitbox))
+                {
+                    //checks if the passball intersects with swatter's arm
+                    if (entity.GetType() == typeof(PassBall))
+                    { 
+                        PassBall ball = (PassBall)entity
+                        Point ballCenter = PassBall.Sprite.Bounds.Center;
+                        if(DisruptPassHitbox.Contains(ball.Position.X + ballCenter.X, ball.Position.Y + ballCenter.Y) && ball.Knocked == false)
+                        {
+                            EnemyState = EnemyStates.Swat;
+                            ball.Knocked = true;
+                            ball.SourcePosition = Position;
+                            ball.DestinationPosition = PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position;
+                            ball.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex.get()).Target.Position.X - Position.X) / 60;
+                            ball.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
+
+                        }
                     }
                 }
             }
