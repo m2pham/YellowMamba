@@ -14,7 +14,7 @@ namespace YellowMamba.Enemies
 {
     public enum EnemyStates
     {
-        Idle, SeePlayer, Attack, SpecialAttack, Chase, Retreat, Damaged, Dead
+        Idle, SeePlayer, Attack, Attacking, SpecialAttack, Chase, Retreat, Damaged, Dead
     }
     public abstract class Enemy : Entity
     {
@@ -29,7 +29,10 @@ namespace YellowMamba.Enemies
         protected AnimatedSprite animatedSprite;
         public Rectangle AttackHitbox;
         protected bool FacingLeft { get; set; }
+        public int Attack { get; set; }
         protected Vector2 AttackRange { get; set; }
+        protected int AttackingTime { get; set; }
+        protected int AttackWaitTime { get; set; }
         protected int DamagedTime { get; set; }
         public bool Ranged { get; set; }
 

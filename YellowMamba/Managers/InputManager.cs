@@ -150,6 +150,12 @@ namespace YellowMamba.Managers
             return playersMenuActionStatesMap[playerIndex][menuAction];
         }
 
+        public Vector2 GetLeftThumbstickPos(PlayerIndex playerIndex)
+        {
+            return GamePad.GetState(playerIndex).ThumbSticks.Left;
+        }
+
+
         private void UpdatePlayerCharacterActionStatesMapOnPressed(PlayerIndex playerIndex, CharacterActions characterAction)
         {
             Dictionary<CharacterActions, ActionStates> playerCharacterActionMap = playersCharacterActionStatesMap[playerIndex];

@@ -21,6 +21,12 @@ namespace YellowMamba.Characters
             : base(player, inputManager, playerManager)
         {
             Speed = 5;
+            PickHealth = 30;
+            MaxPickHealth = 30;
+            PickHealthRegenerationTimer = 0;
+            PickHealthRegenerationRate = 5;
+            Attack = 10;
+            ShootAttack = 5;
             HasBall = true;
             FacingLeft = false;
             AttackRange = new Vector2(30, 30);
@@ -30,7 +36,8 @@ namespace YellowMamba.Characters
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("BlackMamba/BlackMamba");
-            animatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 8, 11, 7, 5, 4);
+            PickHealthBarSprite = contentManager.Load<Texture2D>("PickHealthBar");
+            AnimatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 8, 11, 7, 5, 4);
             Hitbox.Width = 30;
             Hitbox.Height = 70;
         }
@@ -39,6 +46,19 @@ namespace YellowMamba.Characters
         {
             Hitbox.X = (int) Position.X + 17;
             Hitbox.Y = (int) Position.Y - 14;
+            if (CharacterState != CharacterStates.PickState && PickHealth < MaxPickHealth)
+            {
+                PickHealthRegenerationTimer -= (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+            }
+            if (PickHealthRegenerationTimer <= 0)
+            {
+                PickHealthRegenerationTimer = 60;
+                PickHealth += PickHealthRegenerationRate;
+                if (PickHealth > MaxPickHealth)
+                {
+                    PickHealth = MaxPickHealth;
+                }
+            }
             CheckCollision();
             if (CharacterState != CharacterStates.DamagedState)
             {
@@ -54,7 +74,7 @@ namespace YellowMamba.Characters
                 AttackHitbox.X = (int)Position.X + HitboxDisplacement + 36;
             }
             AttackHitbox.Y = Hitbox.Y;
-            animatedSprite.Update();
+            AnimatedSprite.Update();
             switch (CharacterState)
             {
                 case CharacterStates.ShootState:
@@ -69,12 +89,12 @@ namespace YellowMamba.Characters
                         ShootBall shootBall = new ShootBall();
                         shootBall.SourcePosition = Position;
                         shootBall.DestinationPosition = PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position;
-                        shootBall.Velocity.X = (shootBall.DestinationPosition.X - Position.X) / 60;
-                        shootBall.Velocity.Y = -(shootBall.DestinationPosition.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
+                        shootBall.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.X - Position.X) / 60;
+                        shootBall.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
                         shootBall.ReleaseTime = gameTime.TotalGameTime;
                         PlayerManager.EntityManager.Entities.Add(shootBall);
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
-                        animatedSprite.SelectAnimation(1, 4);
+                        AnimatedSprite.SelectAnimation(1, 4);
                         CharacterState = CharacterStates.ShootingState;
                     }
                     break;
@@ -91,11 +111,6 @@ namespace YellowMamba.Characters
                     {
                         CharacterState = CharacterStates.DefaultState;
                         break;
-                    }
-                    if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
-                    {
-
-                        //draw pick animation 
                     }
                     break;
                 case CharacterStates.PassState:
@@ -142,6 +157,14 @@ namespace YellowMamba.Characters
                         CharacterState = CharacterStates.DefaultState;
                     }
                     break;
+                case CharacterStates.StunnedState:
+                    StunnedTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    if (StunnedTime > 60)
+                    {
+                        StunnedTime = 0;
+                        CharacterState = CharacterStates.DefaultState;
+                    }
+                    break;
                 case CharacterStates.DefaultState:
                     ProcessMovement(Speed);
                     if (Velocity.X < 0)
@@ -154,11 +177,11 @@ namespace YellowMamba.Characters
                     }
                     if (Velocity.X != 0 || Velocity.Y != 0)
                     {
-                        animatedSprite.SelectAnimation(22, 5);
+                        AnimatedSprite.SelectAnimation(22, 5);
                     }
                     else
                     {
-                        animatedSprite.SelectAnimation(8, 4);
+                        AnimatedSprite.SelectAnimation(8, 4);
                     }
                     if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
                         && PlayerManager.Players.Count > 1 && HasBall)
@@ -168,18 +191,18 @@ namespace YellowMamba.Characters
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
                     {
                         CharacterState = CharacterStates.ShootState;
-                        animatedSprite.SelectAnimation(64, 1);
+                        AnimatedSprite.SelectAnimation(64, 1);
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position = Position;
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = true;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
                     {
-                        animatedSprite.SelectAnimation(15, 3);
+                        AnimatedSprite.SelectAnimation(15, 3);
                         CharacterState = CharacterStates.AttackState;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
                     {
-                        animatedSprite.SelectAnimation(71, 1);
+                        AnimatedSprite.SelectAnimation(71, 1);
                         CharacterState = CharacterStates.PickState;
                     }
                     break;
@@ -213,12 +236,16 @@ namespace YellowMamba.Characters
                 {
                     continue;
                 }
-                if (Hitbox.Intersects(enemy.AttackHitbox) && enemy.EnemyState == EnemyStates.Attack)
+                if (Hitbox.Intersects(enemy.AttackHitbox) && enemy.EnemyState == EnemyStates.Attacking)
                 {
                     if (CharacterState == CharacterStates.PickState)
                     {
-                        //PickHealth -= (damage of enemy)
-                        // flash pretty sparkles
+                        PickHealth -= enemy.Attack;
+                        if (PickHealth <= 0)
+                        {
+                            PickHealth = 0;
+                            CharacterState = CharacterStates.StunnedState;
+                        }
                     }
                     else
                     {
@@ -232,7 +259,11 @@ namespace YellowMamba.Characters
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            animatedSprite.Draw(spriteBatch, Position, FacingLeft);
+            AnimatedSprite.Draw(spriteBatch, Position, FacingLeft);
+            if (CharacterState == CharacterStates.PickState)
+            {
+                spriteBatch.Draw(PickHealthBarSprite, new Rectangle(Hitbox.Center.X - PickHealthBarSprite.Bounds.Center.X, (int)Position.Y - 20, PickHealthBarSprite.Width * PickHealth / MaxPickHealth, PickHealthBarSprite.Height), Color.White);
+            }
         }
     }
 }

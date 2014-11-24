@@ -62,13 +62,24 @@ namespace YellowMamba.Screens
                         ScreenManager.AddScreen(NextScreen);
                     }
                     break;
-                default:
+                case ScreenStates.Active:
                     if (InputManager.GetMenuActionState(PlayerIndex.One, MenuActions.Start) == ActionStates.Pressed)
                     {
-                        NextScreen = new StageOnePartOneScreen(ContentManager.ServiceProvider, ContentManager.RootDirectory,
-                            InputManager, ScreenManager, PlayerManager);
-                        TransitionStartTime = gameTime.TotalGameTime;
-                        ScreenState = ScreenStates.TransitionOut;
+                        bool charNull = false;
+                        foreach (Player player in PlayerManager.Players)
+                        {
+                            if (player.Character == null)
+                            {
+                                charNull = true;
+                            }
+                        }
+                        if (!charNull)
+                        {
+                            NextScreen = new StageOnePartOneScreen(ContentManager.ServiceProvider, ContentManager.RootDirectory,
+                                InputManager, ScreenManager, PlayerManager);
+                            TransitionStartTime = gameTime.TotalGameTime;
+                            ScreenState = ScreenStates.TransitionOut;
+                        }
                     }
 
                     foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))

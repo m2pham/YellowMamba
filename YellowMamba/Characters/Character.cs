@@ -14,7 +14,7 @@ namespace YellowMamba.Characters
 {
     public enum CharacterStates
     {
-        PassState, ShootState, ShootingState, PickState, AttackState, DamagedState, DefaultState
+        PassState, ShootState, ShootingState, PickState, AttackState, DamagedState, StunnedState, DefaultState
     }
 
     public enum Pass
@@ -25,7 +25,8 @@ namespace YellowMamba.Characters
     public abstract class Character : Entity
     {
         public Texture2D Sprite { get; set; }
-        protected AnimatedSprite animatedSprite;
+        protected Texture2D PickHealthBarSprite { get; set; }
+        public AnimatedSprite AnimatedSprite { get; set; }
         protected Player Player { get; private set; }
         protected InputManager InputManager { get; private set; }
         protected PlayerManager PlayerManager { get; private set; }
@@ -34,13 +35,18 @@ namespace YellowMamba.Characters
         protected Pass CurrentPass { get; set; }
         public int Health { get; set; }
         public int Attack { get; set; }
+        public int ShootAttack { get; set; }
         public int Defense { get; set; }
         public int PickHealth { get; set; }
+        public int MaxPickHealth { get; set; }
+        public int PickHealthRegenerationTimer { get; set; }
+        public int PickHealthRegenerationRate { get; set; } // pickhealth/timer tick
         public CharacterStates CharacterState { get; protected set; }
         public bool FacingLeft { get; set; }
         protected int ShootingTime { get; set; }
         protected int AttackingTime { get; set; }
         protected int DamagedTime { get; set; }
+        protected int StunnedTime { get; set; }
         public Rectangle AttackHitbox;
         protected Vector2 AttackRange { get; set; }
 

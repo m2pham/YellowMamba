@@ -26,6 +26,8 @@ namespace YellowMamba.Enemies
             timeToChange = 0F;
             DamagedTime = 0;
             FacingLeft = true;
+            Attack = 5;
+            AttackWaitTime = 0;
             AttackRange = new Vector2(50, 50);
             AttackHitbox = new Rectangle((int)(Position.X - AttackRange.X), (int)Position.Y - 22, (int)AttackRange.X, (int)AttackRange.Y);
         }
@@ -33,7 +35,7 @@ namespace YellowMamba.Enemies
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("BasicEnemy");
-            animatedSprite = new AnimatedSprite(Sprite, 5, 1, 7, 30, 2);
+            animatedSprite = new AnimatedSprite(Sprite, 5, 1, 7, 5, 2);
             //Hitbox.Width = animatedSprite.FrameWidth;
             //Hitbox.Height = animatedSprite.FrameHeight;
             Hitbox.Width = 72;
@@ -113,7 +115,7 @@ namespace YellowMamba.Enemies
                     {
                         Velocity.X = 0;
                         Velocity.Y = 0;
-                        animatedSprite.SelectAnimation(1, 2);
+                        animatedSprite.SelectAnimation(5, 2);
                         EnemyState = EnemyStates.Attack;
                         break;
                     }
@@ -145,9 +147,24 @@ namespace YellowMamba.Enemies
                     }
                     else
                     {
-                        // attack here
+                        AttackWaitTime -= (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                        if (AttackWaitTime <= 0)
+                        {
+                            Random rnd = new Random();
+                            AttackWaitTime = rnd.Next(30, 90);
+                            animatedSprite.SelectAnimation(1, 2);
+                            EnemyState = EnemyStates.Attacking;
+                        }
                     }
-
+                    break;
+                case EnemyStates.Attacking:
+                    AttackingTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    if (AttackingTime > 10)
+                    {
+                        AttackingTime = 0;
+                        animatedSprite.SelectAnimation(5, 2);
+                        EnemyState = EnemyStates.Attack;
+                    }
                     break;
                 case EnemyStates.SpecialAttack:
 
@@ -207,7 +224,7 @@ namespace YellowMamba.Enemies
             {
                 if (player.Character.AttackHitbox.Intersects(Hitbox) && player.Character.CharacterState == CharacterStates.AttackState)
                 {
-                    Health -= 10;
+                    Health -= player.Character.Attack;
                     if (Health <= 0)
                     {
                         EnemyState = EnemyStates.Dead;
@@ -230,7 +247,7 @@ namespace YellowMamba.Enemies
                         if (Hitbox.Contains(ball.DestinationPosition.X + targetCenter.X, ball.DestinationPosition.Y + targetCenter.Y))
                         {
                             // select damaged animation
-                            Health -= 10;
+                            Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;
                             if (Health <= 0)
                             {
                                 EnemyState = EnemyStates.Dead;
