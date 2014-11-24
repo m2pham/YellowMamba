@@ -22,6 +22,9 @@ namespace YellowMamba.Screens
         private TimeSpan TransitionInTime = new TimeSpan(0, 0, 1);
         private TimeSpan TransitionOutTime = new TimeSpan(0, 0, 1);
 
+        private Rectangle backgroundRectangle;
+        private int areaCounter = 1;
+
         public StageOnePartOneScreen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
             ScreenManager screenManager, PlayerManager playerManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
@@ -30,6 +33,7 @@ namespace YellowMamba.Screens
             playerManager.EntityManager = entityManager;
             enemyManager = new EnemyManager(playerManager, entityManager);
             playerManager.EnemyManager = enemyManager;
+            backgroundRectangle = new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight);
         }
 
         public override void Initialize()
@@ -84,7 +88,44 @@ namespace YellowMamba.Screens
                         ScreenManager.AddScreen(NextScreen);
                     }
                     break;
+                case ScreenStates.TransitionNextArea:
+                    backgroundRectangle.X += 10;
+                    foreach (Player player in PlayerManager.Players)
+                    {
+                        // move player back to left
+                        player.Character.Position.X -= 7.5F;
+                        player.Character.AnimatedSprite.Update();
+                    }
+                    if (backgroundRectangle.X == 1280 * (areaCounter - 1))
+                    {
+                        ScreenState = ScreenStates.Active;
+                    }
+                    break;
                 case ScreenStates.Active:
+                    bool allPlayersOnRightEdge = true;
+                    foreach (Player player in PlayerManager.Players)
+                    {
+                        if (player.Character.Position.X < 1000)
+                        {
+                            allPlayersOnRightEdge = false;
+                            break;
+                        }
+                    }
+                    if (enemyManager.Enemies.Count == 0 && allPlayersOnRightEdge && areaCounter < 2)
+                    {
+                        areaCounter++;
+                        foreach (Player player in PlayerManager.Players)
+                        {
+                            player.Character.FacingLeft = false;
+                            if (player.Character.GetType() == typeof(BlackMamba))
+                            {
+                                player.Character.AnimatedSprite.SelectAnimation(22, 5);
+                            }
+                        }
+                        ScreenState = ScreenStates.TransitionNextArea;
+                        break;
+                    }
+
                     PlayerManager.Update(gameTime);
                     entityManager.Update(gameTime);
                     enemyManager.Update(gameTime);
@@ -103,8 +144,12 @@ namespace YellowMamba.Screens
                 case ScreenStates.TransitionOut:
                     // transition out animation here
                     break;
+                case ScreenStates.TransitionNextArea:
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
+                    PlayerManager.Draw(gameTime, spriteBatch);
+                    break;
                 case ScreenStates.Active:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
                     PlayerManager.Draw(gameTime, spriteBatch);
                     enemyManager.Draw(gameTime, spriteBatch);
                     entityManager.Draw(gameTime, spriteBatch);

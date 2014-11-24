@@ -40,7 +40,8 @@ namespace YellowMamba.Entities
             {
                 SourcePlayer.Character.FacingLeft = false;
             }
-            ProcessMovement(Speed);
+            Vector2 leftThumbstick = inputManager.GetLeftThumbstickPos(SourcePlayer.PlayerIndex);
+            ProcessMovement(leftThumbstick.X * 10, leftThumbstick.Y * 10);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -48,7 +49,7 @@ namespace YellowMamba.Entities
             spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
         }
 
-        protected void ProcessMovement(int speed)
+        protected void ProcessMovement(float xSpeed, float ySpeed)
         {
             PlayerIndex sourcePlayerIndex = SourcePlayer.PlayerIndex;
             if (inputManager.GetCharacterActionState(sourcePlayerIndex, CharacterActions.MoveUp) == ActionStates.Released
@@ -61,7 +62,7 @@ namespace YellowMamba.Entities
             {
                 if (Position.Y >= 720 / 2 - 50)
                 {
-                    Velocity.Y = -speed;
+                    Velocity.Y = -ySpeed;
                 }
                 else
                 {
@@ -73,7 +74,7 @@ namespace YellowMamba.Entities
             {
                 if (Position.Y + Sprite.Height <= 720)
                 {
-                    Velocity.Y = speed;
+                    Velocity.Y = -ySpeed;
                 }
                 else
                 {
@@ -91,7 +92,7 @@ namespace YellowMamba.Entities
             {
                 if (Position.X >= 0)
                 {
-                    Velocity.X = -speed;
+                    Velocity.X = xSpeed;
                 }
                 else
                 {
@@ -103,7 +104,7 @@ namespace YellowMamba.Entities
             {
                 if (Position.X + Sprite.Width <= 1280)
                 {
-                    Velocity.X = speed;
+                    Velocity.X = xSpeed;
                 }
                 else
                 {

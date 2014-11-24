@@ -11,7 +11,7 @@ namespace YellowMamba.Screens
 {
     public enum ScreenStates
     {
-        Active, Hidden, TransitionIn, TransitionOut
+        Active, Hidden, TransitionIn, TransitionOut, TransitionNextArea
     }
 
     public abstract class Screen
