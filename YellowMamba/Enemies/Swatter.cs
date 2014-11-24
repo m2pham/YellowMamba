@@ -169,7 +169,7 @@ namespace YellowMamba.Enemies
                     }
 
                     break;
-                case EnemyStates.Swat:
+                /*case EnemyStates.Swat:
                     if ( )
                     {
                         ball.SourcePosition = Position;
@@ -178,7 +178,7 @@ namespace YellowMamba.Enemies
                             ball.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
                     }
 
-                    break;
+                    break;*/
 
                 case EnemyStates.Retreat:
                     /* if( Health <  30)
@@ -286,7 +286,6 @@ namespace YellowMamba.Enemies
                             ball.Velocity.Y = tempY;
 
                         }
-
                     }
                 }
 
@@ -294,10 +293,10 @@ namespace YellowMamba.Enemies
                 {
                     //checks if the passball intersects with swatter's arm
                     if (entity.GetType() == typeof(PassBall))
-                    { 
-                        PassBall ball = (PassBall)entity
+                    {
+                        PassBall ball = (PassBall)entity;
                         Point ballCenter = PassBall.Sprite.Bounds.Center;
-                        if(DisruptPassHitbox.Contains(ball.Position.X + ballCenter.X, ball.Position.Y + ballCenter.Y) && ball.Knocked == false)
+                        /*if(DisruptPassHitbox.Contains(ball.Position.X + ballCenter.X, ball.Position.Y + ballCenter.Y) && ball.Knocked == false)
                         {
                             EnemyState = EnemyStates.Swat;
                             ball.Knocked = true;
@@ -306,7 +305,7 @@ namespace YellowMamba.Enemies
                             ball.Velocity.X = (PlayerManager.GetPlayer(Player.PlayerIndex.get()).Target.Position.X - Position.X) / 60;
                             ball.Velocity.Y = -(PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position.Y - .5F * 60 * 60 / 2 - Position.Y) / 60;
 
-                        }
+                        }*/
                     }
                 }
             }

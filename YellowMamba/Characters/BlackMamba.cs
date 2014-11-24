@@ -240,7 +240,7 @@ namespace YellowMamba.Characters
                 {
                     if (CharacterState == CharacterStates.PickState)
                     {
-                        PickHealth -= 1;
+                        PickHealth -= enemy.Attack;
                         if (PickHealth <= 0)
                         {
                             PickHealth = 0;

@@ -29,6 +29,7 @@ namespace YellowMamba.Enemies
         protected AnimatedSprite animatedSprite;
         public Rectangle AttackHitbox;
         protected bool FacingLeft { get; set; }
+        public int Attack { get; set; }
         protected Vector2 AttackRange { get; set; }
         protected int AttackingTime { get; set; }
         protected int AttackWaitTime { get; set; }

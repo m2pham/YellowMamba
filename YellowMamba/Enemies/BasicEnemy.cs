@@ -26,6 +26,7 @@ namespace YellowMamba.Enemies
             timeToChange = 0F;
             DamagedTime = 0;
             FacingLeft = true;
+            Attack = 5;
             AttackWaitTime = 0;
             AttackRange = new Vector2(50, 50);
             AttackHitbox = new Rectangle((int)(Position.X - AttackRange.X), (int)Position.Y - 22, (int)AttackRange.X, (int)AttackRange.Y);
