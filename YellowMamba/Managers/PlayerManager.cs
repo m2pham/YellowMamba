@@ -49,5 +49,10 @@ namespace YellowMamba.Managers
         {
             return Players.Find(x => x.PlayerIndex == playerIndex);
         }
+
+        public void RemovePlayer(PlayerIndex playerIndex)
+        {
+            Players.Remove(GetPlayer(playerIndex));
+        }
     }
 }

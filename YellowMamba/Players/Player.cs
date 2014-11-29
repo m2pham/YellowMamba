@@ -49,21 +49,5 @@ namespace YellowMamba.Players
                 Target.Draw(gameTime, spriteBatch);
             }
         }
-
-        public void CreateCharacter(Type type)
-        {
-            if (type.IsAssignableFrom(typeof(BlackMamba)))
-            {
-                Character = new BlackMamba(this, inputManager, playerManager);
-            }
-            else if (type.IsAssignableFrom(typeof(Jimothy)))
-            {
-                Character = new Jimothy(this, inputManager, playerManager);
-            }
-            else
-            {
-                throw new InvalidOperationException("Bad type");
-            }
-        }
     }
 }

@@ -19,16 +19,35 @@ namespace YellowMamba.Screens
         private TimeSpan TransitionInTime = new TimeSpan(0, 0, 1);
         private TimeSpan TransitionOutTime = new TimeSpan(0, 0, 1);
 
+        private HashSet<Type> availableChars;
+        private LinkedList<Type> chars;
+        private Dictionary<PlayerIndex, LinkedListNode<Type>> selectedChar;
+        private Dictionary<PlayerIndex, int> inputWaitTime;
+
         public CharacterSelectScreen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
             ScreenManager screenManager, PlayerManager playerManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
         {
-
+            availableChars = new HashSet<Type>();
+            chars = new LinkedList<Type>();
+            selectedChar = new Dictionary<PlayerIndex, LinkedListNode<Type>>();
+            inputWaitTime = new Dictionary<PlayerIndex, int>();
         }
 
         public override void Initialize()
         {
-
+            availableChars.Add(typeof(BlackMamba));
+            availableChars.Add(typeof(Jimothy));
+            chars.AddFirst(typeof(BlackMamba));
+            chars.AddLast(typeof(Jimothy));
+            selectedChar.Add(PlayerIndex.One, chars.First);
+            selectedChar.Add(PlayerIndex.Two, chars.First);
+            selectedChar.Add(PlayerIndex.Three, chars.First);
+            selectedChar.Add(PlayerIndex.Four, chars.First);
+            inputWaitTime.Add(PlayerIndex.One, 0);
+            inputWaitTime.Add(PlayerIndex.Two, 0);
+            inputWaitTime.Add(PlayerIndex.Three, 0);
+            inputWaitTime.Add(PlayerIndex.Four, 0);
         }
 
         public override void LoadContent()
@@ -84,23 +103,47 @@ namespace YellowMamba.Screens
 
                     foreach (PlayerIndex playerIndex in Enum.GetValues(typeof(PlayerIndex)))
                     {
+                        if (inputWaitTime[playerIndex] > 0)
+                        {
+                            inputWaitTime[playerIndex] -= (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                            continue;
+                        }
+                        Player player = PlayerManager.GetPlayer(playerIndex);
                         if (InputManager.GetMenuActionState(playerIndex, MenuActions.Select) == ActionStates.Pressed)
                         {
-                            Player player = PlayerManager.GetPlayer(playerIndex);
+                            // "press a to join"
                             if (player == null)
                             {
                                 PlayerManager.Players.Add(new Player(playerIndex, InputManager, PlayerManager));
+                                inputWaitTime[playerIndex] = 30;
                             }
+                            // choose your char
                             else if (player.Character == null)
                             {
-                                if (playerIndex == PlayerIndex.One)
-                                {
-                                    player.CreateCharacter(typeof(BlackMamba));
-                                }
-                                if (playerIndex == PlayerIndex.Two)
-                                {
-                                    player.CreateCharacter(typeof(Jimothy));
-                                }
+                                player.Character = CreateCharacter(player, selectedChar[playerIndex].Value);
+                            }
+                        }
+                        else if (InputManager.GetMenuActionState(playerIndex, MenuActions.MoveUp) == ActionStates.Pressed)
+                        {
+                            selectedChar[playerIndex] = selectedChar[playerIndex].Previous ?? chars.Last;
+                            inputWaitTime[playerIndex] = 20;
+                        }
+                        else if (InputManager.GetMenuActionState(playerIndex, MenuActions.MoveDown) == ActionStates.Pressed)
+                        {
+                            selectedChar[playerIndex] = selectedChar[playerIndex].Next ?? chars.First;
+                            inputWaitTime[playerIndex] = 20;
+                        }
+                        else if (InputManager.GetMenuActionState(playerIndex, MenuActions.Back) == ActionStates.Pressed)
+                        {
+                            if (player != null && player.Character == null)
+                            {
+                                PlayerManager.RemovePlayer(playerIndex);
+                                inputWaitTime[playerIndex] = 20;
+                            }
+                            else if (player != null && player.Character != null)
+                            {
+                                player.Character = null;
+                                inputWaitTime[playerIndex] = 20;
                             }
                         }
                     }
@@ -131,11 +174,23 @@ namespace YellowMamba.Screens
                         }
                         else if (player.Character == null)
                         {
-                            text = "Choose Your Character:\nBlack Mamba\nJimothy";
+                            text = "Choose Your Character:";
+                            foreach (Type type in chars)
+                            {
+                                string charText = type.ToString().Split('.')[2];
+                                if (type == selectedChar[playerIndex].Value)
+                                {
+                                    text += "\n>" + charText;
+                                }
+                                else
+                                {
+                                    text += "\n" + charText;
+                                }
+                            }
                         }
                         else
                         {
-
+                            text = "Ready!";
                         }
                         spriteBatch.DrawString(spriteFont, text, new Vector2((float)playerIndex / 4 * ScreenManager.ScreenWidth + ScreenManager.ScreenWidth / 15, ScreenManager.ScreenHeight / 2), Color.White);
                     }
@@ -147,6 +202,22 @@ namespace YellowMamba.Screens
         public override void UnloadContent()
         {
             ContentManager.Unload();
+        }
+
+        public Character CreateCharacter(Player player, Type type)
+        {
+            if (type.IsAssignableFrom(typeof(BlackMamba)))
+            {
+                return new BlackMamba(player, InputManager, PlayerManager);
+            }
+            else if (type.IsAssignableFrom(typeof(Jimothy)))
+            {
+                return new Jimothy(player, InputManager, PlayerManager);
+            }
+            else
+            {
+                throw new InvalidOperationException("Bad type");
+            }
         }
     }
 }
