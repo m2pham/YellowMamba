@@ -120,11 +120,11 @@ namespace YellowMamba.Managers
                 foreach (MenuActions menuAction in Enum.GetValues(typeof(MenuActions)))
                 {
                     Buttons button = playerMenuButtonsMap[menuAction];
-                    if (button == Buttons.LeftThumbstickUp && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y > .24f)
+                    if (button == Buttons.LeftThumbstickUp && GamePad.GetState(playerIndex).ThumbSticks.Left.Y > .24f)
                     {
                         playersMenuActionStatesMap[playerIndex][menuAction] = ActionStates.Pressed;
                     }
-                    else if (button == Buttons.LeftThumbstickDown && GamePad.GetState(PlayerIndex.One).ThumbSticks.Left.Y < -.24f)
+                    else if (button == Buttons.LeftThumbstickDown && GamePad.GetState(playerIndex).ThumbSticks.Left.Y < -.24f)
                     {
                         playersMenuActionStatesMap[playerIndex][menuAction] = ActionStates.Pressed;
                     }

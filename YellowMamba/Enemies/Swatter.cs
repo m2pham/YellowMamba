@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using YellowMamba.AnimatedSprites;
+using YellowMamba.Utility;
 using YellowMamba.Characters;
 using YellowMamba.Entities;
 using YellowMamba.Managers;

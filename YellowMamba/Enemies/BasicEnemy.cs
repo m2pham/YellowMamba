@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using YellowMamba.AnimatedSprites;
+using YellowMamba.Utility;
 using YellowMamba.Characters;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
@@ -22,7 +22,7 @@ namespace YellowMamba.Enemies
             : base(playermanager)
         {
             Speed = 3;
-            Health = 30;
+            Health = 25;
             timeToChange = 0F;
             DamagedTime = 0;
             FacingLeft = true;
@@ -48,6 +48,13 @@ namespace YellowMamba.Enemies
             Position.Y += Velocity.Y;
             Hitbox.X = (int)Position.X + HitboxDisplacement;
             Hitbox.Y = (int)Position.Y;
+            foreach (Player player in PlayerManager.Players)
+            {
+                if (player.Character.PickAggroBox.Intersects(Hitbox) && player.Character.Defending)
+                {
+                    focusedPlayer = player;
+                }
+            }
             if (focusedPlayer == null)
             {
                 FacingLeft = true;
@@ -103,6 +110,12 @@ namespace YellowMamba.Enemies
                     float distance = float.MaxValue;
                     foreach (Player player in PlayerManager.Players)
                     {
+                        if (player.Character.PickAggroBox.Intersects(Hitbox) && player.Character.Defending)
+                        {
+                            focusedPlayer = player;
+                            break;
+                        }
+
                         float playerDistance = Vector2.Distance(player.Character.Position, Position);
                         if (distance > playerDistance)
                         {
@@ -159,6 +172,14 @@ namespace YellowMamba.Enemies
                     break;
                 case EnemyStates.Attacking:
                     AttackingTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    if (AttackingTime == 5)
+                    {
+                        AttackVisible = true;
+                    }
+                    else
+                    {
+                        AttackVisible = false;
+                    }
                     if (AttackingTime > 10)
                     {
                         AttackingTime = 0;

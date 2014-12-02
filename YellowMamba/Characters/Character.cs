@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using YellowMamba.AnimatedSprites;
+using YellowMamba.Utility;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
 using YellowMamba.Players;
@@ -14,7 +14,7 @@ namespace YellowMamba.Characters
 {
     public enum CharacterStates
     {
-        PassState, ShootState, ShootingState, PickState, AttackState, DamagedState, StunnedState, DefaultState
+        PassState, ShootState, ShootingState, PickState, AttackState, DamagedState, StunnedState, JumpingState, DefaultState
     }
 
     public enum Pass
@@ -39,15 +39,16 @@ namespace YellowMamba.Characters
         public int Defense { get; set; }
         public int PickHealth { get; set; }
         public int MaxPickHealth { get; set; }
-        public int PickHealthRegenerationTimer { get; set; }
-        public int PickHealthRegenerationRate { get; set; } // pickhealth/timer tick
+        protected int PickHealthRegenerationTimer { get; set; }
+        protected int PickHealthRegenerationRate { get; set; } // pickhealth/timer tick
+        protected int PassEffectTimer { get; set; }
         public CharacterStates CharacterState { get; protected set; }
         public bool FacingLeft { get; set; }
-        protected int ShootingTime { get; set; }
-        protected int AttackingTime { get; set; }
-        protected int DamagedTime { get; set; }
-        protected int StunnedTime { get; set; }
+        protected int StateTimer { get; set; }
         public Rectangle AttackHitbox;
+        public Rectangle PickAggroBox;
+        public Rectangle PickDefendingBox;
+        public bool Defending { get; protected set; }
         protected Vector2 AttackRange { get; set; }
 
         public Character(Player player, InputManager inputManager, PlayerManager playerManager)
@@ -61,9 +62,8 @@ namespace YellowMamba.Characters
             HasBall = false;
             CharacterState = CharacterStates.DefaultState;
             Position.Y = 310 + 100 * (int)Player.PlayerIndex;
-            ShootingTime = 0;
-            AttackingTime = 0;
-            DamagedTime = 0;
+            PickAggroBox = new Rectangle();
+            PickDefendingBox = new Rectangle();
         }
 
         protected void ProcessMovement(int speed)

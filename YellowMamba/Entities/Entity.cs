@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
+using YellowMamba.Utility;
 
 namespace YellowMamba.Entities
 {
@@ -15,6 +16,7 @@ namespace YellowMamba.Entities
     {
         public Vector2 Position;
         public Vector2 Velocity;
+        public float PositionZ, VelocityZ;
         protected int Speed { get; set; }
         public bool MarkForDelete { get; set; }
         public Rectangle Hitbox;
@@ -24,6 +26,8 @@ namespace YellowMamba.Entities
             Position = new Vector2();
             Velocity = new Vector2();
             Speed = 10;
+            PositionZ = 0;
+            VelocityZ = 0;
         }
 
         public abstract void LoadContent(ContentManager contentManager);

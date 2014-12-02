@@ -35,7 +35,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AnimatedSprites\AnimatedSprite.cs" />
+    <Compile Include="Utility\AnimatedSprite.cs" />
     <Compile Include="Characters\BlackMamba.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Jimothy.cs" />
@@ -72,7 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Content\" />
-    <Folder Include="Entities\Enemies\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\YellowMambaContent\YellowMambaContent\YellowMambaContent.csproj">

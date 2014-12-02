@@ -11,7 +11,7 @@ using YellowMamba.Players;
 
 
 
-namespace YellowMamba.AnimatedSprites
+namespace YellowMamba.Utility
 {
     public class AnimatedSprite
     {
@@ -83,6 +83,29 @@ namespace YellowMamba.AnimatedSprites
 
             Rectangle sourceRectangle = new Rectangle(FrameWidth * (column - 1), FrameHeight * (row - 1), FrameWidth, FrameHeight);
             Rectangle destinationRectangle = new Rectangle((int)location.X, (int)location.Y, FrameWidth, FrameHeight);
+
+            spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), spriteEffects, 0);
+
+        }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 location, float positionZ, bool facingLeft)
+        {
+            //need to arrange each animation of a sprite in one row
+            //still need to change code in accordance to this
+            int row = (int)Math.Ceiling((float)currentFrame / (float)Columns);
+            int column = currentFrame % Columns;
+            if (column == 0)
+            {
+                column = Columns;
+            }
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            if (facingLeft)
+            {
+                spriteEffects = SpriteEffects.FlipHorizontally;
+            }
+
+            Rectangle sourceRectangle = new Rectangle(FrameWidth * (column - 1), FrameHeight * (row - 1), FrameWidth, FrameHeight);
+            Rectangle destinationRectangle = new Rectangle((int)location.X, (int)(location.Y - positionZ), FrameWidth, FrameHeight);
 
             spriteBatch.Draw(Texture, destinationRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), spriteEffects, 0);
 

@@ -123,27 +123,44 @@ namespace YellowMamba.Screens
                                 player.Character = CreateCharacter(player, selectedChar[playerIndex].Value);
                             }
                         }
-                        else if (InputManager.GetMenuActionState(playerIndex, MenuActions.MoveUp) == ActionStates.Pressed)
+                    }
+
+                    foreach (Player player in PlayerManager.Players.ToList())
+                    {
+                        if (inputWaitTime[player.PlayerIndex] > 0)
                         {
-                            selectedChar[playerIndex] = selectedChar[playerIndex].Previous ?? chars.Last;
-                            inputWaitTime[playerIndex] = 20;
+                            inputWaitTime[player.PlayerIndex] -= (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                            continue;
                         }
-                        else if (InputManager.GetMenuActionState(playerIndex, MenuActions.MoveDown) == ActionStates.Pressed)
+                        if (InputManager.GetMenuActionState(player.PlayerIndex, MenuActions.MoveUp) == ActionStates.Pressed)
                         {
-                            selectedChar[playerIndex] = selectedChar[playerIndex].Next ?? chars.First;
-                            inputWaitTime[playerIndex] = 20;
+                            if (player.PlayerIndex == PlayerIndex.Two)
+                            {
+                                Console.WriteLine("p2 up");
+                            }
+                            if (player.PlayerIndex == PlayerIndex.One)
+                            {
+                                Console.WriteLine("p1 up");
+                            }
+                            selectedChar[player.PlayerIndex] = selectedChar[player.PlayerIndex].Previous ?? chars.Last;
+                            inputWaitTime[player.PlayerIndex] = 20;
                         }
-                        else if (InputManager.GetMenuActionState(playerIndex, MenuActions.Back) == ActionStates.Pressed)
+                        else if (InputManager.GetMenuActionState(player.PlayerIndex, MenuActions.MoveDown) == ActionStates.Pressed)
+                        {
+                            selectedChar[player.PlayerIndex] = selectedChar[player.PlayerIndex].Next ?? chars.First;
+                            inputWaitTime[player.PlayerIndex] = 20;
+                        }
+                        else if (InputManager.GetMenuActionState(player.PlayerIndex, MenuActions.Back) == ActionStates.Pressed)
                         {
                             if (player != null && player.Character == null)
                             {
-                                PlayerManager.RemovePlayer(playerIndex);
-                                inputWaitTime[playerIndex] = 20;
+                                PlayerManager.RemovePlayer(player.PlayerIndex);
+                                inputWaitTime[player.PlayerIndex] = 20;
                             }
                             else if (player != null && player.Character != null)
                             {
                                 player.Character = null;
-                                inputWaitTime[playerIndex] = 20;
+                                inputWaitTime[player.PlayerIndex] = 20;
                             }
                         }
                     }

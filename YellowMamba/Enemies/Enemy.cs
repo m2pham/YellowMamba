@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using YellowMamba.AnimatedSprites;
+using YellowMamba.Utility;
 using YellowMamba.Entities;
 using YellowMamba.Managers;
 using YellowMamba.Players;
@@ -28,6 +28,7 @@ namespace YellowMamba.Enemies
         protected Player focusedPlayer { get; set; }
         protected AnimatedSprite animatedSprite;
         public Rectangle AttackHitbox;
+        public bool AttackVisible;
         protected bool FacingLeft { get; set; }
         public int Attack { get; set; }
         protected Vector2 AttackRange { get; set; }
