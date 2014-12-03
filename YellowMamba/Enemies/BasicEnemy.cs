@@ -28,7 +28,7 @@ namespace YellowMamba.Enemies
             FacingLeft = true;
             Attack = 5;
             AttackWaitTime = 0;
-            AttackRange = new Vector2(50, 50);
+            AttackRange = new Vector2(40, 40);
             AttackHitbox = new Rectangle((int)(Position.X - AttackRange.X), (int)Position.Y - 22, (int)AttackRange.X, (int)AttackRange.Y);
         }
 
@@ -124,7 +124,8 @@ namespace YellowMamba.Enemies
                         }
                     }
 
-                    if (AttackHitbox.Intersects(focusedPlayer.Character.Hitbox))
+                    if (AttackHitbox.Intersects(focusedPlayer.Character.Hitbox) && focusedPlayer.Character.Hitbox.Bottom > Hitbox.Bottom - 25
+                        && focusedPlayer.Character.Hitbox.Bottom < Hitbox.Bottom + 25)
                     {
                         Velocity.X = 0;
                         Velocity.Y = 0;
@@ -133,20 +134,22 @@ namespace YellowMamba.Enemies
                         break;
                     }
 
-                    if (FacingLeft && AttackHitbox.Left >= focusedPlayer.Character.Hitbox.Right)
+                    if ((FacingLeft && AttackHitbox.Left >= focusedPlayer.Character.Hitbox.Right)
+                        || (!FacingLeft && AttackHitbox.Left >= focusedPlayer.Character.Hitbox.Right))
                     {
                         Velocity.X = -2;
                     }
-                    else if (!FacingLeft && AttackHitbox.Right <= focusedPlayer.Character.Hitbox.Left)
+                    else if ((!FacingLeft && AttackHitbox.Right <= focusedPlayer.Character.Hitbox.Left)
+                        || (FacingLeft && AttackHitbox.Right <= focusedPlayer.Character.Hitbox.Left))
                     {
                         Velocity.X = 2;
                     }
 
-                    if (AttackHitbox.Top >= focusedPlayer.Character.Hitbox.Bottom)
+                    if (Hitbox.Bottom >= focusedPlayer.Character.Hitbox.Bottom + 25)
                     {
                         Velocity.Y = -2;
                     }
-                    else if (AttackHitbox.Bottom <= focusedPlayer.Character.Hitbox.Top)
+                    else if (Hitbox.Bottom <= focusedPlayer.Character.Hitbox.Bottom - 25)
                     {
                         Velocity.Y = 2;
                     }
@@ -235,7 +238,6 @@ namespace YellowMamba.Enemies
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            //spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
             animatedSprite.Draw(spriteBatch, Position, FacingLeft);
         }
 
@@ -243,7 +245,8 @@ namespace YellowMamba.Enemies
         {
             foreach (Player player in PlayerManager.Players)
             {
-                if (player.Character.AttackHitbox.Intersects(Hitbox) && player.Character.CharacterState == CharacterStates.AttackState)
+                if (player.Character.AttackHitbox.Intersects(Hitbox) && player.Character.CharacterState == CharacterStates.AttackState
+                    && player.Character.Hitbox.Bottom > Hitbox.Bottom - 25 && player.Character.Hitbox.Bottom < Hitbox.Bottom + 25)
                 {
                     Health -= player.Character.Attack;
                     if (Health <= 0)
