@@ -196,6 +196,11 @@ namespace YellowMamba.Characters
                     StateTimer += framesPassed;
                     PositionZ += VelocityZ;
                     VelocityZ -= .25F;
+                    if (PassEffectTimer > 180 - 70 * 2 / 3
+                        && InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
+                    {
+                        // alley oop or dunk or some crazy thing
+                    }
                     if (StateTimer > 70)
                     {
                         PositionZ = 0;

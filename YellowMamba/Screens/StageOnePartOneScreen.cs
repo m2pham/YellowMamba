@@ -41,11 +41,18 @@ namespace YellowMamba.Screens
             entityManager.Entities.Add(new PassBall());
             entityManager.Entities.Add(new ShootBall());
             entityManager.Entities.Add(new ShootTarget(InputManager, new Player(PlayerIndex.One, InputManager, PlayerManager)));
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
-                BasicEnemy basicEnemy = new BasicEnemy(enemyManager.PlayerManager);
-                basicEnemy.Position.X = (i * 20) + 600;
-                basicEnemy.Position.Y = (i * 30) + 200; 
+                BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
+                basicEnemy.Position.X = 900;
+                basicEnemy.Position.Y = (i * 100) + 375;
+                enemyManager.Enemies.Add(basicEnemy);
+            }
+            for (int i = 0; i < 4; i++)
+            {
+                BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
+                basicEnemy.Position.X = 1100;
+                basicEnemy.Position.Y = (i * 100) + 325;
                 enemyManager.Enemies.Add(basicEnemy);
             }
         }
@@ -96,6 +103,10 @@ namespace YellowMamba.Screens
                         player.Character.Position.X -= 7.5F;
                         player.Character.AnimatedSprite.Update();
                     }
+                    foreach (Enemy enemy in enemyManager.Enemies)
+                    {
+                        enemy.Position.X -= 10;
+                    }
                     if (backgroundRectangle.X == 1280 * (areaCounter - 1))
                     {
                         ScreenState = ScreenStates.Active;
@@ -122,6 +133,21 @@ namespace YellowMamba.Screens
                                 player.Character.AnimatedSprite.SelectAnimation(22, 5);
                             }
                         }
+                        for (int i = 0; i < 3; i++)
+                        {
+                            BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
+                            basicEnemy.Position.X = (i * 50) + 800 + 1280;
+                            basicEnemy.Position.Y = (i * 100) + 375;
+                            enemyManager.Enemies.Add(basicEnemy);
+                        }
+                        for (int i = 0; i < 4; i++)
+                        {
+                            BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
+                            basicEnemy.Position.X = (i * 50) + 1000 + 1280;
+                            basicEnemy.Position.Y = (i * 100) + 325;
+                            enemyManager.Enemies.Add(basicEnemy);
+                        }
+                        enemyManager.LoadContent(ContentManager);
                         ScreenState = ScreenStates.TransitionNextArea;
                         break;
                     }
@@ -147,6 +173,7 @@ namespace YellowMamba.Screens
                 case ScreenStates.TransitionNextArea:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
                     PlayerManager.Draw(gameTime, spriteBatch);
+                    enemyManager.Draw(gameTime, spriteBatch);
                     break;
                 case ScreenStates.Active:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);

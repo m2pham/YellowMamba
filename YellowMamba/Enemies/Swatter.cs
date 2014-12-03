@@ -258,7 +258,7 @@ namespace YellowMamba.Enemies
                         if (Hitbox.Contains(ball.DestinationPosition.X + targetCenter.X, ball.DestinationPosition.Y + targetCenter.Y))
                         {
                             // select damaged animation
-                            Health -= 10;
+                            Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;
                             if (Health <= 0)
                             {
                                 EnemyState = EnemyStates.Dead;
