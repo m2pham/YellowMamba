@@ -101,7 +101,7 @@ namespace YellowMamba.Screens
                     {
                         // move player back to left
                         player.Character.Position.X -= 7.5F;
-                        player.Character.AnimatedSprite.Update();
+                        player.Character.CurrentAnimation.Update(gameTime);
                     }
                     foreach (Enemy enemy in enemyManager.Enemies)
                     {
@@ -128,10 +128,7 @@ namespace YellowMamba.Screens
                         foreach (Player player in PlayerManager.Players)
                         {
                             player.Character.FacingLeft = false;
-                            if (player.Character.GetType() == typeof(BlackMamba))
-                            {
-                                player.Character.AnimatedSprite.SelectAnimation(22, 5);
-                            }
+                            player.Character.SelectAnimation(player.Character.RunningAnimation);
                         }
                         for (int i = 0; i < 3; i++)
                         {
@@ -171,15 +168,40 @@ namespace YellowMamba.Screens
                     // transition out animation here
                     break;
                 case ScreenStates.TransitionNextArea:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
-                    PlayerManager.Draw(gameTime, spriteBatch);
-                    enemyManager.Draw(gameTime, spriteBatch);
+                    {
+                        spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
+                        List<Entity> allEntities = (PlayerManager.Characters.Concat<Entity>(enemyManager.Enemies)).ToList();
+                        allEntities = allEntities.OrderBy(e => e.Position.Y).ToList();
+                        foreach (Entity entity in allEntities)
+                        {
+                            entity.Draw(gameTime, spriteBatch);
+                        }
+
+                        //PlayerManager.Draw(gameTime, spriteBatch);
+                        //enemyManager.Draw(gameTime, spriteBatch);
+                    }
                     break;
                 case ScreenStates.Active:
-                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
-                    PlayerManager.Draw(gameTime, spriteBatch);
-                    enemyManager.Draw(gameTime, spriteBatch);
-                    entityManager.Draw(gameTime, spriteBatch);
+                    {
+                        spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
+
+                        List<Entity> allEntities = PlayerManager.Characters.Concat<Entity>(enemyManager.Enemies).Concat<Entity>(entityManager.Entities).ToList();
+                        allEntities = allEntities.OrderBy(e => e.Position.Y).ToList();
+                        foreach (Entity entity in allEntities)
+                        {
+                            entity.Draw(gameTime, spriteBatch);
+                        }
+                        foreach (Player player in PlayerManager.Players)
+                        {
+                            if (player.Target.Visible)
+                            {
+                                player.Target.Draw(gameTime, spriteBatch);
+                            }
+                        }
+                        //PlayerManager.Draw(gameTime, spriteBatch);
+                        //enemyManager.Draw(gameTime, spriteBatch);
+                        //entityManager.Draw(gameTime, spriteBatch);
+                    }
                     break;
             }
             spriteBatch.End();

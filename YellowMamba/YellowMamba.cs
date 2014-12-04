@@ -57,6 +57,10 @@ namespace YellowMamba
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            Content.Load<Texture2D>("ButtonA");
+            Content.Load<Texture2D>("ButtonB");
+            Content.Load<Texture2D>("ButtonX");
+            Content.Load<Texture2D>("ButtonY");
         }
 
         protected override void UnloadContent()

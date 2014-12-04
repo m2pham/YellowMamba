@@ -35,7 +35,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Utility\AnimatedSprite.cs" />
     <Compile Include="Characters\BlackMamba.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Jimothy.cs" />
@@ -56,6 +55,8 @@
     <Compile Include="Screens\MainScreen.cs" />
     <Compile Include="Screens\Screen.cs" />
     <Compile Include="Screens\StageOnePartOneScreen.cs" />
+    <Compile Include="Utility\Animation.cs" />
+    <Compile Include="Utility\SpriteSheet.cs" />
     <Compile Include="YellowMamba.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

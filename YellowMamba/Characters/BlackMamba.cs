@@ -10,6 +10,7 @@ using YellowMamba.Players;
 using YellowMamba.Entities;
 using YellowMamba.Utility;
 using YellowMamba.Enemies;
+using Microsoft.Xna.Framework.Input;
 
 namespace YellowMamba.Characters
 {
@@ -27,7 +28,6 @@ namespace YellowMamba.Characters
             PickHealthRegenerationRate = 5;
             Attack = 10;
             ShootAttack = 5;
-            HasBall = true;
             FacingLeft = false;
             AttackRange = new Vector2(30, 30);
             AttackHitbox = new Rectangle((int)(Position.X + HitboxDisplacement + 36), (int)Position.Y - 14, (int)AttackRange.X, (int)AttackRange.Y);
@@ -35,9 +35,18 @@ namespace YellowMamba.Characters
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("BlackMamba/BlackMamba");
+            ContentManager = contentManager;
+            SpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 11, 7);
             PickHealthBarSprite = contentManager.Load<Texture2D>("PickHealthBar");
-            AnimatedSprite = new AnimatedSprite(contentManager.Load<Texture2D>("BlackMambaSpriteSheet"), 8, 11, 7, 10, 4);
+            StandingAnimation = new Animation(SpriteSheet, 8, 4, 5);
+            RunningAnimation = new Animation(SpriteSheet, 22, 5, 5);
+            ShootingAnimation = new Animation(SpriteSheet, 1, 4, 5);
+            AttackingAnimation = new Animation(SpriteSheet, 15, 3, 5);
+            JumpingAnimation = new Animation(SpriteSheet, 57, 7, 5);
+            PrimeShotAnimation = new Animation(SpriteSheet, 64, 1, 5);
+            PickingAnimation = new Animation(SpriteSheet, 71, 1, 5);
+            DamagedAnimation = new Animation(SpriteSheet, 50, 5, 5);
+            CurrentAnimation = StandingAnimation;
             Hitbox.Width = 30;
             Hitbox.Height = 70;
             PickAggroBox.Width = Hitbox.Width + 100;
@@ -51,7 +60,7 @@ namespace YellowMamba.Characters
             // really just 1?
             int framesPassed = (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
             Hitbox.X = (int) Position.X + 17;
-            Hitbox.Y = (int) Position.Y + 14;
+            Hitbox.Y = (int) Position.Y + 14 + (int)PositionZ;
             PickAggroBox.X = (int)Position.X - 50;
             PickAggroBox.Y = (int)Position.Y - 50;
             PickDefendingBox.X = (int)Position.X - 25;
@@ -89,7 +98,7 @@ namespace YellowMamba.Characters
                 AttackHitbox.X = (int)Position.X + HitboxDisplacement + 36;
             }
             AttackHitbox.Y = Hitbox.Y;
-            AnimatedSprite.Update();
+            CurrentAnimation.Update(gameTime);
             switch (CharacterState)
             {
                 case CharacterStates.ShootState:
@@ -102,13 +111,13 @@ namespace YellowMamba.Characters
                     if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
                     {
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
-                        AnimatedSprite.SelectAnimation(1, 4);
+                        SelectAnimation(ShootingAnimation);
                         CharacterState = CharacterStates.ShootingState;
                     }
                     break;
                 case CharacterStates.ShootingState:
                     StateTimer += framesPassed;
-                    if (StateTimer > 30)
+                    if (StateTimer > ShootingAnimation.NumFrames * ShootingAnimation.Frequency)
                     {
                         ShootBall shootBall = new ShootBall();
                         shootBall.SourcePosition = Position;
@@ -146,15 +155,19 @@ namespace YellowMamba.Characters
                         break;
                     }
 
-                    LinkedListNode<CharacterActions> passButtonNode = InputManager.PassButtons.First;
+                    LinkedListNode<Buttons> passButtonNode = InputManager.PassButtons.First;
                     foreach (Player targetPlayer in PlayerManager.Players)
                     {
-                        if (targetPlayer.PlayerIndex == Player.PlayerIndex || targetPlayer.Character.CharacterState == CharacterStates.StunnedState)
+                        if (targetPlayer.PlayerIndex == Player.PlayerIndex)
+                        {
+                            continue;
+                        }
+                        if (targetPlayer.Character.CharacterState == CharacterStates.StunnedState)
                         {
                             passButtonNode = passButtonNode.Next;
                             continue;
                         }
-                        if (InputManager.GetCharacterActionState(Player.PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
+                        if (InputManager.GetButtonActionState(Player.PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
                         {
                             PassBall ball = new PassBall();
                             ball.Position = Position;
@@ -170,7 +183,7 @@ namespace YellowMamba.Characters
                     break;
                 case CharacterStates.AttackState:
                     StateTimer += framesPassed;
-                    if (StateTimer > 30)
+                    if (StateTimer > AttackingAnimation.NumFrames * AttackingAnimation.Frequency)
                     {
                         StateTimer = 0;
                         CharacterState = CharacterStates.DefaultState;
@@ -178,7 +191,7 @@ namespace YellowMamba.Characters
                     break;
                 case CharacterStates.DamagedState:
                     StateTimer += framesPassed;
-                    if (StateTimer > 40)
+                    if (StateTimer > DamagedAnimation.NumFrames * DamagedAnimation.Frequency)
                     {
                         StateTimer = 0;
                         CharacterState = CharacterStates.DefaultState;
@@ -186,7 +199,7 @@ namespace YellowMamba.Characters
                     break;
                 case CharacterStates.StunnedState:
                     StateTimer += framesPassed;
-                    if (StateTimer > 120)
+                    if (StateTimer > AttackingAnimation.NumFrames * AttackingAnimation.Frequency)
                     {
                         StateTimer = 0;
                         CharacterState = CharacterStates.DefaultState;
@@ -195,13 +208,13 @@ namespace YellowMamba.Characters
                 case CharacterStates.JumpingState:
                     StateTimer += framesPassed;
                     PositionZ += VelocityZ;
-                    VelocityZ -= .25F;
-                    if (PassEffectTimer > 180 - 70 * 2 / 3
+                    VelocityZ -= .3F;
+                    if (PassEffectTimer > 180 - JumpingAnimation.NumFrames * JumpingAnimation.Frequency * (2/3)
                         && InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
                     {
                         // alley oop or dunk or some crazy thing
                     }
-                    if (StateTimer > 70)
+                    if (StateTimer > JumpingAnimation.NumFrames * JumpingAnimation.Frequency)
                     {
                         PositionZ = 0;
                         StateTimer = 0;
@@ -220,11 +233,11 @@ namespace YellowMamba.Characters
                     }
                     if (Velocity.X != 0 || Velocity.Y != 0)
                     {
-                        AnimatedSprite.SelectAnimation(22, 5);
+                        CurrentAnimation = RunningAnimation;
                     }
                     else
                     {
-                        AnimatedSprite.SelectAnimation(8, 4);
+                        CurrentAnimation = StandingAnimation;
                     }
                     if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
                         && PlayerManager.Players.Count > 1 && HasBall)
@@ -234,24 +247,24 @@ namespace YellowMamba.Characters
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
                     {
                         CharacterState = CharacterStates.ShootState;
-                        AnimatedSprite.SelectAnimation(64, 1);
+                        SelectAnimation(PrimeShotAnimation);
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Position = Position;
                         PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = true;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Attack) == ActionStates.Pressed)
                     {
-                        AnimatedSprite.SelectAnimation(15, 3);
+                        SelectAnimation(AttackingAnimation);
                         CharacterState = CharacterStates.AttackState;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pick) == ActionStates.Pressed)
                     {
-                        AnimatedSprite.SelectAnimation(71, 1);
+                        SelectAnimation(PickingAnimation);
                         CharacterState = CharacterStates.PickState;
                     }
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Jump) == ActionStates.Pressed)
                     {
-                        AnimatedSprite.SelectAnimation(57, 7);
-                        VelocityZ = 8.75F;
+                        SelectAnimation(JumpingAnimation);
+                        VelocityZ = .3F * JumpingAnimation.NumFrames * JumpingAnimation.Frequency / 2;
                         CharacterState = CharacterStates.JumpingState;
                     }
                     break;
@@ -262,7 +275,7 @@ namespace YellowMamba.Characters
         {
             foreach (Entity entity in PlayerManager.EntityManager.Entities.ToList())
             {
-                if (Hitbox.Intersects(entity.Hitbox))
+                if (Hitbox.Intersects(entity.Hitbox) && entity.PositionZ <= PositionZ + 10 && entity.PositionZ >= PositionZ - 10)
                 {
                     if (entity.GetType() == typeof(PassBall))
                     {
@@ -310,10 +323,36 @@ namespace YellowMamba.Characters
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            AnimatedSprite.Draw(spriteBatch, Position, PositionZ, FacingLeft);
+            CurrentAnimation.Draw(spriteBatch, Position, PositionZ, FacingLeft);
             if (CharacterState == CharacterStates.PickState)
             {
                 spriteBatch.Draw(PickHealthBarSprite, new Rectangle(Hitbox.Center.X - PickHealthBarSprite.Bounds.Center.X, (int)Position.Y - 20, PickHealthBarSprite.Width * PickHealth / MaxPickHealth, PickHealthBarSprite.Height), Color.White);
+            }
+            else if (CharacterState == CharacterStates.PassState)
+            {
+                LinkedListNode<Buttons> passButtonNode = InputManager.PassButtons.First;
+                foreach (Player targetPlayer in PlayerManager.Players)
+                {
+                    if (targetPlayer.PlayerIndex == Player.PlayerIndex)
+                    {
+                        continue;
+                    }
+                    if (targetPlayer.Character.CharacterState == CharacterStates.StunnedState)
+                    {
+                        passButtonNode = passButtonNode.Next;
+                        continue;
+                    }
+
+                    Texture2D buttonTexture = ContentManager.Load<Texture2D>("Button" + passButtonNode.Value.ToString());
+                    int yPos = 40;
+                    if (targetPlayer.Character.CharacterState == CharacterStates.PickState)
+                    {
+                        yPos += 10;
+                    }
+                    spriteBatch.Draw(buttonTexture, new Vector2(targetPlayer.Character.Hitbox.Center.X - buttonTexture.Width * .5F / 2F, (int)targetPlayer.Character.Position.Y - (int) targetPlayer.Character.PositionZ - yPos),
+                        null, Color.White, 0, new Vector2(0,0), .5F, SpriteEffects.None, 0);
+                    passButtonNode = passButtonNode.Next;
+                }
             }
         }
     }

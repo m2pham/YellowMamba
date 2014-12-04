@@ -39,8 +39,12 @@ namespace YellowMamba.Enemies
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("Swatter");
-            animatedSprite = new AnimatedSprite(Sprite, 5, 1, 7, 30, 2);
+            SpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("BasicEnemy"), 1, 7);
+            StandingAnimation = new Animation(SpriteSheet, 5, 2, 5);
+            RunningAnimation = new Animation(SpriteSheet, 4, 1, 5);
+            AttackingAnimation = new Animation(SpriteSheet, 1, 2, 5);
+            DamagedAnimation = new Animation(SpriteSheet, 7, 1, 5);
+            CurrentAnimation = StandingAnimation;
             //Hitbox.Width = animatedSprite.FrameWidth;
             //Hitbox.Height = animatedSprite.FrameHeight;
             
@@ -78,7 +82,7 @@ namespace YellowMamba.Enemies
                 AttackHitbox.X = (int)Position.X + HitboxDisplacement + 72;
             }
             AttackHitbox.Y = Hitbox.Y;
-            animatedSprite.Update();
+            CurrentAnimation.Update(gameTime);
             if (EnemyState != EnemyStates.Damaged)
             {
                 ProcessDamage();
@@ -93,7 +97,7 @@ namespace YellowMamba.Enemies
                         {
                             focusedPlayer = player;
                             //animation will be changed
-                            animatedSprite.SelectAnimation(4, 1);
+                            //animatedSprite.SelectAnimation(4, 1);
                             EnemyState = EnemyStates.SeePlayer;
                         }
                     }
@@ -103,7 +107,7 @@ namespace YellowMamba.Enemies
                     timeToChange += (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (timeToChange >= 2F)
                     {
-                        animatedSprite.SelectAnimation(3, 1);
+                        //animatedSprite.SelectAnimation(3, 1);
                         EnemyState = EnemyStates.Chase;
                     }
                     break;
@@ -123,7 +127,7 @@ namespace YellowMamba.Enemies
                     {
                         Velocity.X = 0;
                         Velocity.Y = 0;
-                        animatedSprite.SelectAnimation(1, 2);
+                        //animatedSprite.SelectAnimation(1, 2);
                         EnemyState = EnemyStates.Attack;
                         break;
                     }
@@ -160,7 +164,7 @@ namespace YellowMamba.Enemies
                 case EnemyStates.Attack:
                     if (!AttackHitbox.Intersects(focusedPlayer.Character.Hitbox))
                     {
-                        animatedSprite.SelectAnimation(3, 1);
+                        //animatedSprite.SelectAnimation(3, 1);
                         EnemyState = EnemyStates.Chase;
                     }
                     else
@@ -200,7 +204,7 @@ namespace YellowMamba.Enemies
                     if (DamagedTime > 20)
                     {
                         DamagedTime = 0;
-                        animatedSprite.SelectAnimation(3, 1);
+                        //animatedSprite.SelectAnimation(3, 1);
                         EnemyState = EnemyStates.Chase;
                     }
                     break;
@@ -225,7 +229,7 @@ namespace YellowMamba.Enemies
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
-            animatedSprite.Draw(spriteBatch, Position, FacingLeft);
+            CurrentAnimation.Draw(spriteBatch, Position, FacingLeft);
         }
 
         private void ProcessDamage()
@@ -241,7 +245,7 @@ namespace YellowMamba.Enemies
                     }
                     else
                     {
-                        animatedSprite.SelectAnimation(7, 1);
+                        SelectAnimation(DamagedAnimation);
                         EnemyState = EnemyStates.Damaged;
                     }
                 }
@@ -265,7 +269,7 @@ namespace YellowMamba.Enemies
                             }
                             else
                             {
-                                animatedSprite.SelectAnimation(7, 1);
+                                SelectAnimation(DamagedAnimation);
                                 EnemyState = EnemyStates.Damaged;
                             }
                         }

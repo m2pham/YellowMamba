@@ -23,7 +23,8 @@ namespace YellowMamba.Entities
         public PassBall() : base()
         {
             InFlight = true;
-            Knocked = false; 
+            Knocked = false;
+            PositionZ = 0;
         }
 
         public override void LoadContent(ContentManager contentManager)
@@ -40,7 +41,9 @@ namespace YellowMamba.Entities
             }
             Velocity.X = (TargetPlayer.Character.Position.X - Position.X) / diff;
             Velocity.Y = (TargetPlayer.Character.Position.Y - Position.Y) / diff;
+            VelocityZ = (TargetPlayer.Character.PositionZ - PositionZ) / diff;
             Position += Velocity;
+            PositionZ += VelocityZ;
 
             if (Knocked == true)
             {
@@ -55,12 +58,12 @@ namespace YellowMamba.Entities
             Hitbox.Width = Sprite.Width;
             Hitbox.Height = Sprite.Height;
             Hitbox.X = (int)Position.X;
-            Hitbox.Y = (int)Position.Y;
+            Hitbox.Y = (int)Position.Y + (int)PositionZ;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
+            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)(Position.Y - PositionZ), Sprite.Width, Sprite.Height), Color.White);
         }
     }
 }

@@ -121,6 +121,7 @@ namespace YellowMamba.Screens
                             else if (player.Character == null)
                             {
                                 player.Character = CreateCharacter(player, selectedChar[playerIndex].Value);
+                                PlayerManager.Characters.Add(player.Character);
                             }
                         }
                     }
@@ -134,14 +135,6 @@ namespace YellowMamba.Screens
                         }
                         if (InputManager.GetMenuActionState(player.PlayerIndex, MenuActions.MoveUp) == ActionStates.Pressed)
                         {
-                            if (player.PlayerIndex == PlayerIndex.Two)
-                            {
-                                Console.WriteLine("p2 up");
-                            }
-                            if (player.PlayerIndex == PlayerIndex.One)
-                            {
-                                Console.WriteLine("p1 up");
-                            }
                             selectedChar[player.PlayerIndex] = selectedChar[player.PlayerIndex].Previous ?? chars.Last;
                             inputWaitTime[player.PlayerIndex] = 20;
                         }
@@ -159,6 +152,7 @@ namespace YellowMamba.Screens
                             }
                             else if (player != null && player.Character != null)
                             {
+                                PlayerManager.Characters.Remove(player.Character);
                                 player.Character = null;
                                 inputWaitTime[player.PlayerIndex] = 20;
                             }

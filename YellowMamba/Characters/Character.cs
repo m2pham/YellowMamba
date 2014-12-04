@@ -24,12 +24,21 @@ namespace YellowMamba.Characters
 
     public abstract class Character : Entity
     {
-        public Texture2D Sprite { get; set; }
+        public SpriteSheet SpriteSheet { get; set; }
+        public Animation CurrentAnimation { get; protected set; }
+        public Animation StandingAnimation { get; protected set; }
+        public Animation RunningAnimation { get; protected set; }
+        public Animation PrimeShotAnimation { get; protected set; }
+        public Animation ShootingAnimation { get; protected set; }
+        public Animation PickingAnimation { get; protected set; }
+        public Animation AttackingAnimation { get; protected set; }
+        public Animation JumpingAnimation { get; protected set; }
+        public Animation DamagedAnimation { get; protected set; }
         protected Texture2D PickHealthBarSprite { get; set; }
-        public AnimatedSprite AnimatedSprite { get; set; }
         protected Player Player { get; private set; }
         protected InputManager InputManager { get; private set; }
         protected PlayerManager PlayerManager { get; private set; }
+        protected ContentManager ContentManager { get; set; }
         protected bool HasBall { get; set; }
         protected bool IsInvincible { get; set; }
         protected Pass CurrentPass { get; set; }
@@ -55,11 +64,11 @@ namespace YellowMamba.Characters
             : base()
         {
             Player = player;
+            HasBall = player.PlayerIndex == PlayerIndex.One;
             InputManager = inputManager;
             PlayerManager = playerManager;
             IsInvincible = false;
             CurrentPass = Pass.StraightPass;
-            HasBall = false;
             CharacterState = CharacterStates.DefaultState;
             Position.Y = 310 + 100 * (int)Player.PlayerIndex;
             PickAggroBox = new Rectangle();
@@ -88,7 +97,7 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveDown) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveDown) == ActionStates.Held)
             {
-                if (Position.Y + Sprite.Height <= 720)
+                if (Position.Y + Hitbox.Height <= 720)
                 {
                     Velocity.Y = speed;
                 }
@@ -118,7 +127,7 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
             {
-                if (Position.X + Sprite.Width <= 1280)
+                if (Position.X + Hitbox.Width <= 1280)
                 {
                     Velocity.X = speed;
                 }
@@ -129,6 +138,12 @@ namespace YellowMamba.Characters
             }
 
             Position += Velocity;
+        }
+
+        public void SelectAnimation(Animation animation)
+        {
+            CurrentAnimation = animation;
+            CurrentAnimation.Reset();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace YellowMamba.Managers
         private Dictionary<PlayerIndex, Dictionary<MenuActions, ActionStates>> playersMenuActionStatesMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>> playersCharacterButtonsMap;
         private Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>> playersCharacterActionStatesMap;
-        public LinkedList<CharacterActions> PassButtons { get; private set; }
+        public LinkedList<Buttons> PassButtons { get; private set; }
 
         public InputManager()
         {
@@ -21,14 +21,14 @@ namespace YellowMamba.Managers
             playersMenuActionStatesMap = new Dictionary<PlayerIndex, Dictionary<MenuActions, ActionStates>>();
             playersCharacterButtonsMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, Buttons>>();
             playersCharacterActionStatesMap = new Dictionary<PlayerIndex, Dictionary<CharacterActions, ActionStates>>();
-            PassButtons = new LinkedList<CharacterActions>();
+            PassButtons = new LinkedList<Buttons>();
         }
 
         public void Initialize()
         {
-            PassButtons.AddLast(CharacterActions.Jump);
-            PassButtons.AddLast(CharacterActions.Attack);
-            PassButtons.AddLast(CharacterActions.Pick);
+            PassButtons.AddLast(Buttons.A);
+            PassButtons.AddLast(Buttons.X);
+            PassButtons.AddLast(Buttons.Y);
 
             playerMenuButtonsMap.Add(MenuActions.Start, Buttons.Start);
             playerMenuButtonsMap.Add(MenuActions.Select, Buttons.A);
@@ -155,6 +155,17 @@ namespace YellowMamba.Managers
             return GamePad.GetState(playerIndex).ThumbSticks.Left;
         }
 
+        public ActionStates GetButtonActionState(PlayerIndex playerIndex, Buttons button)
+        {
+            if (GamePad.GetState(playerIndex).IsButtonDown(button))
+            {
+                return ActionStates.Pressed;
+            }
+            else
+            {
+                return ActionStates.Released;
+            }
+        }
 
         private void UpdatePlayerCharacterActionStatesMapOnPressed(PlayerIndex playerIndex, CharacterActions characterAction)
         {

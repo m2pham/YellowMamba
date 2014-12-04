@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using YellowMamba.Characters;
 using YellowMamba.Players;
 
 namespace YellowMamba.Managers
@@ -12,12 +13,14 @@ namespace YellowMamba.Managers
     public class PlayerManager
     {
         public List<Player> Players { get; private set; }
+        public List<Character> Characters { get; private set; }
         public EntityManager EntityManager { get; set; }
         public EnemyManager EnemyManager { get; set; }
 
         public PlayerManager(InputManager inputManager)
         {
             Players = new List<Player>();
+            Characters = new List<Character>();
             Players.Add(new Player(PlayerIndex.One, inputManager, this));
         }
 

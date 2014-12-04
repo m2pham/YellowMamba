@@ -18,15 +18,18 @@ namespace YellowMamba.Enemies
     }
     public abstract class Enemy : Entity
     {
-        protected int EnemyIndex; // might not need this 
-        public Texture2D Sprite { get; set; }
+        public SpriteSheet SpriteSheet { get; set; }
+        public Animation CurrentAnimation { get; protected set; }
+        public Animation StandingAnimation { get; protected set; }
+        public Animation RunningAnimation { get; protected set; }
+        public Animation AttackingAnimation { get; protected set; }
+        public Animation DamagedAnimation { get; protected set; }
         protected bool IsInvincible { get; set; }
         protected int Health { get; set; } // added health
         protected int Damage { get; set; }
         public EnemyStates EnemyState { get; set; }
         protected PlayerManager PlayerManager { get; set; }
         protected Player focusedPlayer { get; set; }
-        protected AnimatedSprite animatedSprite;
         public Rectangle AttackHitbox;
         public bool AttackVisible;
         protected bool FacingLeft { get; set; }
@@ -42,6 +45,12 @@ namespace YellowMamba.Enemies
         {
             Ranged = false;
             PlayerManager = playerManager;
+        }
+
+        public void SelectAnimation(Animation animation)
+        {
+            CurrentAnimation = animation;
+            CurrentAnimation.Reset();
         }
     }
 
