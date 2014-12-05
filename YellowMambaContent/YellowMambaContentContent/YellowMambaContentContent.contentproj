@@ -226,17 +226,16 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Compile Include="Test\mon2\mon2_sprite_base.png">
-      <Name>mon2_sprite_base</Name>
+    <Compile Include="Test\StageOnePartOneScreenBackground.png">
+      <Name>StageOnePartOneScreenBackground</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\StageOnePartOneScreenBackground.png">
-      <Name>StageOnePartOneScreenBackground</Name>
+    <Compile Include="Test\mon2\mon2_sprite_base.png">
+      <Name>mon2_sprite_base</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
