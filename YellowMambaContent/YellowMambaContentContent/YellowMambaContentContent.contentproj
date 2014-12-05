@@ -210,17 +210,22 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\Music\stage1Song.mp3">
-      <Name>stage1Song</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
+    <Compile Include="Test\mon4\mon4_sprite_base.png">
+      <Name>mon4_sprite_base</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Test\mon4\mon4_sprite_base2.jpg">
+      <Name>mon4_sprite_base2</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\Music\menuSong.mp3">
-      <Name>menuSong</Name>
-      <Importer>Mp3Importer</Importer>
-      <Processor>SongProcessor</Processor>
+    <Compile Include="Test\mon2\mon2_sprite_base.png">
+      <Name>mon2_sprite_base</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

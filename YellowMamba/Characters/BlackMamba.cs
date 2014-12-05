@@ -61,7 +61,7 @@ namespace YellowMamba.Characters
             //int framesPassed = (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
             int framesPassed = 1;
             Hitbox.X = (int) Position.X + 17;
-            Hitbox.Y = (int) Position.Y + 14 + (int)PositionZ;
+            Hitbox.Y = (int) Position.Y + 14 - (int)PositionZ;
             PickAggroBox.X = (int)Position.X - 50;
             PickAggroBox.Y = (int)Position.Y - 50;
             PickDefendingBox.X = (int)Position.X - 25;

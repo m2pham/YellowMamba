@@ -48,16 +48,20 @@ namespace YellowMamba.Screens
             {
                 BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
                 basicEnemy.Position.X = 900;
-                basicEnemy.Position.Y = (i * 100) + 375;
+                basicEnemy.Position.Y = (i * 60) + 375;
                 enemyManager.Enemies.Add(basicEnemy);
             }
             for (int i = 0; i < 4; i++)
             {
                 BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
                 basicEnemy.Position.X = 1100;
-                basicEnemy.Position.Y = (i * 100) + 325;
+                basicEnemy.Position.Y = (i * 60) + 325;
                 enemyManager.Enemies.Add(basicEnemy);
             }
+            /*BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
+            basicEnemy.Position.X = 900;
+            basicEnemy.Position.Y = 375;
+            enemyManager.Enemies.Add(basicEnemy);*/
         }
 
         public override void LoadContent()
@@ -192,7 +196,7 @@ namespace YellowMamba.Screens
                         spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), backgroundRectangle, Color.White);
 
                         List<Entity> allEntities = PlayerManager.Characters.Concat<Entity>(enemyManager.Enemies).Concat<Entity>(entityManager.Entities).ToList();
-                        allEntities = allEntities.OrderBy(e => e.Position.Y).ToList();
+                        allEntities = allEntities.OrderBy(e => e.Hitbox.Bottom).ToList();
                         foreach (Entity entity in allEntities)
                         {
                             entity.Draw(gameTime, spriteBatch);

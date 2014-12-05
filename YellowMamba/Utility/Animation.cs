@@ -100,6 +100,27 @@ namespace YellowMamba.Utility
 
         }
 
+        public void Draw(SpriteBatch spriteBatch, Vector2 location, bool facingLeft, float scale)
+        {
+            //need to arrange each animation of a sprite in one row
+            //still need to change code in accordance to this
+            int row = (int)Math.Ceiling((float)currentFrame / (float)spriteSheet.Columns);
+            int column = currentFrame % spriteSheet.Columns;
+            if (column == 0)
+            {
+                column = spriteSheet.Columns;
+            }
+            SpriteEffects spriteEffects = SpriteEffects.None;
+            if (facingLeft)
+            {
+                spriteEffects = SpriteEffects.FlipHorizontally;
+            }
+
+            Rectangle sourceRectangle = new Rectangle(spriteSheet.FrameWidth * (column - 1), spriteSheet.FrameHeight * (row - 1), spriteSheet.FrameWidth, spriteSheet.FrameHeight);
+
+            spriteBatch.Draw(spriteSheet.Texture, location, sourceRectangle, Color.White, 0, new Vector2(0, 0), scale, spriteEffects, 0);
+        }
+
         public void Reset()
         {
             currentFrame = startingFrame;

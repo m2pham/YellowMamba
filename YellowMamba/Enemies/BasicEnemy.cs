@@ -16,10 +16,10 @@ namespace YellowMamba.Enemies
 {
     public class BasicEnemy : Enemy
     {
-        private const int HitboxDisplacement = 50;
         private int waitTime, surroundDistance, inGoodPositionTimer;
         private bool waitFlag, attackFlag;
-        public Animation SeePlayerAnimation { get; private set; }
+        private float scale = 4.0f;
+        private ContentManager contentManager;
 
         public BasicEnemy(PlayerManager playermanager)
             : base(playermanager)
@@ -34,29 +34,32 @@ namespace YellowMamba.Enemies
             waitTime = GetRandomInt(80, 160);
             waitFlag = false;
             EnemyState = EnemyStates.Chase;
-            AttackRange = new Vector2(40, 40);
-            AttackHitbox = new Rectangle((int)(Position.X - AttackRange.X), (int)Position.Y - 22, (int)AttackRange.X, (int)AttackRange.Y);
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
-            SpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("BasicEnemy"), 1, 7);
-            StandingAnimation = new Animation(SpriteSheet, 5, 2, 5);
-            RunningAnimation = new Animation(SpriteSheet, 3, 1, 5);
-            AttackingAnimation = new Animation(SpriteSheet, 1, 2, 5);
-            SeePlayerAnimation = new Animation(SpriteSheet, 4, 1, 5);
-            DamagedAnimation = new Animation(SpriteSheet, 7, 1, 20);
+            this.contentManager = contentManager;
+            SpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("mon2/mon2_sprite_base"), 8, 8);
+            StandingAnimation = new Animation(SpriteSheet, 1, 4, 5);
+            RunningAnimation = new Animation(SpriteSheet, 9, 4, 5);
+            AttackingAnimation = new Animation(SpriteSheet, 17, 4, 10);
+            DamagedAnimation = new Animation(SpriteSheet, 25, 3, 5);
+            DeathAnimation = new Animation(SpriteSheet, 25, 7, 5);
             CurrentAnimation = StandingAnimation;
             //Hitbox.Width = animatedSprite.FrameWidth;
             //Hitbox.Height = animatedSprite.FrameHeight;
-            Hitbox.Width = 72;
-            Hitbox.Height = 72;
+            HitboxXDisplacement = 26 * (int)scale;
+            HitboxYDisplacement = 22 * (int)scale;
+            Hitbox.Width = SpriteSheet.FrameWidth * (int)scale - HitboxXDisplacement * 2;
+            Hitbox.Height = 38 * (int)scale;
+            AttackRange = new Vector2(12 * scale, 20 * scale);
+            AttackHitbox = new Rectangle((int)(Position.X + HitboxXDisplacement), (int)Position.Y + 35 * (int)scale, (int)AttackRange.X, (int)AttackRange.Y);
         }
 
         public override void Update(GameTime gameTime)
         {
             CurrentAnimation.Update(gameTime);
-            if (EnemyState != EnemyStates.Damaged)
+            if (!(EnemyState == EnemyStates.Damaged || EnemyState == EnemyStates.Dead))
             {
                 ProcessDamage();
             }
@@ -80,18 +83,17 @@ namespace YellowMamba.Enemies
                 FacingLeft = false;
             }
 
+            Hitbox.X = (int)Position.X + HitboxXDisplacement;
+            Hitbox.Y = (int)Position.Y + HitboxYDisplacement - (int)PositionZ;
             if (FacingLeft)
             {
                 AttackHitbox.X = (int)(Hitbox.X - AttackRange.X);
             }
             else
             {
-                // 72 is the width that the image actually takes up in the frame
-                AttackHitbox.X = (int)Position.X + HitboxDisplacement + 72;
+                AttackHitbox.X = (int)Position.X + HitboxXDisplacement + Hitbox.Width;
             }
-            AttackHitbox.Y = Hitbox.Y;
-            Hitbox.X = (int)Position.X + HitboxDisplacement;
-            Hitbox.Y = (int)Position.Y;
+            AttackHitbox.Y = (int)Position.Y + 35 * (int)scale;
             switch (EnemyState)
             {
                 case EnemyStates.Chase:
@@ -149,8 +151,8 @@ namespace YellowMamba.Enemies
                     }
                     else if (attackFlag)
                     {
-                        if (AttackHitbox.Intersects(focusedPlayer.Character.Hitbox) && focusedPlayer.Character.Hitbox.Bottom >= Hitbox.Bottom
-                         && focusedPlayer.Character.Hitbox.Bottom < Hitbox.Bottom + 25)
+                        if (AttackHitbox.Intersects(focusedPlayer.Character.Hitbox) && focusedPlayer.Character.Hitbox.Bottom >= Hitbox.Bottom - 50
+                         && focusedPlayer.Character.Hitbox.Bottom < Hitbox.Bottom + 50)
                         {
                             Velocity.X = 0;
                             Velocity.Y = 0;
@@ -182,7 +184,7 @@ namespace YellowMamba.Enemies
                             float ySpeedFactor = (surroundDistance - distanceFromPlayer.Y) / (surroundDistance * 2);
                             foreach (Enemy enemy in PlayerManager.EnemyManager.Enemies)
                             {
-                                if (!enemy.Equals(this) && Vector2.Distance(enemy.Position, Position) <= 75)
+                                if (!enemy.Equals(this) && Vector2.Distance(enemy.Position, Position) <= 200)
                                 {
                                     enemyTooClose = true;
                                     if ((distanceFromPlayer.X > 0 && distanceFromPlayer.Y > 0)
@@ -239,8 +241,8 @@ namespace YellowMamba.Enemies
                             }
                         }
                     }
-                    else if (AttackHitbox.Intersects(focusedPlayer.Character.Hitbox) && focusedPlayer.Character.Hitbox.Bottom >= Hitbox.Bottom
-                         && focusedPlayer.Character.Hitbox.Bottom < Hitbox.Bottom + 25)
+                    else if (AttackHitbox.Intersects(focusedPlayer.Character.Hitbox) && focusedPlayer.Character.Hitbox.Bottom >= Hitbox.Bottom - 50
+                         && focusedPlayer.Character.Hitbox.Bottom < Hitbox.Bottom + 50)
                     {
                         Velocity.X = 0;
                         Velocity.Y = 0;
@@ -272,7 +274,7 @@ namespace YellowMamba.Enemies
                     break;
                 case EnemyStates.Attacking:
                     StateTimer += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
-                    if (StateTimer == AttackingAnimation.NumFrames * AttackingAnimation.Frequency / 2)
+                    if (StateTimer == (AttackingAnimation.NumFrames - 1) * AttackingAnimation.Frequency + 2)
                     {
                         AttackVisible = true;
                     }
@@ -306,14 +308,6 @@ namespace YellowMamba.Enemies
 
                 case EnemyStates.Damaged:
                     StateTimer += 1;
-                    if (FacingLeft)
-                    {
-                        Position.X += 5;
-                    }
-                    else
-                    {
-                        Position.X -= 5;
-                    }
                     if (StateTimer > DamagedAnimation.NumFrames * DamagedAnimation.Frequency)
                     {
                         StateTimer = 0;
@@ -321,26 +315,21 @@ namespace YellowMamba.Enemies
                     }
                     break;
                 case EnemyStates.Dead:
-                    //input animation
-                    //animatedSprite.SelectAnimation(x, x);
-                    MarkForDelete = true;
+                    StateTimer += 1;
+                    if (StateTimer > DeathAnimation.NumFrames * DeathAnimation.Frequency - 1)
+                    {
+                        StateTimer = 0;
+                        MarkForDelete = true;
+                    }
                     break;
-
-                /* case CharacterStates.DefaultState:
-                    ProcessMovement(Speed);
-                     if (InputManager.GetCharacterActionState(PlayerIndex, CharacterActions.Pass) == ActionStates.Pressed
-                         && PlayerManager.Players.Count > 1 && HasBall)
-                     {
-                         CharacterState = CharacterStates.PassState;
-                     }
-                     break; 
-                     */
             }
 
         }
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            CurrentAnimation.Draw(spriteBatch, Position, FacingLeft);
+            CurrentAnimation.Draw(spriteBatch, Position, FacingLeft, scale);
+            //spriteBatch.Draw(contentManager.Load<Texture2D>("Black"), Hitbox, Color.Blue);
+            //spriteBatch.Draw(contentManager.Load<Texture2D>("Black"), AttackHitbox, Color.Red);
         }
 
         private int GetRandomInt(int low, int high)
@@ -361,11 +350,11 @@ namespace YellowMamba.Enemies
                 Velocity.X = Speed;
             }
 
-            if (Hitbox.Bottom >= focusedPlayer.Character.Hitbox.Bottom + 10)
+            if (Hitbox.Bottom >= focusedPlayer.Character.Hitbox.Bottom + 50)
             {
                 Velocity.Y = -Speed;
             }
-            else if (Hitbox.Bottom <= focusedPlayer.Character.Hitbox.Bottom - 10)
+            else if (Hitbox.Bottom <= focusedPlayer.Character.Hitbox.Bottom - 50)
             {
                 Velocity.Y = Speed;
             }
@@ -376,18 +365,21 @@ namespace YellowMamba.Enemies
             foreach (Player player in PlayerManager.Players)
             {
                 if (player.Character.AttackHitbox.Intersects(Hitbox) && player.Character.CharacterState == CharacterStates.AttackState
-                    && player.Character.Hitbox.Bottom > Hitbox.Bottom && player.Character.Hitbox.Bottom < Hitbox.Bottom + 25)
+                    && player.Character.Hitbox.Bottom > Hitbox.Bottom - 50 && player.Character.Hitbox.Bottom < Hitbox.Bottom + 50)
                 {
                     Health -= player.Character.Attack;
                     if (Health <= 0)
                     {
+                        SelectAnimation(DeathAnimation);
                         EnemyState = EnemyStates.Dead;
+                        StateTimer = 0;
                     }
                     else
                     {
                         waitTime = 0;
                         StateTimer = 0;
                         SelectAnimation(DamagedAnimation);
+                        StateTimer = 0;
                         EnemyState = EnemyStates.Damaged;
                     }
                 }
@@ -405,11 +397,14 @@ namespace YellowMamba.Enemies
                             Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;
                             if (Health <= 0)
                             {
+                                StateTimer = 0;
+                                SelectAnimation(DeathAnimation);
                                 EnemyState = EnemyStates.Dead;
                             }
                             else
                             {
                                 waitTime = 0;
+                                StateTimer = 0;
                                 SelectAnimation(DamagedAnimation);
                                 EnemyState = EnemyStates.Damaged;
                             }
