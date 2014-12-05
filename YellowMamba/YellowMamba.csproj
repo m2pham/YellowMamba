@@ -39,6 +39,7 @@
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Jimothy.cs" />
     <Compile Include="Enemies\BasicEnemy.cs" />
+    <Compile Include="Enemies\Chaser.cs" />
     <Compile Include="Enemies\Swatter.cs" />
     <Compile Include="Enemies\Enemy.cs" />
     <Compile Include="Entities\PassBall.cs" />
