@@ -17,7 +17,7 @@ namespace YellowMamba.Entities
         public Vector2 Position;
         public Vector2 Velocity;
         public float PositionZ, VelocityZ;
-        protected int Speed { get; set; }
+        protected float Speed { get; set; }
         public bool MarkForDelete { get; set; }
         public Rectangle Hitbox;
 

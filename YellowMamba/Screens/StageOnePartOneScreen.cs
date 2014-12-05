@@ -132,17 +132,17 @@ namespace YellowMamba.Screens
                         }
                         for (int i = 0; i < 3; i++)
                         {
-                            BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
-                            basicEnemy.Position.X = (i * 50) + 800 + 1280;
-                            basicEnemy.Position.Y = (i * 100) + 375;
-                            enemyManager.Enemies.Add(basicEnemy);
+                            Chaser chaser = new Chaser(PlayerManager);
+                            chaser.Position.X = (i * 50) + 800 + 1280;
+                            chaser.Position.Y = (i * 100) + 375;
+                            enemyManager.Enemies.Add(chaser);
                         }
                         for (int i = 0; i < 4; i++)
                         {
-                            BasicEnemy basicEnemy = new BasicEnemy(PlayerManager);
-                            basicEnemy.Position.X = (i * 50) + 1000 + 1280;
-                            basicEnemy.Position.Y = (i * 100) + 325;
-                            enemyManager.Enemies.Add(basicEnemy);
+                            Chaser chaser = new Chaser(PlayerManager);
+                            chaser.Position.X = (i * 50) + 1000 + 1280;
+                            chaser.Position.Y = (i * 100) + 325;
+                            enemyManager.Enemies.Add(chaser);
                         }
                         enemyManager.LoadContent(ContentManager);
                         ScreenState = ScreenStates.TransitionNextArea;
