@@ -19,9 +19,11 @@ namespace YellowMamba.Entities
         public Vector2 DestinationPosition { get; set; }
         public Player TargetPlayer { get; set; }
         public bool Knocked { get; set; }
+        private float rotation;
 
         public PassBall() : base()
         {
+            rotation = 0.0f;
             InFlight = true;
             Knocked = false;
             PositionZ = 0;
@@ -29,7 +31,7 @@ namespace YellowMamba.Entities
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("PassBall");
+            Sprite = contentManager.Load<Texture2D>("Objects/Ball");
         }
 
         public override void Update(GameTime gameTime)
@@ -59,11 +61,15 @@ namespace YellowMamba.Entities
             Hitbox.Height = Sprite.Height;
             Hitbox.X = (int)Position.X;
             Hitbox.Y = (int)Position.Y + (int)PositionZ;
+            rotation += (float)gameTime.ElapsedGameTime.TotalSeconds * 15;
+            float circle = MathHelper.Pi * 2;
+            rotation = rotation % circle;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)(Position.Y - PositionZ), Sprite.Width, Sprite.Height), Color.White);
+            spriteBatch.Draw(Sprite, new Vector2(Position.X, (int)(Position.Y - PositionZ)), null, Color.White, rotation, new Vector2(Sprite.Width / 2, Sprite.Height / 2), 1.0f, SpriteEffects.None, 0);
+            //spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)(Position.Y - PositionZ), Sprite.Width, Sprite.Height), Color.White);
         }
     }
 }

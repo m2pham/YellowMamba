@@ -16,16 +16,17 @@ namespace YellowMamba.Entities
         public PlayerIndex SourcePlayer { get; set; }
         public Vector2 SourcePosition { get; set; }
         public Vector2 DestinationPosition { get; set; }
+        private float rotation;
 
         public ShootBall()
             : base()
         {
-
+            rotation = 0.0f;
         }
 
         public override void LoadContent(ContentManager contentManager)
         {
-            Sprite = contentManager.Load<Texture2D>("ShootBall");
+            Sprite = contentManager.Load<Texture2D>("Objects/Ball");
         }
 
         public override void Update(GameTime gameTime)
@@ -40,11 +41,14 @@ namespace YellowMamba.Entities
             Hitbox.Height = Sprite.Height;
             Hitbox.X = (int)Position.X;
             Hitbox.Y = (int)Position.Y;
+            rotation += (float)gameTime.ElapsedGameTime.TotalSeconds * 15;
+            float circle = MathHelper.Pi * 2;
+            rotation = rotation % circle;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)Position.Y, Sprite.Width, Sprite.Height), Color.White);
+            spriteBatch.Draw(Sprite, Position, null, Color.White, rotation, new Vector2(Sprite.Width / 2, Sprite.Height/2), 1.0f, SpriteEffects.None, 0);
         }
     }
 }

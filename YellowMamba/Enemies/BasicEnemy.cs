@@ -399,8 +399,7 @@ namespace YellowMamba.Enemies
                     if (entity.GetType() == typeof(ShootBall))
                     {
                         ShootBall ball = (ShootBall)entity;
-                        Point targetCenter = ShootTarget.Sprite.Bounds.Center;
-                        if (Hitbox.Contains(ball.DestinationPosition.X + targetCenter.X, ball.DestinationPosition.Y + targetCenter.Y))
+                        if (Hitbox.Intersects(PlayerManager.GetPlayer(ball.SourcePlayer).Target.Hitbox))
                         {
                             // select damaged animation
                             Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;

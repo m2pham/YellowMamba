@@ -23,6 +23,7 @@ namespace YellowMamba.Entities
         {
             this.inputManager = inputManager;
             SourcePlayer = sourcePlayer;
+            Hitbox = new Rectangle();
         }
 
         public override void LoadContent(ContentManager contentManager)
@@ -32,11 +33,15 @@ namespace YellowMamba.Entities
 
         public override void Update(GameTime gameTime)
         {
-            if (Position.X < SourcePlayer.Character.Position.X)
+            Hitbox.Width = Sprite.Width;
+            Hitbox.Height = Sprite.Height;
+            Hitbox.X = (int)Position.X;
+            Hitbox.Y = (int)Position.Y;
+            if (Hitbox.Center.X < SourcePlayer.Character.Hitbox.X)
             {
                 SourcePlayer.Character.FacingLeft = true;
             }
-            else if (Position.X > SourcePlayer.Character.Position.X)
+            else if (Hitbox.Center.X > SourcePlayer.Character.Hitbox.X)
             {
                 SourcePlayer.Character.FacingLeft = false;
             }

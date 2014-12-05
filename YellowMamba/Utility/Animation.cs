@@ -30,6 +30,17 @@ namespace YellowMamba.Utility
             currentFrequency = 0;
         }
 
+        public Animation(SpriteSheet spriteSheet, int frequency)
+        {
+            this.spriteSheet = spriteSheet;
+            this.Frequency = frequency;
+            this.startingFrame = 1;
+            this.NumFrames = spriteSheet.Rows * spriteSheet.Columns;
+
+            currentFrame = startingFrame;
+            currentFrequency = 0;
+        }
+
         public void Update(GameTime gameTime)
         {
             currentFrequency++;

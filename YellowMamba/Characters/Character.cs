@@ -24,6 +24,8 @@ namespace YellowMamba.Characters
 
     public abstract class Character : Entity
     {
+        protected int HitboxXDisplacement { get; set; }
+        protected int HitboxYDisplacement { get; set; }
         public SpriteSheet SpriteSheet { get; set; }
         public Animation CurrentAnimation { get; protected set; }
         public Animation StandingAnimation { get; protected set; }
@@ -115,7 +117,7 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Pressed
                  || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveLeft) == ActionStates.Held)
             {
-                if (Position.X >= 0)
+                if (Position.X + HitboxXDisplacement >= 0)
                 {
                     Velocity.X = -speed;
                 }
@@ -127,7 +129,7 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveRight) == ActionStates.Held)
             {
-                if (Position.X + Hitbox.Width <= 1280)
+                if (Position.X + Hitbox.Width + HitboxXDisplacement <= 1280)
                 {
                     Velocity.X = speed;
                 }
