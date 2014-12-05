@@ -220,6 +220,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Test\Objects\ball.png">
+      <Name>ball</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Test\Jimothy\hurt.png">
+      <Name>hurt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="Test\Jimothy\Jimattack.png">
       <Name>Jimattack</Name>
       <Importer>TextureImporter</Importer>
@@ -240,20 +252,8 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Test\Jimothy\Jimstand.png">
-      <Name>Jimstand</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test\Objects\ball.png">
-      <Name>ball</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Test\Jimothy\hurt.png">
-      <Name>hurt</Name>
+    <Compile Include="Test\Jimothy\Jimwalk.png">
+      <Name>Jimwalk</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
