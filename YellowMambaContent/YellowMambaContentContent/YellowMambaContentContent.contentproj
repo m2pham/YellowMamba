@@ -227,13 +227,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\StageOnePartOneScreenBackground.png">
-      <Name>StageOnePartOneScreenBackground</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\mon2\mon2_sprite_base.png">
       <Name>mon2_sprite_base</Name>
       <Importer>TextureImporter</Importer>
@@ -250,6 +243,13 @@
       <Name>stage1Song</Name>
       <Importer>Mp3Importer</Importer>
       <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\StageOnePartOneScreenBackground.png">
+      <Name>StageOnePartOneScreenBackground</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />
