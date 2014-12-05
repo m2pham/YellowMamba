@@ -190,6 +190,7 @@ namespace YellowMamba.Screens
                         {
                             player.Character.FacingLeft = false;
                             player.Character.SelectAnimation(player.Character.RunningAnimation);
+                            player.Character.Health = Math.Max(player.Character.Health + player.Character.MaxHealth / 3, player.Character.MaxHealth);
                         }
                         for (int i = 0; i < 3; i++)
                         {
@@ -217,6 +218,7 @@ namespace YellowMamba.Screens
                         {
                             player.Character.FacingLeft = false;
                             player.Character.SelectAnimation(player.Character.RunningAnimation);
+                            player.Character.Health = Math.Max(player.Character.Health + player.Character.MaxHealth / 3, player.Character.MaxHealth);
                         }
                         for (int i = 0; i < 3; i++)
                         {

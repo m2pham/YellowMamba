@@ -94,8 +94,7 @@ namespace YellowMamba.Enemies
                 case EnemyStates.Idle:
                     foreach (Player player in PlayerManager.Players)
                     {
-                        if (Math.Abs(player.Character.Hitbox.Center.X - Hitbox.Center.X) <= 200
-                            && Math.Abs(player.Character.Hitbox.Center.Y - player.Character.Hitbox.Center.Y) <= 200)
+                        if (Vector2.Distance(new Vector2(player.Character.Hitbox.Center.X, player.Character.Hitbox.Center.Y), new Vector2(Hitbox.Center.X, Hitbox.Center.Y)) <= 300)
                         {
                             focusedPlayer = player;
                             SelectAnimation(RunningAnimation);
