@@ -77,7 +77,7 @@ namespace YellowMamba.Utility
             spriteBatch.Draw(spriteSheet.Texture, destinationRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), spriteEffects, 0);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 location, float positionZ, bool facingLeft)
+        public void Draw(SpriteBatch spriteBatch, Vector2 location, float positionZ, bool facingLeft, Color color)
         {
             //need to arrange each animation of a sprite in one row
             //still need to change code in accordance to this
@@ -96,7 +96,7 @@ namespace YellowMamba.Utility
             Rectangle sourceRectangle = new Rectangle(spriteSheet.FrameWidth * (column - 1), spriteSheet.FrameHeight * (row - 1), spriteSheet.FrameWidth, spriteSheet.FrameHeight);
             Rectangle destinationRectangle = new Rectangle((int)location.X, (int)(location.Y - positionZ), spriteSheet.FrameWidth, spriteSheet.FrameHeight);
 
-            spriteBatch.Draw(spriteSheet.Texture, destinationRectangle, sourceRectangle, Color.White, 0, new Vector2(0, 0), spriteEffects, 0);
+            spriteBatch.Draw(spriteSheet.Texture, destinationRectangle, sourceRectangle, color, 0, new Vector2(0, 0), spriteEffects, 0);
 
         }
 
@@ -120,6 +120,8 @@ namespace YellowMamba.Utility
 
             spriteBatch.Draw(spriteSheet.Texture, location, sourceRectangle, Color.White, 0, new Vector2(0, 0), scale, spriteEffects, 0);
         }
+
+
 
         public void Reset()
         {

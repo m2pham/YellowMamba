@@ -18,11 +18,20 @@ namespace YellowMamba.Entities
         public Vector2 SourcePosition { get; set; }
         public Vector2 DestinationPosition { get; set; }
         private float rotation;
+        private Color tint;
 
         public ShootBall()
             : base()
         {
             rotation = 0.0f;
+            tint = Color.White;
+        }
+
+        public ShootBall(Color tint)
+            : base()
+        {
+            rotation = 0.0f;
+            this.tint = tint;
         }
 
         public override void LoadContent(ContentManager contentManager)
@@ -51,7 +60,7 @@ namespace YellowMamba.Entities
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             //spriteBatch.Draw(HitboxSprite, Hitbox, Color.Blue);
-            spriteBatch.Draw(Sprite, Position, null, Color.White, rotation, new Vector2(Sprite.Width / 2, Sprite.Height/2), 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(Sprite, Position, null, tint, rotation, new Vector2(Sprite.Width / 2, Sprite.Height/2), 1.0f, SpriteEffects.None, 0);
         }
     }
 }

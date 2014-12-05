@@ -28,7 +28,7 @@ namespace YellowMamba.Enemies
             Speed = 2;
             Health = 25;
             FacingLeft = true;
-            Attack = 5;
+            Attack = 4;
             AttackWaitTime = 0;
             inGoodPositionTimer = 0;
             waitTime = GetRandomInt(80, 160);
@@ -370,6 +370,7 @@ namespace YellowMamba.Enemies
                     Health -= player.Character.Attack;
                     if (Health <= 0)
                     {
+                        PlayerManager.Score++;
                         SelectAnimation(DeathAnimation);
                         EnemyState = EnemyStates.Dead;
                         StateTimer = 0;
@@ -397,6 +398,7 @@ namespace YellowMamba.Enemies
                             Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;
                             if (Health <= 0)
                             {
+                                PlayerManager.Score++;
                                 StateTimer = 0;
                                 SelectAnimation(DeathAnimation);
                                 EnemyState = EnemyStates.Dead;

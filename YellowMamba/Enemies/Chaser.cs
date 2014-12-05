@@ -25,7 +25,7 @@ namespace YellowMamba.Enemies
             Speed = 3;
             Health = 25;
             FacingLeft = false;
-            Attack = 5;
+            Attack = 3;
             AttackWaitTime = 0;
         }
 
@@ -172,7 +172,7 @@ namespace YellowMamba.Enemies
                     break;
                 case EnemyStates.Attacking:
                     StateTimer += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
-                    if (StateTimer == 5)
+                    if (StateTimer == 20)
                     {
                         AttackVisible = true;
                     }
@@ -180,7 +180,7 @@ namespace YellowMamba.Enemies
                     {
                         AttackVisible = false;
                     }
-                    if (StateTimer > 10)
+                    if (StateTimer > AttackingAnimation.NumFrames * AttackingAnimation.Frequency)
                     {
                         StateTimer = 0;
                         SelectAnimation(StandingAnimation);
@@ -235,6 +235,7 @@ namespace YellowMamba.Enemies
                     Health -= player.Character.Attack;
                     if (Health <= 0)
                     {
+                        PlayerManager.Score++;
                         SelectAnimation(DeathAnimation);
                         EnemyState = EnemyStates.Dead;
                         StateTimer = 0;
@@ -261,6 +262,7 @@ namespace YellowMamba.Enemies
                             Health -= PlayerManager.GetPlayer(ball.SourcePlayer).Character.ShootAttack;
                             if (Health <= 0)
                             {
+                                PlayerManager.Score++;
                                 StateTimer = 0;
                                 SelectAnimation(DeathAnimation);
                                 EnemyState = EnemyStates.Dead;

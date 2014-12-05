@@ -83,7 +83,6 @@ namespace YellowMamba.Screens
                         ScreenManager.RemoveScreen(this);
                         MediaPlayer.Stop();
                         ScreenManager.AddScreen(NextScreen);
-                        
                     }
                     break;
                 case ScreenStates.Active:
@@ -207,6 +206,7 @@ namespace YellowMamba.Screens
                         else
                         {
                             text = "Ready!";
+                            spriteBatch.DrawString(spriteFont, "Player One Press Start", new Vector2(ScreenManager.ScreenWidth / 2 - 100, ScreenManager.ScreenHeight - 200), Color.White);
                         }
                         spriteBatch.DrawString(spriteFont, text, new Vector2((float)playerIndex / 4 * ScreenManager.ScreenWidth + ScreenManager.ScreenWidth / 15, ScreenManager.ScreenHeight / 2), Color.White);
                     }

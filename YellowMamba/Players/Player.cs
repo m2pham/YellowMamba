@@ -34,6 +34,10 @@ namespace YellowMamba.Players
 
         public void Update(GameTime gameTime)
         {
+            if (Character.MarkForDelete)
+            {
+                return;
+            }
             Character.Update(gameTime);
             if (Target.Visible == true)
             {
@@ -43,6 +47,10 @@ namespace YellowMamba.Players
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            if (Character.MarkForDelete)
+            {
+                return;
+            }
             Character.Draw(gameTime, spriteBatch);
             if (Target.Visible == true)
             {
