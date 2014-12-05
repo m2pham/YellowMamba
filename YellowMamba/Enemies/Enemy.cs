@@ -18,12 +18,15 @@ namespace YellowMamba.Enemies
     }
     public abstract class Enemy : Entity
     {
+        protected int HitboxXDisplacement { get; set; }
+        protected int HitboxYDisplacement { get; set; }
         public SpriteSheet SpriteSheet { get; set; }
         public Animation CurrentAnimation { get; protected set; }
         public Animation StandingAnimation { get; protected set; }
         public Animation RunningAnimation { get; protected set; }
         public Animation AttackingAnimation { get; protected set; }
         public Animation DamagedAnimation { get; protected set; }
+        public Animation DeathAnimation { get; protected set; }
         protected bool IsInvincible { get; set; }
         protected int Health { get; set; } // added health
         protected int Damage { get; set; }

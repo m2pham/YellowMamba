@@ -11,6 +11,7 @@ namespace YellowMamba.Entities
     public class ShootBall : Entity
     {
         public static Texture2D Sprite { get; set; }
+        public static Texture2D HitboxSprite { get; private set; }
         public bool InFlight { get; set; }
         public TimeSpan ReleaseTime { get; set;}
         public PlayerIndex SourcePlayer { get; set; }
@@ -27,6 +28,7 @@ namespace YellowMamba.Entities
         public override void LoadContent(ContentManager contentManager)
         {
             Sprite = contentManager.Load<Texture2D>("Objects/Ball");
+            HitboxSprite = contentManager.Load<Texture2D>("Black");
         }
 
         public override void Update(GameTime gameTime)
@@ -39,8 +41,8 @@ namespace YellowMamba.Entities
             Position.Y = SourcePosition.Y + Velocity.Y * (float)ReleaseTime.Subtract(gameTime.TotalGameTime).TotalSeconds * 60 + .5F * (float) Math.Pow(ReleaseTime.Subtract(gameTime.TotalGameTime).TotalSeconds * 60, 2) / 2F;
             Hitbox.Width = Sprite.Width;
             Hitbox.Height = Sprite.Height;
-            Hitbox.X = (int)Position.X;
-            Hitbox.Y = (int)Position.Y;
+            Hitbox.X = (int)Position.X - 25;
+            Hitbox.Y = (int)Position.Y - 25;
             rotation += (float)gameTime.ElapsedGameTime.TotalSeconds * 15;
             float circle = MathHelper.Pi * 2;
             rotation = rotation % circle;
@@ -48,6 +50,7 @@ namespace YellowMamba.Entities
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            //spriteBatch.Draw(HitboxSprite, Hitbox, Color.Blue);
             spriteBatch.Draw(Sprite, Position, null, Color.White, rotation, new Vector2(Sprite.Width / 2, Sprite.Height/2), 1.0f, SpriteEffects.None, 0);
         }
     }

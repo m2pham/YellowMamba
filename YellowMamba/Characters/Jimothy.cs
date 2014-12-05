@@ -38,13 +38,13 @@ namespace YellowMamba.Characters
             SpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimwalk"), 1, 4);
             SpriteSheet tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimwalk"), 1, 4);
             StandingAnimation = new Animation(tempSpriteSheet, 5);
+            JumpingAnimation = new Animation(tempSpriteSheet, 5);
             tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimrun"), 1, 4);
             RunningAnimation = new Animation(tempSpriteSheet, 5);
             tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimshoot"), 1, 4);
             ShootingAnimation = new Animation(tempSpriteSheet, 5);
             tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimattack"), 1, 3);
             AttackingAnimation = new Animation(tempSpriteSheet, 5);
-            JumpingAnimation = new Animation(tempSpriteSheet, 5);
             tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimshoot"), 1, 4);
             PrimeShotAnimation = new Animation(tempSpriteSheet, 1, 1, 5);
             tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/Jimattack"), 1, 3);
@@ -52,15 +52,16 @@ namespace YellowMamba.Characters
             tempSpriteSheet = new SpriteSheet(contentManager.Load<Texture2D>("Jimothy/hurt"), 1, 1);
             DamagedAnimation = new Animation(tempSpriteSheet, 5);
             CurrentAnimation = StandingAnimation;
-            Hitbox.Width = SpriteSheet.FrameWidth - 2 * HitboxXDisplacement;
-            Hitbox.Height = SpriteSheet.FrameHeight - 2 * HitboxYDisplacement;
             PickAggroBox.Width = Hitbox.Width + 100;
             PickAggroBox.Height = Hitbox.Height + 100;
             PickDefendingBox.Width = Hitbox.Width + 50;
             PickDefendingBox.Height = Hitbox.Height + 50;
             HitboxXDisplacement = 80;
             HitboxYDisplacement = 20;
-            AttackHitbox = new Rectangle((int)(Position.X + HitboxXDisplacement), (int)Position.Y - 87, (int)AttackRange.X, (int)AttackRange.Y);
+            Hitbox.Width = SpriteSheet.FrameWidth - 2 * HitboxXDisplacement;
+            Hitbox.Height = SpriteSheet.FrameHeight - 2 * HitboxYDisplacement;
+            // 87 is distance from top of frame to arm
+            AttackHitbox = new Rectangle((int)(Position.X + HitboxXDisplacement), (int)Position.Y + 70, (int)AttackRange.X, (int)AttackRange.Y);
         }
 
         public override void Update(GameTime gameTime)
@@ -68,10 +69,8 @@ namespace YellowMamba.Characters
             // really just 1?
             //int framesPassed = (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
             int framesPassed = 1;
-            Hitbox.Width = SpriteSheet.FrameWidth - 2 * HitboxXDisplacement;
-            Hitbox.Height = SpriteSheet.FrameHeight - 2 * HitboxYDisplacement;
             Hitbox.X = (int)Position.X + HitboxXDisplacement;
-            Hitbox.Y = (int)Position.Y + HitboxYDisplacement + (int)PositionZ;
+            Hitbox.Y = (int)Position.Y + HitboxYDisplacement - (int)PositionZ;
             PickAggroBox.X = (int)Hitbox.X - 50;
             PickAggroBox.Y = (int)Hitbox.Y - 50;
             PickDefendingBox.X = (int)Hitbox.X - 25;
@@ -107,7 +106,7 @@ namespace YellowMamba.Characters
             {
                 AttackHitbox.X = (int)Position.X + HitboxXDisplacement + Hitbox.Width;
             }
-            AttackHitbox.Y = (int)Position.Y - 87;
+            AttackHitbox.Y = (int)Position.Y + 70;
             CurrentAnimation.Update(gameTime);
             switch (CharacterState)
             {
@@ -230,7 +229,7 @@ namespace YellowMamba.Characters
                     ProcessMovement(Speed);
                     Position.X += Velocity.X;
                     PositionZ += VelocityZ;
-                    VelocityZ -= .3F;
+                    VelocityZ -= 1F;
                     if (PassEffectTimer > 180 - JumpingAnimation.NumFrames * JumpingAnimation.Frequency * (2 / 3)
                         && InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.ShootMode) == ActionStates.Pressed)
                     {
@@ -296,7 +295,7 @@ namespace YellowMamba.Characters
                     else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Jump) == ActionStates.Pressed)
                     {
                         SelectAnimation(JumpingAnimation);
-                        VelocityZ = .3F * JumpingAnimation.NumFrames * JumpingAnimation.Frequency / 2;
+                        VelocityZ = 1F * JumpingAnimation.NumFrames * JumpingAnimation.Frequency / 2;
                         CharacterState = CharacterStates.JumpingState;
                     }
                     break;
@@ -390,6 +389,8 @@ namespace YellowMamba.Characters
                     passButtonNode = passButtonNode.Next;
                 }
             }
+            //spriteBatch.Draw(ContentManager.Load<Texture2D>("Black"), Hitbox, Color.Blue);
+            //spriteBatch.Draw(ContentManager.Load<Texture2D>("Black"), AttackHitbox, Color.Red);
         }
     }
 }
