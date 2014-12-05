@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,9 @@ namespace YellowMamba.Screens
 
         private Rectangle backgroundRectangle;
         private int areaCounter = 1;
+        public Song stage1Song;
 
+        
         public StageOnePartOneScreen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
             ScreenManager screenManager, PlayerManager playerManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
@@ -60,6 +63,9 @@ namespace YellowMamba.Screens
         public override void LoadContent()
         {
             background = ContentManager.Load<Texture2D>("StageOnePartOneScreenBackground");
+            stage1Song = ContentManager.Load<Song>("Music/stage1Song");
+            //MediaPlayer.Play(stage1Song); 
+           
             PlayerManager.LoadContent(ContentManager);
             foreach (Entity entity in entityManager.Entities)
                 entity.LoadContent(ContentManager);
@@ -130,7 +136,7 @@ namespace YellowMamba.Screens
                             player.Character.FacingLeft = false;
                             player.Character.SelectAnimation(player.Character.RunningAnimation);
                         }
-                        for (int i = 0; i < 3; i++)
+                      /*  for (int i = 0; i < 3; i++)
                         {
                             Chaser chaser = new Chaser(PlayerManager);
                             chaser.Position.X = (i * 50) + 800 + 1280;
@@ -143,7 +149,7 @@ namespace YellowMamba.Screens
                             chaser.Position.X = (i * 50) + 1000 + 1280;
                             chaser.Position.Y = (i * 100) + 325;
                             enemyManager.Enemies.Add(chaser);
-                        }
+                        } */
                         enemyManager.LoadContent(ContentManager);
                         ScreenState = ScreenStates.TransitionNextArea;
                         break;

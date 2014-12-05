@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using YellowMamba.Managers;
 using YellowMamba.Players;
 using YellowMamba.Characters;
+using Microsoft.Xna.Framework.Media;
 
 namespace YellowMamba.Screens
 {
@@ -23,7 +24,7 @@ namespace YellowMamba.Screens
         private LinkedList<Type> chars;
         private Dictionary<PlayerIndex, LinkedListNode<Type>> selectedChar;
         private Dictionary<PlayerIndex, int> inputWaitTime;
-
+        public Song menuSong;
         public CharacterSelectScreen(IServiceProvider serviceProvider, String contentRootDirectory, InputManager inputManager,
             ScreenManager screenManager, PlayerManager playerManager)
             : base(serviceProvider, contentRootDirectory, inputManager, screenManager, playerManager)
@@ -54,6 +55,8 @@ namespace YellowMamba.Screens
         {
             background = ContentManager.Load<Texture2D>("CharacterSelectScreenBackground");
             spriteFont = ContentManager.Load<SpriteFont>("TestFont");
+            menuSong = ContentManager.Load<Song>("Music/menuSong");
+            MediaPlayer.Play(menuSong);
         }
 
         public override void Update(GameTime gameTime)
@@ -78,7 +81,9 @@ namespace YellowMamba.Screens
                     else
                     {
                         ScreenManager.RemoveScreen(this);
+                        MediaPlayer.Stop();
                         ScreenManager.AddScreen(NextScreen);
+                        
                     }
                     break;
                 case ScreenStates.Active:
