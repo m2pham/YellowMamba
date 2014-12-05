@@ -35,9 +35,8 @@ namespace YellowMamba.Enemies
         protected bool FacingLeft { get; set; }
         public int Attack { get; set; }
         protected Vector2 AttackRange { get; set; }
-        protected int AttackingTime { get; set; }
         protected int AttackWaitTime { get; set; }
-        protected int DamagedTime { get; set; }
+        protected int StateTimer { get; set; }
         public bool Ranged { get; set; }
 
         public Enemy(PlayerManager playerManager) 
@@ -50,7 +49,7 @@ namespace YellowMamba.Enemies
         public void SelectAnimation(Animation animation)
         {
             CurrentAnimation = animation;
-            CurrentAnimation.Reset();
+            //CurrentAnimation.Reset();
         }
     }
 

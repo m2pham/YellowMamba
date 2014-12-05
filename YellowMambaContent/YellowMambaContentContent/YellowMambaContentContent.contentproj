@@ -114,43 +114,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\BlackMamba\BlackMamba.jpg">
-      <Name>BlackMamba</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test\BlackMamba\Attack.jpg">
-      <Name>Attack</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\StageOnePartOneScreenBackground.png">
       <Name>StageOnePartOneScreenBackground</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test\testSpriteSheet.png">
-      <Name>testSpriteSheet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test\Player2Fist.jpg">
-      <Name>Player2Fist</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test\enemyAttack.png">
-      <Name>enemyAttack</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
@@ -170,22 +135,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\enemySpriteSheet.png">
-      <Name>enemySpriteSheet</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\BasicEnemy.png">
       <Name>BasicEnemy</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Test\enemyHurt.png">
-      <Name>enemyHurt</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>

@@ -14,13 +14,14 @@ namespace YellowMamba.Managers
         public List<Enemy> Enemies { get; private set; }
         public EntityManager EntityManager { get; set; }
         public PlayerManager PlayerManager { get; set; }
+        public Random RandomGen { get; private set; }
 
         public EnemyManager(PlayerManager playerManager, EntityManager entityManager)
         {
             Enemies = new List<Enemy>();
             PlayerManager = playerManager;
             EntityManager = entityManager;
-         
+            RandomGen = new Random();
         }
         
         public void LoadContent(ContentManager contentManager)

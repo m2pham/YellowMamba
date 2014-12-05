@@ -38,6 +38,7 @@
     <Compile Include="Characters\BlackMamba.cs" />
     <Compile Include="Characters\Character.cs" />
     <Compile Include="Characters\Jimothy.cs" />
+    <Compile Include="Enemies\Chaser.cs" />
     <Compile Include="Enemies\BasicEnemy.cs" />
     <Compile Include="Enemies\Swatter.cs" />
     <Compile Include="Enemies\Enemy.cs" />

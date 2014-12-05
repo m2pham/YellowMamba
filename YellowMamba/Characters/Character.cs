@@ -75,7 +75,7 @@ namespace YellowMamba.Characters
             PickDefendingBox = new Rectangle();
         }
 
-        protected void ProcessMovement(int speed)
+        protected void ProcessMovement(float speed)
         {
             if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Released
                 && InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveDown) == ActionStates.Released)
@@ -85,7 +85,7 @@ namespace YellowMamba.Characters
             else if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Pressed
                 || InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.MoveUp) == ActionStates.Held)
             {
-                if (Position.Y >= 720/2 - 50)
+                if (Position.Y >= 720/2 - Hitbox.Height)
                 {
                     Velocity.Y = -speed;
                 }
@@ -136,14 +136,12 @@ namespace YellowMamba.Characters
                     Velocity.X = 0;
                 }
             }
-
-            Position += Velocity;
         }
 
         public void SelectAnimation(Animation animation)
         {
             CurrentAnimation = animation;
-            CurrentAnimation.Reset();
+            //CurrentAnimation.Reset();
         }
     }
 }

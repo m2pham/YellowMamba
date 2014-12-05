@@ -19,7 +19,6 @@ namespace YellowMamba.Enemies
 {
     public class Swatter : Enemy
     {
-        public float timeToChange;
         private const int HitboxDisplacement = 50;
         public Rectangle DisruptPassHitbox;
         public Swatter(PlayerManager playermanager)
@@ -27,8 +26,6 @@ namespace YellowMamba.Enemies
         {
             Speed = 3;
             Health = 30;
-            timeToChange = 0F;
-            DamagedTime = 0;
             FacingLeft = true;
             AttackRange = new Vector2(50, 50);
             AttackHitbox = new Rectangle((int)(Position.X - AttackRange.X), (int)Position.Y - 22, (int)AttackRange.X, (int)AttackRange.Y);
@@ -104,8 +101,8 @@ namespace YellowMamba.Enemies
                     break;
                 case EnemyStates.SeePlayer:
                     //input delay from SeePlayer state to Chase state
-                    timeToChange += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (timeToChange >= 2F)
+                    StateTimer += 1;
+                    if (StateTimer >= 120)
                     {
                         //animatedSprite.SelectAnimation(3, 1);
                         EnemyState = EnemyStates.Chase;
@@ -192,7 +189,7 @@ namespace YellowMamba.Enemies
                     break;
 
                 case EnemyStates.Damaged:
-                    DamagedTime += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
+                    StateTimer += (int)Math.Ceiling(gameTime.ElapsedGameTime.TotalSeconds * 60F);
                     if (FacingLeft)
                     {
                         Position.X += 5;
@@ -201,9 +198,9 @@ namespace YellowMamba.Enemies
                     {
                         Position.X -= 5;
                     }
-                    if (DamagedTime > 20)
+                    if (StateTimer > 20)
                     {
-                        DamagedTime = 0;
+                        StateTimer = 0;
                         //animatedSprite.SelectAnimation(3, 1);
                         EnemyState = EnemyStates.Chase;
                     }
