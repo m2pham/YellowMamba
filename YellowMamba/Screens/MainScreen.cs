@@ -12,6 +12,7 @@ namespace YellowMamba.Screens
 {
     public class MainScreen : Screen
     {
+        private SpriteFont spriteFont;
         private Texture2D background, black;
 
         private TimeSpan TransitionInTime = TimeSpan.Zero;
@@ -33,6 +34,7 @@ namespace YellowMamba.Screens
 
         public override void LoadContent()
         {
+            spriteFont = ContentManager.Load<SpriteFont>("TestFont");
             background = ContentManager.Load<Texture2D>("MainScreenBackground");
             black = ContentManager.Load<Texture2D>("Black");
         }
@@ -77,16 +79,20 @@ namespace YellowMamba.Screens
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
+            String text = "Player One Press Start";
             switch (ScreenState)
             {
                 case ScreenStates.TransitionIn:
                     // transition in animation here
                     break;
                 case ScreenStates.TransitionOut:
-                    spriteBatch.Draw(black, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), new Color(255, 255, 255, (byte)alpha));
+                    spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
+                    spriteBatch.DrawString(spriteFont, text, new Vector2(ScreenManager.ScreenWidth / 2 - 100, ScreenManager.ScreenHeight / 2), Color.White);
+                    spriteBatch.Draw(black, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), new Color(255, 255, 255, (byte)alpha * 2));
                     break;
                 case ScreenStates.Active:
                     spriteBatch.Draw(background, new Rectangle(0, 0, ScreenManager.ScreenWidth, ScreenManager.ScreenHeight), Color.White);
+                    spriteBatch.DrawString(spriteFont, text, new Vector2(ScreenManager.ScreenWidth / 2 - 100, ScreenManager.ScreenHeight / 2), Color.White);
                     break;
             }
             spriteBatch.End();

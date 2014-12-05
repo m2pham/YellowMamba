@@ -19,6 +19,7 @@ namespace YellowMamba.Entities
         public Vector2 DestinationPosition { get; set; }
         public Player TargetPlayer { get; set; }
         public bool Knocked { get; set; }
+        private Color tint;
         private float rotation;
 
         public PassBall() : base()
@@ -27,6 +28,16 @@ namespace YellowMamba.Entities
             InFlight = true;
             Knocked = false;
             PositionZ = 0;
+            tint = Color.White;
+        }
+        public PassBall(Color tint)
+            : base()
+        {
+            rotation = 0.0f;
+            InFlight = true;
+            Knocked = false;
+            PositionZ = 0;
+            this.tint = tint;
         }
 
         public override void LoadContent(ContentManager contentManager)
@@ -41,8 +52,8 @@ namespace YellowMamba.Entities
             {
                 diff = .01f;
             }
-            Velocity.X = (TargetPlayer.Character.Position.X - Position.X) / diff;
-            Velocity.Y = (TargetPlayer.Character.Position.Y - Position.Y) / diff;
+            Velocity.X = (TargetPlayer.Character.Hitbox.Center.X - Position.X) / diff;
+            Velocity.Y = (TargetPlayer.Character.Hitbox.Center.Y - Position.Y) / diff;
             VelocityZ = (TargetPlayer.Character.PositionZ - PositionZ) / diff;
             Position += Velocity;
             PositionZ += VelocityZ;
@@ -68,7 +79,7 @@ namespace YellowMamba.Entities
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Sprite, new Vector2(Position.X, (int)(Position.Y - PositionZ)), null, Color.White, rotation, new Vector2(Sprite.Width / 2, Sprite.Height / 2), 1.0f, SpriteEffects.None, 0);
+            spriteBatch.Draw(Sprite, new Vector2(Position.X, (int)(Position.Y - PositionZ)), null, tint, rotation, new Vector2(Sprite.Width / 2, Sprite.Height / 2), 1.0f, SpriteEffects.None, 0);
             //spriteBatch.Draw(Sprite, new Rectangle((int)Position.X, (int)(Position.Y - PositionZ), Sprite.Width, Sprite.Height), Color.White);
         }
     }

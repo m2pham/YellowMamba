@@ -21,6 +21,8 @@ namespace YellowMamba.Characters
             : base(player, inputManager, playerManager)
         {
             Speed = 5;
+            Health = 30;
+            MaxHealth = 30;
             PickHealth = 30;
             MaxPickHealth = 30;
             PickHealthRegenerationTimer = 0;
@@ -29,6 +31,7 @@ namespace YellowMamba.Characters
             ShootAttack = 5;
             FacingLeft = false;
             AttackRange = new Vector2(40, 10);
+            Tint = Color.White;
         }
 
         public override void LoadContent(ContentManager contentManager)
@@ -128,7 +131,7 @@ namespace YellowMamba.Characters
                     StateTimer += framesPassed;
                     if (StateTimer == (ShootingAnimation.NumFrames - 1) * ShootingAnimation.Frequency)
                     {
-                        ShootBall shootBall = new ShootBall();
+                        ShootBall shootBall = new ShootBall(Tint);
                         int disp = 150;
                         if (FacingLeft)
                         {
@@ -167,6 +170,14 @@ namespace YellowMamba.Characters
                 case CharacterStates.PassState:
                     ProcessMovement(Speed);
                     Position += Velocity;
+                    if (Velocity.X != 0 || Velocity.Y != 0)
+                    {
+                        SelectAnimation(RunningAnimation);
+                    }
+                    else
+                    {
+                        SelectAnimation(StandingAnimation);
+                    }
                     if (InputManager.GetCharacterActionState(Player.PlayerIndex, CharacterActions.Pass) != ActionStates.Held)
                     {
                         CharacterState = CharacterStates.DefaultState;
@@ -187,8 +198,8 @@ namespace YellowMamba.Characters
                         }
                         if (InputManager.GetButtonActionState(Player.PlayerIndex, passButtonNode.Value) == ActionStates.Pressed)
                         {
-                            PassBall ball = new PassBall();
-                            ball.Position = Position;
+                            PassBall ball = new PassBall(Tint);
+                            ball.Position = new Vector2(Hitbox.Center.X, Hitbox.Center.Y);
                             ball.SourcePlayer = Player;
                             ball.TargetPlayer = targetPlayer;
                             ball.ReleaseTime = gameTime.TotalGameTime;
@@ -241,6 +252,9 @@ namespace YellowMamba.Characters
                         StateTimer = 0;
                         CharacterState = CharacterStates.DefaultState;
                     }
+                    break;
+                case CharacterStates.DeadState:
+                    MarkForDelete = true;
                     break;
                 case CharacterStates.DefaultState:
                     ProcessMovement(Speed);
@@ -349,6 +363,12 @@ namespace YellowMamba.Characters
                             PlayerManager.GetPlayer(Player.PlayerIndex).Target.Visible = false;
                         }
                         Health -= enemy.Attack;
+                        if (Health <= 0)
+                        {
+                            CharacterState = CharacterStates.DeadState;
+                            StateTimer = 0;
+                            break;
+                        }
                         SelectAnimation(DamagedAnimation);
                         CharacterState = CharacterStates.DamagedState;
                     }
@@ -358,7 +378,7 @@ namespace YellowMamba.Characters
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            CurrentAnimation.Draw(spriteBatch, Position, PositionZ, FacingLeft);
+            CurrentAnimation.Draw(spriteBatch, Position, PositionZ, FacingLeft, Tint);
             if (CharacterState == CharacterStates.PickState)
             {
                 spriteBatch.Draw(PickHealthBarSprite, new Rectangle(Hitbox.Center.X - PickHealthBarSprite.Bounds.Center.X, (int)Position.Y - 20, PickHealthBarSprite.Width * PickHealth / MaxPickHealth, PickHealthBarSprite.Height), Color.White);
@@ -389,7 +409,11 @@ namespace YellowMamba.Characters
                     passButtonNode = passButtonNode.Next;
                 }
             }
-            //spriteBatch.Draw(ContentManager.Load<Texture2D>("Black"), Hitbox, Color.Blue);
+
+            if (DrawHealthBar)
+            {
+                spriteBatch.Draw(PickHealthBarSprite, new Rectangle(Hitbox.Center.X - PickHealthBarSprite.Bounds.Center.X, (int)Position.Y - 10 - (int)PositionZ, PickHealthBarSprite.Width * Health / MaxHealth, PickHealthBarSprite.Height), Color.Green);
+            }            //spriteBatch.Draw(ContentManager.Load<Texture2D>("Black"), Hitbox, Color.Blue);
             //spriteBatch.Draw(ContentManager.Load<Texture2D>("Black"), AttackHitbox, Color.Red);
         }
     }
