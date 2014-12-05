@@ -114,13 +114,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\StageOnePartOneScreenBackground.png">
-      <Name>StageOnePartOneScreenBackground</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Test\BlackMambaSpriteSheet.png">
       <Name>BlackMambaSpriteSheet</Name>
       <Importer>TextureImporter</Importer>
@@ -176,13 +169,37 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <Compile Include="Test\Jimothy\hurt.png">
-      <Name>hurt</Name>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\mon4\mon4_sprite_base.png">
+      <Name>mon4_sprite_base</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Test\mon2\mon2_sprite_base.png">
+      <Name>mon2_sprite_base</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
+    <Compile Include="Test\Music\menuSong.mp3">
+      <Name>menuSong</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+    <Compile Include="Test\Music\stage1Song.mp3">
+      <Name>stage1Song</Name>
+      <Importer>Mp3Importer</Importer>
+      <Processor>SongProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test\Jimothy\hurt.png">
+      <Name>hurt</Name>
+      <Importer>TextureImporter</Importer>
+      <Processor>TextureProcessor</Processor>
+    </Compile>
     <Compile Include="Test\Jimothy\Jimattack.png">
       <Name>Jimattack</Name>
       <Importer>TextureImporter</Importer>
@@ -209,21 +226,17 @@
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Compile Include="Test\mon4\mon4_sprite_base.png">
-      <Name>mon4_sprite_base</Name>
-      <Importer>TextureImporter</Importer>
-      <Processor>TextureProcessor</Processor>
-    </Compile>
-    <Compile Include="Test\mon4\mon4_sprite_base2.jpg">
-      <Name>mon4_sprite_base2</Name>
+    <Compile Include="Test\mon2\mon2_sprite_base.png">
+      <Name>mon2_sprite_base</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Test\mon2\mon2_sprite_base.png">
-      <Name>mon2_sprite_base</Name>
+    <Compile Include="Test\StageOnePartOneScreenBackground.png">
+      <Name>StageOnePartOneScreenBackground</Name>
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
